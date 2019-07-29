@@ -1,0 +1,22 @@
+﻿  Animation.cpp
+  Billboard.cpp
+  Camera.cpp
+  CubeModel.cpp
+  EventManager.cpp
+  FirstPersonCamera.cpp
+  main.cpp
+  Model.cpp
+  ParticleDescriptor.cpp
+  ParticleEmitter.cpp
+  ParticleSystem.cpp
+  Renderer.cpp
+  SphereModel.cpp
+  StaticCamera.cpp
+  TextureLoader.cpp
+  World.cpp
+  Generating Code...
+  LINK : C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe not found or not built by the last incremental link; performing full link
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\Bin\vc120.pdb'; linking object as if no debug info
+  Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
