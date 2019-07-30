@@ -34,7 +34,7 @@ public:
 private:
 	const unsigned int mWidth;
 	const unsigned int mHeight;
-	Chunk** mChunkMap;
+	Chunk*** mChunkMap;
 
 	struct Vertex
 	{

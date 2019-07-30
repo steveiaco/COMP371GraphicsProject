@@ -20,6 +20,7 @@ class Animation;
 class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
+class Terrain;
 
 class World
 {
@@ -47,7 +48,8 @@ public:
     
 private:
     static World* instance;
-    
+
+	Terrain* mpTerrain;
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;

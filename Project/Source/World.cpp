@@ -18,6 +18,7 @@
 #include "SphereModel.h"
 #include "Animation.h"
 #include "Billboard.h"
+#include "Terrain.h"
 #include <GLFW/glfw3.h>
 #include "EventManager.h"
 #include "TextureLoader.h"
@@ -42,7 +43,6 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
-
     
 #if defined(PLATFORM_OSX)
 //    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
@@ -55,7 +55,6 @@ World::World()
 
     mpBillboardList = new BillboardList(2048, billboardTextureID);
 
-    
     // TODO - You can un-comment out these 2 temporary billboards and particle system
     // That can help you debug billboards, you can set the billboard texture to billboardTest.png
     /*    Billboard *b = new Billboard();
@@ -116,6 +115,7 @@ World::~World()
     }
     mParticleDescriptorList.clear();
 
+	delete mpTerrain;
     
 	delete mpBillboardList;
 }
@@ -203,6 +203,8 @@ void World::Draw()
 	// Send the view projection constants to the shader
 	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+
+	mpTerrain->Draw();
 
 	// Draw models
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
@@ -318,6 +320,8 @@ void World::LoadScene(const char * scene_path)
 	    }
 	}
 	input.close();
+
+	mpTerrain = new Terrain();
 
 	// Set Animation vertex buffers
 	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)

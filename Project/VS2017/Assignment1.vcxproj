@@ -34,6 +34,7 @@
     <ClInclude Include="..\Source\Renderer.h" />
     <ClInclude Include="..\Source\SphereModel.h" />
     <ClInclude Include="..\Source\StaticCamera.h" />
+    <ClInclude Include="..\Source\Terrain.h" />
     <ClInclude Include="..\Source\TextureLoader.h" />
     <ClInclude Include="..\Source\World.h" />
   </ItemGroup>
@@ -52,6 +53,7 @@
     <ClCompile Include="..\Source\Renderer.cpp" />
     <ClCompile Include="..\Source\SphereModel.cpp" />
     <ClCompile Include="..\Source\StaticCamera.cpp" />
+    <ClCompile Include="..\Source\Terrain.cpp" />
     <ClCompile Include="..\Source\TextureLoader.cpp" />
     <ClCompile Include="..\Source\World.cpp" />
   </ItemGroup>

@@ -67,14 +67,10 @@ void Terrain::Chunk::GenVertexBuffer()
 	glGenVertexArrays(1, &mVAO);
 	glBindVertexArray(mVAO);
 
-	Renderer::CheckForErrors();
-
 	// Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
 	glGenBuffers(1, &mVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBufferData(GL_ARRAY_BUFFER, crrtVertex * sizeof(Vertex), vertexBufer, GL_STATIC_DRAW);
-
-	Renderer::CheckForErrors();
 
 	// 1st attribute buffer : vertex Positions
 	glVertexAttribPointer(0,                // attribute. No particular reason for 0, but must match the layout in the shader.
@@ -127,13 +123,13 @@ Terrain::Terrain() : Terrain(8, 8)
 
 Terrain::Terrain(unsigned int width, unsigned int height) : mWidth(width), mHeight(height)
 {
-	mChunkMap = new Chunk*[mWidth];
+	mChunkMap = new Chunk**[mWidth];
 	for (int i = 0; i < mWidth; i++)
 	{
-		mChunkMap[i] = new Chunk[mHeight];
+		mChunkMap[i] = new Chunk*[mHeight];
 		for (int j = 0; j < mHeight; j++)
 		{
-			mChunkMap[i][j] = Chunk(i*(CHUNK_SIZE - 1), j*(CHUNK_SIZE - 1));
+			mChunkMap[i][j] = new Chunk{ i*(CHUNK_SIZE - 1), j*(CHUNK_SIZE - 1) };
 		}
 	}
 }
@@ -142,6 +138,10 @@ Terrain::~Terrain()
 {
 	for (int i = 0; i < CHUNK_SIZE; i++)
 	{
+		for (int j = 0; j < CHUNK_SIZE; j++)
+		{
+			delete mChunkMap[i][j];
+		}
 		delete [] mChunkMap[i];
 	}
 	delete [] mChunkMap;
@@ -154,7 +154,7 @@ void Terrain::Draw()
 	{
 		for (int j = 0; j < mHeight; j++)
 		{
-			mChunkMap[i][j].Draw();
+			mChunkMap[i][j]->Draw();
 		}
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
