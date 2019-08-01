@@ -31,6 +31,7 @@
     <ClInclude Include="..\Source\ParticleDescriptor.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />
     <ClInclude Include="..\Source\ParticleSystem.h" />
+    <ClInclude Include="..\Source\PerlinNoise.h" />
     <ClInclude Include="..\Source\Renderer.h" />
     <ClInclude Include="..\Source\SphereModel.h" />
     <ClInclude Include="..\Source\StaticCamera.h" />
@@ -50,6 +51,7 @@
     <ClCompile Include="..\Source\ParticleDescriptor.cpp" />
     <ClCompile Include="..\Source\ParticleEmitter.cpp" />
     <ClCompile Include="..\Source\ParticleSystem.cpp" />
+    <ClCompile Include="..\Source\PerlinNoise.cpp" />
     <ClCompile Include="..\Source\Renderer.cpp" />
     <ClCompile Include="..\Source\SphereModel.cpp" />
     <ClCompile Include="..\Source\StaticCamera.cpp" />

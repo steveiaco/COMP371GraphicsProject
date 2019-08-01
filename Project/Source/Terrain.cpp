@@ -1,5 +1,9 @@
 #include "Terrain.h"
 #include "Renderer.h"
+#include "PerlinNoise.h"
+#include <iostream>
+
+PerlinNoise Terrain::Chunk::noiseGenerator = PerlinNoise();
 
 Terrain::Chunk::Chunk()
 {
@@ -7,16 +11,17 @@ Terrain::Chunk::Chunk()
 
 Terrain::Chunk::Chunk(int xCoord, int yCoord)
 {
+	float amplitude = 10.f;
+	unsigned int frequency = 1;
+
 	mXCoord = xCoord;
 	mYCoord = yCoord;
 
-	mHeightMap = new float*[CHUNK_SIZE];
 	for (int i = 0; i < CHUNK_SIZE; i++)
 	{
-		mHeightMap[i] = new float[CHUNK_SIZE];
 		for (int j = 0; j < CHUNK_SIZE; j++)
 		{
-			mHeightMap[i][j] = 0.f;
+			mHeightMap[i][j] = amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i) / (CHUNK_SIZE-1), frequency *  static_cast <float> (mYCoord + j) / (CHUNK_SIZE-1));
 		}
 	}
 
@@ -117,7 +122,7 @@ void Terrain::Chunk::Draw()
 	glDrawArrays(GL_TRIANGLES, 0, 2 * (CHUNK_SIZE - 1) * (CHUNK_SIZE - 1) * 3);
 }
 
-Terrain::Terrain() : Terrain(8, 8)
+Terrain::Terrain() : Terrain(8,8)
 {
 }
 
@@ -129,16 +134,16 @@ Terrain::Terrain(unsigned int width, unsigned int height) : mWidth(width), mHeig
 		mChunkMap[i] = new Chunk*[mHeight];
 		for (int j = 0; j < mHeight; j++)
 		{
-			mChunkMap[i][j] = new Chunk{ i*(CHUNK_SIZE - 1), j*(CHUNK_SIZE - 1) };
+			mChunkMap[i][j] = new Chunk{ i*(Chunk::CHUNK_SIZE-1), j*(Chunk::CHUNK_SIZE-1) };
 		}
 	}
 }
 
 Terrain::~Terrain()
 {
-	for (int i = 0; i < CHUNK_SIZE; i++)
+	for (int i = 0; i < mWidth; i++)
 	{
-		for (int j = 0; j < CHUNK_SIZE; j++)
+		for (int j = 0; j < mHeight; j++)
 		{
 			delete mChunkMap[i][j];
 		}

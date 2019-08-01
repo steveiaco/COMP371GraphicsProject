@@ -2,7 +2,11 @@
 
 #include <glm/glm.hpp>
 
+class PerlinNoise;
+
 class Terrain {
+public:
+
 
 private:
 	class Chunk {
@@ -14,17 +18,18 @@ private:
 		void GenVertexBuffer();
 		void Draw();
 
-		unsigned int mVAO = 55;
-		unsigned int mVBO = 55;
+		static PerlinNoise noiseGenerator;
+		const static int CHUNK_SIZE = 32;
+
+		unsigned int mVAO;
+		unsigned int mVBO;
 
 		int mXCoord;
 		int mYCoord;
-		float** mHeightMap;
+		float mHeightMap[CHUNK_SIZE][CHUNK_SIZE];
 	};
 
 public:
-	const static int CHUNK_SIZE = 16;
-
 	Terrain();
 	Terrain(unsigned int width, unsigned int height);
 	~Terrain();
