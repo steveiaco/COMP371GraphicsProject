@@ -4,7 +4,10 @@
 cmake-build-*/
 *.iws
 out/
+<<<<<<< HEAD
 
 # VS
 VS2013/
 VS2017/
+=======
+>>>>>>> e7622ec... Changes to make to project compatible with Linux
