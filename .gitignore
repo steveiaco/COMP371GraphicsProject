@@ -4,3 +4,7 @@
 cmake-build-*/
 *.iws
 out/
+
+# VS
+VS2013/
+VS2017/
