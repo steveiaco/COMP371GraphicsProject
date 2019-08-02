@@ -18,6 +18,10 @@
 #include <sstream>
 #include <iterator>
 #include <algorithm>
+#if defined(linux)
+#include <strings.h>
+#endif
+
 
 // Case insensitive strings (eg: Hello == HELLo) 
 // This is used for parsing scene files
@@ -37,7 +41,7 @@ struct ci_char_traits : public std::char_traits<char>
   static int compare( const char* s1,
                       const char* s2,
                       size_t n ) {
-#if defined(PLATFORM_OSX)
+#if defined(PLATFORM_OSX) || defined(linux)
       return strcasecmp( s1, s2 );
 #else
       return _memicmp( s1, s2, n );

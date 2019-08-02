@@ -48,7 +48,7 @@ void EventManager::Initialize()
 		
 	glfwWindowHint(GLFW_SAMPLES, 4);
     
-#if defined(PLATFORM_OSX)
+#if defined(PLATFORM_OSX) || defined(GLM_PLATFORM_LINUX)
     // OS X would use legacy opengl by default, and wouldn't be able to load shaders
     // This is the proper way to setup GLFW to use modern OpenGL
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

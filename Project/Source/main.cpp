@@ -29,7 +29,7 @@ int main(int argc, char*argv[])
 		// TODO - You can alternate between different scenes for testing different things
 		// Static Scene contains no animation
 		// Animated Scene does
-#if defined(PLATFORM_OSX)		
+#if defined(PLATFORM_OSX) || defined(GLM_PLATFORM_LINUX)
 //		world.LoadScene("Scenes/AnimatedSceneWithParticles.scene");
 //		world.LoadScene("Scenes/AnimatedScene.scene");
 //		world.LoadScene("Scenes/StaticScene.scene");
