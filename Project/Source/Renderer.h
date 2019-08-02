@@ -17,6 +17,9 @@ struct GLFWwindow;
 
 #include <vector>
 #include <glm/glm.hpp>
+#if defined(linux)
+#include <string>
+#endif
 
 
 enum ShaderType

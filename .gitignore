@@ -1,0 +1,6 @@
+.idea/
+
+# CMake
+cmake-build-*/
+*.iws
+out/

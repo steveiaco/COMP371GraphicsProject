@@ -11,7 +11,12 @@
 #include "Renderer.h"
 
 #include <cassert>
+#if defined(linux)
+#include <FreeImage.h>
+#else
 #include <FreeImageIO.h>
+#endif
+
 
 
 int TextureLoader::LoadTexture(const char * imagepath)
