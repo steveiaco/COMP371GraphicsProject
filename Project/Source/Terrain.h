@@ -19,7 +19,7 @@ private:
 		void Draw();
 
 		static PerlinNoise noiseGenerator;
-		const static int CHUNK_SIZE = 32;
+		const static int CHUNK_SIZE = 257;
 
 		unsigned int mVAO;
 		unsigned int mVBO;

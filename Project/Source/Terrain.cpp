@@ -11,8 +11,12 @@ Terrain::Chunk::Chunk()
 
 Terrain::Chunk::Chunk(int xCoord, int yCoord)
 {
-	float amplitude = 10.f;
-	unsigned int frequency = 1;
+	float amplitude = 20.f;
+	float frequency = 1.f/128.f;
+
+	unsigned int numOctaves = 5;
+	float lacunarity = 3.f;
+	float persistence = 0.25f;
 
 	mXCoord = xCoord;
 	mYCoord = yCoord;
@@ -21,8 +25,23 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 	{
 		for (int j = 0; j < CHUNK_SIZE; j++)
 		{
-			mHeightMap[i][j] = amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i) / (CHUNK_SIZE-1), frequency *  static_cast <float> (mYCoord + j) / (CHUNK_SIZE-1));
+			mHeightMap[i][j] = amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j));
 		}
+	}
+	amplitude *= persistence;
+	frequency *= lacunarity;
+
+	for (int octave = 0; octave < numOctaves; octave++)
+	{
+		for (int i = 0; i < CHUNK_SIZE; i++)
+		{
+			for (int j = 0; j < CHUNK_SIZE; j++)
+			{
+				mHeightMap[i][j] += amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j));
+			}
+		}
+		amplitude *= persistence;
+		frequency *= lacunarity;
 	}
 
 	GenVertexBuffer();
@@ -55,16 +74,23 @@ void Terrain::Chunk::GenVertexBuffer()
 			glm::vec3 bottomRight(mXCoord + x + 1, mHeightMap[x + 1][y + 1], mYCoord + y + 1);
 			glm::vec3 topRight(mXCoord + x + 1, mHeightMap[x + 1][y], mYCoord + y);
 
-			glm::vec3 normal = glm::vec3(0.f, 0.f, 0.f);
-			glm::vec3 color = glm::vec3(0.5f, 0.5f, 0.5f);
+			glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight));
+			glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight));
 
-			vertexBufer[crrtVertex++] = Vertex{ topRight, normal, color };
-			vertexBufer[crrtVertex++] = Vertex{ topLeft, normal, color };
-			vertexBufer[crrtVertex++] = Vertex{ bottomLeft, normal, color };
+			//glm::vec3(0.55f, 0.62f, 0.25f), glm::vec3(0.50f, 0.31f, 0.24f)
 
-			vertexBufer[crrtVertex++] = Vertex{ topRight, normal, color };
-			vertexBufer[crrtVertex++] = Vertex{ bottomLeft, normal, color };
-			vertexBufer[crrtVertex++] = Vertex{ bottomRight, normal, color };
+			float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
+			glm::vec3 color1 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 20.f));
+			verticality = glm::dot(normal2, glm::vec3(0.f, 1.f, 0.f));
+			glm::vec3 color2 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 20.f));
+
+			vertexBufer[crrtVertex++] = Vertex{ topRight, normal1, color1 };
+			vertexBufer[crrtVertex++] = Vertex{ topLeft, normal1, color1 };
+			vertexBufer[crrtVertex++] = Vertex{ bottomLeft, normal1, color1 };
+
+			vertexBufer[crrtVertex++] = Vertex{ topRight, normal2, color2 };
+			vertexBufer[crrtVertex++] = Vertex{ bottomLeft, normal2, color2 };
+			vertexBufer[crrtVertex++] = Vertex{ bottomRight, normal2, color2 };
 		}
 	}
 
@@ -122,7 +148,7 @@ void Terrain::Chunk::Draw()
 	glDrawArrays(GL_TRIANGLES, 0, 2 * (CHUNK_SIZE - 1) * (CHUNK_SIZE - 1) * 3);
 }
 
-Terrain::Terrain() : Terrain(8,8)
+Terrain::Terrain() : Terrain(1,1)
 {
 }
 
@@ -154,7 +180,7 @@ Terrain::~Terrain()
 
 void Terrain::Draw()
 {
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	for (int i = 0; i < mWidth; i++)
 	{
 		for (int j = 0; j < mHeight; j++)
@@ -162,5 +188,5 @@ void Terrain::Draw()
 			mChunkMap[i][j]->Draw();
 		}
 	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

@@ -1,10 +1,11 @@
 ﻿  Terrain.cpp
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(35): warning C4154: deletion of an array expression; conversion to pointer supplied
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(37): warning C4154: deletion of an array expression; conversion to pointer supplied
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(132): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(135): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(144): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(146): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(34): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(54): warning C4154: deletion of an array expression; conversion to pointer supplied
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(56): warning C4154: deletion of an array expression; conversion to pointer supplied
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(158): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(160): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(161): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(170): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(172): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(184): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(186): warning C4018: '<': signed/unsigned mismatch
   Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
