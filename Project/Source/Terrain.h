@@ -36,6 +36,16 @@ public:
 
 	void Draw();
 
+	float GetHeight(unsigned int xCoord, unsigned int yCoord) 
+	{
+		unsigned int chunkX = xCoord / Chunk::CHUNK_SIZE;
+		unsigned int chunkY = yCoord / Chunk::CHUNK_SIZE;
+		unsigned int dx = xCoord - chunkX;
+		unsigned int dy = yCoord - chunkY;
+
+		return mChunkMap[chunkX][chunkY]->mHeightMap[dx][dy];
+	};
+
 private:
 	const unsigned int mWidth;
 	const unsigned int mHeight;

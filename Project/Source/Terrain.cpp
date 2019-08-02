@@ -9,6 +9,12 @@ Terrain::Chunk::Chunk()
 {
 }
 
+float Ease(float t)
+{
+	const float exp = 5.f;
+	return (t < 0.5f) ? 0.5f * glm::pow(2.f * t, exp) : 0.5f * glm::pow(2.f * t - 2.f, exp) + 1.f;
+}
+
 Terrain::Chunk::Chunk(int xCoord, int yCoord)
 {
 	float amplitude = 20.f;
@@ -16,7 +22,7 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 
 	unsigned int numOctaves = 5;
 	float lacunarity = 3.f;
-	float persistence = 0.25f;
+	float persistence = 0.4f;
 
 	mXCoord = xCoord;
 	mYCoord = yCoord;
@@ -25,7 +31,7 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 	{
 		for (int j = 0; j < CHUNK_SIZE; j++)
 		{
-			mHeightMap[i][j] = amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j));
+			mHeightMap[i][j] = amplitude * Ease((Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j)))/2.f + 0.5f);
 		}
 	}
 	amplitude *= persistence;
@@ -49,12 +55,6 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 
 Terrain::Chunk::~Chunk()
 {
-	for (int i = 0; i < CHUNK_SIZE; i++)
-	{
-		delete [] mHeightMap[i];
-	}
-	delete [] mHeightMap;
-
 	// Free the GPU from the Vertex Buffer
 	glDeleteBuffers(1, &mVBO);
 	glDeleteVertexArrays(1, &mVAO);
@@ -62,6 +62,8 @@ Terrain::Chunk::~Chunk()
 
 void Terrain::Chunk::GenVertexBuffer()
 {
+	float scale = 0.15f;
+
 	Vertex* vertexBufer = new Vertex[2 * (CHUNK_SIZE - 1) * (CHUNK_SIZE - 1) * 3];
 	int crrtVertex = 0;
 
@@ -69,20 +71,18 @@ void Terrain::Chunk::GenVertexBuffer()
 	{
 		for (int y = 0; y < CHUNK_SIZE - 1; y++)
 		{
-			glm::vec3 topLeft(mXCoord + x, mHeightMap[x][y], mYCoord + y);
-			glm::vec3 bottomLeft(mXCoord + x, mHeightMap[x][y + 1], mYCoord + y + 1);
-			glm::vec3 bottomRight(mXCoord + x + 1, mHeightMap[x + 1][y + 1], mYCoord + y + 1);
-			glm::vec3 topRight(mXCoord + x + 1, mHeightMap[x + 1][y], mYCoord + y);
+			glm::vec3 topLeft = scale * glm::vec3(mXCoord + x, mHeightMap[x][y], mYCoord + y);
+			glm::vec3 bottomLeft = scale * glm::vec3(mXCoord + x, mHeightMap[x][y + 1], mYCoord + y + 1);
+			glm::vec3 bottomRight = scale * glm::vec3(mXCoord + x + 1, mHeightMap[x + 1][y + 1], mYCoord + y + 1);
+			glm::vec3 topRight = scale * glm::vec3(mXCoord + x + 1, mHeightMap[x + 1][y], mYCoord + y);
 
 			glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight));
 			glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight));
 
-			//glm::vec3(0.55f, 0.62f, 0.25f), glm::vec3(0.50f, 0.31f, 0.24f)
-
 			float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
-			glm::vec3 color1 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 20.f));
+			glm::vec3 color1 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 5.f));
 			verticality = glm::dot(normal2, glm::vec3(0.f, 1.f, 0.f));
-			glm::vec3 color2 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 20.f));
+			glm::vec3 color2 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 5.f));
 
 			vertexBufer[crrtVertex++] = Vertex{ topRight, normal1, color1 };
 			vertexBufer[crrtVertex++] = Vertex{ topLeft, normal1, color1 };
