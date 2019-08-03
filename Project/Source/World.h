@@ -14,13 +14,14 @@
 #include "Billboard.h"
 #include <vector>
 
+class Terrain;
 class Camera;
 class Model;
 class Animation;
 class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
-class Terrain;
+class LightSource;
 
 class World
 {
@@ -39,8 +40,11 @@ public:
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
     const Camera* GetCurrentCamera() const;
-    void AddBillboard(Billboard* b);
-    void RemoveBillboard(Billboard* b);
+	void SetLights();
+	void AddLightSource(LightSource* b);
+	void RemoveLightSource(LightSource* b);
+	void AddBillboard(Billboard* b);
+	void RemoveBillboard(Billboard* b);
     void AddParticleSystem(ParticleSystem* particleSystem);
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
@@ -48,14 +52,15 @@ public:
     
 private:
     static World* instance;
-
+    
 	Terrain* mpTerrain;
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;
 	std::vector<Camera*> mCamera;
     std::vector<ParticleSystem*> mParticleSystemList;
-    std::vector<ParticleDescriptor*> mParticleDescriptorList;
+	std::vector<ParticleDescriptor*> mParticleDescriptorList;
+	std::vector<LightSource*> mLightList;
 	unsigned int mCurrentCamera;
 
     BillboardList* mpBillboardList;

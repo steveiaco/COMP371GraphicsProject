@@ -18,10 +18,11 @@
 #include "SphereModel.h"
 #include "Animation.h"
 #include "Billboard.h"
-#include "Terrain.h"
 #include <GLFW/glfw3.h>
 #include "EventManager.h"
 #include "TextureLoader.h"
+#include "LightSource.h"
+#include "Terrain.h"
 
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
@@ -43,6 +44,7 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
+
     
 #if defined(PLATFORM_OSX)
 //    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
@@ -55,6 +57,7 @@ World::World()
 
     mpBillboardList = new BillboardList(2048, billboardTextureID);
 
+    
     // TODO - You can un-comment out these 2 temporary billboards and particle system
     // That can help you debug billboards, you can set the billboard texture to billboardTest.png
     /*    Billboard *b = new Billboard();
@@ -198,11 +201,16 @@ void World::Draw()
 	glUseProgram(Renderer::GetShaderProgramID());
 
 	// This looks for the MVP Uniform variable in the Vertex Program
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
+	mat4 V = mCamera[mCurrentCamera]->GetViewMatrix();
+	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
+	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
+
+	SetLights();
 
 	mpTerrain->Draw();
 
@@ -220,7 +228,8 @@ void World::Draw()
 	glUseProgram(Renderer::GetShaderProgramID());
 
 	// Send the view projection constants to the shader
-	VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
@@ -301,12 +310,24 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
-            else if (result == "particledescriptor")
-            {
-                ParticleDescriptor* psd = new ParticleDescriptor();
-                psd->Load(iss);
-                AddParticleDescriptor(psd);
-            }
+			else if (result == "particledescriptor")
+			{
+				ParticleDescriptor* psd = new ParticleDescriptor();
+				psd->Load(iss);
+				AddParticleDescriptor(psd);
+			}
+			else if (result == "light")
+			{
+				// We want no more than 8 lights at a time
+				if (mLightList.size() == 8)
+				{
+					fprintf(stderr, "You can have no more than 8 lights at a time! Please remove some lights.");
+					exit(-1);
+				}
+				LightSource* lightSource = new LightSource();
+				lightSource->Load(iss);
+				AddLightSource(lightSource);
+			}
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line
@@ -331,16 +352,37 @@ void World::LoadScene(const char * scene_path)
 	}
 }
 
+void World::SetLights()
+{
+	//Send the light data to the shader
+	GLuint LightCountLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "NumLights");
+	glUniform1i(LightCountLocation, mLightList.size());
+	for (int i = 0; i < mLightList.size(); i++)
+	{
+		char sUniformName[32];
+		sprintf_s(sUniformName, 32, "LightPositions[%i]", i);
+		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		sprintf_s(sUniformName, 32, "LightColors[%i]", i);
+		GLuint LightColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		sprintf_s(sUniformName, 32, "LightAttenuations[%i]", i);
+		GLuint LightAttenuationLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+
+		glUniform4fv(WorldLightPositionLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetPosition()[0]));
+		glUniform3fv(LightColorLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetColor()[0]));
+		glUniform3fv(LightAttenuationLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetAttenuation()[0]));
+	}
+}
+
 Animation* World::FindAnimation(ci_string animName)
 {
-    for(std::vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-    {
-        if((*it)->GetName() == animName)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
+	for (std::vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
+	{
+		if ((*it)->GetName() == animName)
+		{
+			return *it;
+		}
+	}
+	return nullptr;
 }
 
 AnimationKey* World::FindAnimationKey(ci_string keyName)
@@ -360,14 +402,25 @@ const Camera* World::GetCurrentCamera() const
      return mCamera[mCurrentCamera];
 }
 
+void World::AddLightSource(LightSource* ls)
+{
+	mLightList.push_back(ls);
+}
+
+void World::RemoveLightSource(LightSource* ls)
+{
+	vector<LightSource*>::iterator it = std::find(mLightList.begin(), mLightList.end(), ls);
+	mLightList.erase(it);
+}
+
 void World::AddBillboard(Billboard* b)
 {
-    mpBillboardList->AddBillboard(b);
+	mpBillboardList->AddBillboard(b);
 }
 
 void World::RemoveBillboard(Billboard* b)
 {
-    mpBillboardList->RemoveBillboard(b);
+	mpBillboardList->RemoveBillboard(b);
 }
 
 void World::AddParticleSystem(ParticleSystem* particleSystem)

@@ -1,5 +1,10 @@
 # This should draw a coordinate system with 3 colored axes
 
+[light]
+position = 0.0 -1.0 0.0 0.0
+color = 1.0 1.0 1.0
+attenuation = 0.0 0.0 0.15
+
 [Cube]
 name = "X-axis"
 position = 0.5f 0.0f 0.0f

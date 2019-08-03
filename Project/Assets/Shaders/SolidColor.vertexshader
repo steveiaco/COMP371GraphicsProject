@@ -5,20 +5,40 @@ layout(location = 0) in vec3 vertexPosition_modelspace;
 layout(location = 1) in vec3 vertexNormal_modelspace;  // You will need this when you do lighting
 layout(location = 2) in vec3 vertexColor; 
 
+// Uniform
 // Values that stay constant for the whole mesh.
-uniform mat4 ViewProjectionTransform;
 uniform mat4 WorldTransform;
+uniform mat4 ViewTransform;
+uniform mat4 ProjectionTransform;
 
-// Outputs to fragment shader
-out vec3 normal;  // You will need this when you do per-fragment lighting
-out vec4 v_color;
+// array of lights
+#define MAX_LIGHTS 8
+uniform int NumLights;
+uniform vec4 LightPositions[MAX_LIGHTS];
+
+// output to Fragment Shader
+out vec3 v_color;
+
+out vec3 normal;					// Transformed normal in View Space
+out vec3 eyeVector;					// Vector from the vertex to the Camera in View Space
+out vec4 lightVectors[MAX_LIGHTS];  // Vector from the vertex to the Light in View Space
+									// Length of lightVector is the distance between light and vertex
 
 void main()
 {
+	//Transforms
+	mat4 MV = ViewTransform * WorldTransform;
+	mat4 MVP = ProjectionTransform * MV;
+
 	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  ViewProjectionTransform * WorldTransform * vec4(vertexPosition_modelspace,1);
+	gl_Position =  MVP * vec4(vertexPosition_modelspace,1.0);
+	v_color = vertexColor;
 
-	normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
-	v_color = vec4(vertexColor, 1.0f);
+	// Prepare Data for Fragment Shader
+	normal = vec3(transpose(inverse(MV)) * vec4(vertexNormal_modelspace, 0.0));
+	eyeVector = vec3(-MV * vec4(vertexPosition_modelspace,1.0));
+	for (int i = 0; i < NumLights; i++)
+	{
+		lightVectors[i] = mix(-ViewTransform * LightPositions[i], ViewTransform * LightPositions[i] + vec4(eyeVector,0.0), LightPositions[i].w);
+	}
 }
-

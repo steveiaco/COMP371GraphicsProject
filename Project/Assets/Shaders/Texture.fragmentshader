@@ -1,23 +1,56 @@
 #version 330 core
 
+// Values that stay constant for the whole mesh.
+uniform sampler2D myTextureSampler;
+uniform vec4 materialCoefficients; // x: ambient   y: diffuse   z: specular   w: specular exponent
+
+// Array of lights
+#define MAX_LIGHTS 8
+uniform int NumLights;
+uniform vec3 LightColors[MAX_LIGHTS];
+uniform vec3 LightAttenuations[MAX_LIGHTS];
+
 // Interpolated values from the vertex shaders
-in vec2 UV;
-in vec4 v_color;
+in vec2 UV;							// Texture mapping
+in vec4 v_color;					// Vertex color
+in vec3 normal;						// Transformed normal in View Space
+in vec3 eyeVector;					// Vector from the vertex to the Camera in View Space
+in vec4 lightVectors[MAX_LIGHTS];	// Vector from the vertex to the Light in View Space
+									// Length of lightVector is the distance between light and vertex
 
 // Ouput data
 out vec4 color;
 
-// Values that stay constant for the whole mesh.
-uniform sampler2D myTextureSampler;
-
 void main()
 {
-	vec4 textureColor = texture( myTextureSampler, UV );
-
-    // modulate texture color with vertex color
-    color = v_color * textureColor;
-
-    // Alpha test - Discard Fragment below treshold
-    if(color.a <= 0.02f)
+	// Sample texture
+	vec4 originalColor = texture( myTextureSampler, UV ) * v_color;
+    if(originalColor.a <= 0.02f)
         discard;
+
+	// Color with light included
+	vec4 sumColor = vec4(materialCoefficients.x * vec3(1.0,1.0,1.0), 1.0); //Change this to change ambient color
+
+	// Get vectors
+	vec3 normalizedNormalVector = normalize(normal);
+	vec3 normalizedEyeVector = normalize(eyeVector);
+
+	for (int i = 0; i < NumLights; i++)
+	{
+		// Get attenuation (if any)
+		float distance = length(lightVectors[i]);
+		float attenuation = mix(1.0, 1.0 / (LightAttenuations[i].x + LightAttenuations[i].y * distance + LightAttenuations[i].z * distance * distance), lightVectors[i].w);
+	
+		// Get vectors
+		vec3 normalizedLightVector = normalize(lightVectors[i].xyz);
+		vec3 normalizedReflectedVector = normalize(reflect(-normalizedLightVector, normalizedNormalVector));
+
+		//Calculate coefficients
+		float diffuseCoeff = materialCoefficients.y * max(dot(normalizedNormalVector, normalizedLightVector), 0.0);
+		float specularCoeff = materialCoefficients.z * pow(max(dot(normalizedReflectedVector, normalizedEyeVector), 0.0), materialCoefficients.w);
+
+		sumColor += vec4(attenuation * LightColors[i] * (diffuseCoeff + specularCoeff), 0.0);
+	}
+
+	color = clamp(originalColor * sumColor, 0.0, 1.0);
 }

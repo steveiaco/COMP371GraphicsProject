@@ -1,11 +1,9 @@
 ﻿  Terrain.cpp
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(40): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(158): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(161): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(170): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(172): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(184): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(186): warning C4018: '<': signed/unsigned mismatch
-  World.cpp
-  Generating Code...
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(43): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(179): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(182): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(191): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(193): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(209): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(211): warning C4018: '<': signed/unsigned mismatch
   Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe

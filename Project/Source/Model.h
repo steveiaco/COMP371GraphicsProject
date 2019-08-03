@@ -24,7 +24,7 @@ public:
 	virtual ~Model();
 
 	virtual void Update(float dt) = 0;
-	virtual void Draw() = 0;
+	virtual void Draw();
 
 	void Load(ci_istringstream& iss);
 
@@ -53,4 +53,10 @@ protected:
     Animation* mAnimation;
 
     friend class Animation;
+
+	// Material Coefficients
+	float ka = 0.0f;
+	float kd = 0.0f;
+	float ks = 0.0f;
+	float n = 50.0f;
 };

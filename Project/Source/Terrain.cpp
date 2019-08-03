@@ -11,7 +11,7 @@ Terrain::Chunk::Chunk()
 
 float Ease(float t)
 {
-	const float exp = 5.f;
+	const float exp = 3.f;
 	return (t < 0.5f) ? 0.5f * glm::pow(2.f * t, exp) : 0.5f * glm::pow(2.f * t - 2.f, exp) + 1.f;
 }
 
@@ -24,6 +24,9 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 	float lacunarity = 3.f;
 	float persistence = 0.4f;
 
+	float maxHeight = 0.f;
+	float minHeight = 0.f;
+
 	mXCoord = xCoord;
 	mYCoord = yCoord;
 
@@ -31,13 +34,13 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 	{
 		for (int j = 0; j < CHUNK_SIZE; j++)
 		{
-			mHeightMap[i][j] = amplitude * Ease((Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j)))/2.f + 0.5f);
+			mHeightMap[i][j] = amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j));
 		}
 	}
 	amplitude *= persistence;
 	frequency *= lacunarity;
 
-	for (int octave = 0; octave < numOctaves; octave++)
+	for (int octave = 0; octave < numOctaves-1; octave++)
 	{
 		for (int i = 0; i < CHUNK_SIZE; i++)
 		{
@@ -48,6 +51,24 @@ Terrain::Chunk::Chunk(int xCoord, int yCoord)
 		}
 		amplitude *= persistence;
 		frequency *= lacunarity;
+	}
+
+	for (int i = 0; i < CHUNK_SIZE; i++)
+	{
+		for (int j = 0; j < CHUNK_SIZE; j++)
+		{
+			mHeightMap[i][j] += amplitude * Chunk::noiseGenerator.Perlin(frequency * static_cast <float> (mXCoord + i), frequency *  static_cast <float> (mYCoord + j));
+			maxHeight = (maxHeight > mHeightMap[i][j]) ? maxHeight : mHeightMap[i][j];
+			minHeight = (minHeight < mHeightMap[i][j]) ? minHeight : mHeightMap[i][j];
+		}
+	}
+
+	for (int i = 0; i < CHUNK_SIZE; i++)
+	{
+		for (int j = 0; j < CHUNK_SIZE; j++)
+		{
+			mHeightMap[i][j] = Ease((mHeightMap[i][j] - minHeight) / (maxHeight - minHeight)) * (maxHeight - minHeight) + minHeight;
+		}
 	}
 
 	GenVertexBuffer();
@@ -62,7 +83,7 @@ Terrain::Chunk::~Chunk()
 
 void Terrain::Chunk::GenVertexBuffer()
 {
-	float scale = 0.15f;
+	float scale = 0.25f;
 
 	Vertex* vertexBufer = new Vertex[2 * (CHUNK_SIZE - 1) * (CHUNK_SIZE - 1) * 3];
 	int crrtVertex = 0;
@@ -80,9 +101,9 @@ void Terrain::Chunk::GenVertexBuffer()
 			glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight));
 
 			float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
-			glm::vec3 color1 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 5.f));
+			glm::vec3 color1 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48), glm::pow(verticality, 5.f));
 			verticality = glm::dot(normal2, glm::vec3(0.f, 1.f, 0.f));
-			glm::vec3 color2 = glm::mix(glm::vec3(0.50f, 0.31f, 0.24f), glm::vec3(0.55f, 0.62f, 0.25f), glm::pow(verticality, 5.f));
+			glm::vec3 color2 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48f), glm::pow(verticality, 5.f));
 
 			vertexBufer[crrtVertex++] = Vertex{ topRight, normal1, color1 };
 			vertexBufer[crrtVertex++] = Vertex{ topLeft, normal1, color1 };
@@ -180,6 +201,10 @@ Terrain::~Terrain()
 
 void Terrain::Draw()
 {
+	//Set material coefficients
+	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+	glUniform4f(MaterialID, 0.5f, 0.4f, 0.1f, 50.f);
+
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	for (int i = 0; i < mWidth; i++)
 	{

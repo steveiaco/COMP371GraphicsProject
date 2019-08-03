@@ -16,6 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 
+#include "Renderer.h"
+
 using namespace std;
 using namespace glm;
 
@@ -35,6 +37,9 @@ void Model::Update(float dt)
 
 void Model::Draw()
 {
+	//Set material coefficients
+	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+	glUniform4f(MaterialID, ka, kd, ks, n);
 }
 
 
@@ -114,19 +119,29 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
             
             mAnimation = World::GetInstance()->FindAnimation(animName);
 		}
-        else if (token[0] == "particleemitter")
-        {
-            assert(token.size() > 2);
-            assert(token[1] == "=");
+		else if (token[0] == "particleemitter")
+		{
+			assert(token.size() > 2);
+			assert(token[1] == "=");
 
-            ParticleDescriptor* desc = World::GetInstance()->FindParticleDescriptor(token[2]);
-            assert(desc != nullptr);
-            
-            ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
-            
-            ParticleSystem* ps = new ParticleSystem(emitter, desc);
-            World::GetInstance()->AddParticleSystem(ps);
-        }
+			ParticleDescriptor* desc = World::GetInstance()->FindParticleDescriptor(token[2]);
+			assert(desc != nullptr);
+
+			ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
+
+			ParticleSystem* ps = new ParticleSystem(emitter, desc);
+			World::GetInstance()->AddParticleSystem(ps);
+		}
+		else if (token[0] == "materialcoefficients")
+		{
+			assert(token.size() > 5);
+			assert(token[1] == "=");
+
+			ka = static_cast<float>(atof(token[2].c_str()));
+			kd = static_cast<float>(atof(token[3].c_str()));
+			ks = static_cast<float>(atof(token[4].c_str()));
+			n  = static_cast<float>(atof(token[5].c_str()));
+		}
 		else
 		{
 			return false;
