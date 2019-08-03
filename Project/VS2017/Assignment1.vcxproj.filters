@@ -94,7 +94,11 @@
     <ClInclude Include="..\Source\PerlinNoise.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Source\LightSource.h">
+=======
+    <ClInclude Include="..\Source\ObjectModel.h">
+>>>>>>> 49e10d0... Worked on adding a model loader class, make minor changed to scene file loading
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -154,6 +158,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\LightSource.cpp">
+	    <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ObjectModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

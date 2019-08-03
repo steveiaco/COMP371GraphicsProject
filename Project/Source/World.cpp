@@ -16,6 +16,7 @@
 
 #include "CubeModel.h"
 #include "SphereModel.h"
+#include "ObjectModel.h"
 #include "Animation.h"
 #include "Billboard.h"
 #include <GLFW/glfw3.h>
@@ -327,6 +328,12 @@ void World::LoadScene(const char * scene_path)
 				LightSource* lightSource = new LightSource();
 				lightSource->Load(iss);
 				AddLightSource(lightSource);
+			}
+			else if (result == "object") 
+			{
+				ObjectModel* obj = new ObjectModel();
+				obj->Load(iss);
+				mModel.push_back(obj);
 			}
 			else if ( result.empty() == false && result[0] == '#')
 			{
