@@ -27,6 +27,7 @@
     <ClInclude Include="..\Source\EventManager.h" />
     <ClInclude Include="..\Source\FirstPersonCamera.h" />
     <ClInclude Include="..\Source\Model.h" />
+    <ClInclude Include="..\Source\ObjectModel.h" />
     <ClInclude Include="..\Source\ParsingHelper.h" />
     <ClInclude Include="..\Source\ParticleDescriptor.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
+    <ClCompile Include="..\Source\ObjectModel.cpp" />
     <ClCompile Include="..\Source\ParticleDescriptor.cpp" />
     <ClCompile Include="..\Source\ParticleEmitter.cpp" />
     <ClCompile Include="..\Source\ParticleSystem.cpp" />

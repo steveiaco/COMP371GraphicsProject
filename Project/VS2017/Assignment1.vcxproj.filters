@@ -94,6 +94,9 @@
     <ClInclude Include="..\Source\PerlinNoise.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\ObjectModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\FirstPersonCamera.cpp">
@@ -148,6 +151,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\PerlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ObjectModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

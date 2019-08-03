@@ -16,6 +16,7 @@
 
 #include "CubeModel.h"
 #include "SphereModel.h"
+#include "ObjectModel.h"
 #include "Animation.h"
 #include "Billboard.h"
 #include "Terrain.h"
@@ -307,6 +308,12 @@ void World::LoadScene(const char * scene_path)
                 psd->Load(iss);
                 AddParticleDescriptor(psd);
             }
+			else if (result == "object") 
+			{
+				ObjectModel* obj = new ObjectModel();
+				obj->Load(iss);
+				mModel.push_back(obj);
+			}
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line
