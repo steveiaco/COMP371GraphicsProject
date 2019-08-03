@@ -16,12 +16,14 @@
 #include <GLFW/glfw3.h>
 #include <algorithm>
 
-const static float BASE_HEIGHT = 3.0;
+const static float BASE_HEIGHT = 10.0;
 const static float CAMERA_RESPONSIVENESS = 10;
+const static float GRAVITY = -400;
+const static float JUMP_FORCE = 200;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(10.0f), mAngularSpeed(2.5f)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(20.0f), mAngularSpeed(2.5f), mVelocity(0.0f)
 {
 }
 
@@ -83,10 +85,35 @@ void FirstPersonCamera::Update(float dt)
 		mPosition -= sideVector * dt * mSpeed;
 	}
 
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
+    {
+        mPosition -= sideVector * dt * mSpeed;
+    }
+
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+    {
+        mVelocity = JUMP_FORCE;
+    }
+    else
+    {
+        mVelocity += GRAVITY * dt;
+    }
+
+    mPosition.y = computeHeight(dt);
+}
+
+float FirstPersonCamera::computeHeight(float dt)
+{
     Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
-	float currentHeight = terrain->GetHeight(mPosition.x, mPosition.z);
-	float delta = glm::clamp(dt * CAMERA_RESPONSIVENESS, 0.0f, 1.0f);
-	mPosition.y = glm::mix(mPosition.y, BASE_HEIGHT + currentHeight, delta);
+    float currentHeight = terrain->GetHeight(mPosition.x, mPosition.z);
+    float delta = glm::clamp(dt * CAMERA_RESPONSIVENESS, 0.0f, 1.0f);
+    float finalHeight = glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight) + (mVelocity * dt), delta);
+    if (finalHeight < BASE_HEIGHT + currentHeight)
+    {
+        mVelocity = 0;
+        return glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight), delta);
+    }
+    return finalHeight;
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const
