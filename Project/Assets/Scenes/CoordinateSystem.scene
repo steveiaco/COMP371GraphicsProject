@@ -28,3 +28,9 @@ name = "Origin"
 position = 0.0f 0.0f 0.0f
 scaling = 0.12f 0.12f 0.12f
 
+[Object]
+name = "Rock"
+path = "../Assets/Models/Rock/Rock.obj"
+density = 0.31
+position = 1.0f 1.0f 1.0f
+scaling = 1.0f 1.0f 1.0f

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿  Terrain.cpp
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(43): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(179): warning C4018: '<': signed/unsigned mismatch
@@ -7,3 +8,9 @@ c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\s
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(209): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(211): warning C4018: '<': signed/unsigned mismatch
   Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
+=======
+﻿  ObjectModel.cpp
+y:\users\steven\google drive\school\s19\comp371\final assignment\comp371graphicsproject\project\source\objectmodel.cpp(63): warning C4715: 'ObjectModel::ParseLine': not all control paths return a value
+y:\users\steven\google drive\school\s19\comp371\final assignment\comp371graphicsproject\project\source\objectmodel.cpp(202): warning C4715: 'ObjectModel::LoadVertices': not all control paths return a value
+  Assignment1.vcxproj -> Y:\Users\Steven\Google Drive\School\S19\COMP371\Final Assignment\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
+>>>>>>> 0653bb6... Basic obj file reading implemented (vertices and normals)

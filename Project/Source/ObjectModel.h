@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Model.h"
-#include "ParsingHelper.h"
+#include <istream>
+#include <regex>
 
 struct Vertex;
+
 class ObjectModel : public Model 
 {
 public:
@@ -22,12 +24,22 @@ private:
 	{
 		glm::vec3 position;
 		glm::vec3 normal;
+		glm::vec3 color;
 	};
 
 	unsigned int mVAO;
 	unsigned int mVBO;
 	unsigned int numberOfVertices;
+	unsigned int numberOfVertexNormals;
+	unsigned int numberOfTextureCoordinates;
+
+	//Stores a list of vertices for the model
+	std::vector<Vertex> vertices;
+
+	//Defines how densely placed the objects should be placed when randomly placed into the world.
 	float density;
-	char * path;
+
+	//Defines the file path for the .obj file to be loaded.
+	const char * path;
 
 };
