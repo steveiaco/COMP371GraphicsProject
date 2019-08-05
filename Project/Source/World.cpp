@@ -28,7 +28,6 @@
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
 
-
 using namespace std;
 using namespace glm;
 
@@ -360,11 +359,11 @@ void World::SetLights()
 	for (int i = 0; i < mLightList.size(); i++)
 	{
 		char sUniformName[32];
-		sprintf_s(sUniformName, 32, "LightPositions[%i]", i);
+        snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-		sprintf_s(sUniformName, 32, "LightColors[%i]", i);
+        snprintf(sUniformName, 32, "LightColors[%i]", i);
 		GLuint LightColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-		sprintf_s(sUniformName, 32, "LightAttenuations[%i]", i);
+        snprintf(sUniformName, 32, "LightAttenuations[%i]", i);
 		GLuint LightAttenuationLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
 
 		glUniform4fv(WorldLightPositionLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetPosition()[0]));
@@ -411,6 +410,11 @@ void World::RemoveLightSource(LightSource* ls)
 {
 	vector<LightSource*>::iterator it = std::find(mLightList.begin(), mLightList.end(), ls);
 	mLightList.erase(it);
+}
+
+const Terrain* World::GetTerrain() const
+{
+    return mpTerrain;
 }
 
 void World::AddBillboard(Billboard* b)

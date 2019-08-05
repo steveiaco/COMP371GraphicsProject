@@ -45,6 +45,7 @@ public:
 	void RemoveLightSource(LightSource* b);
 	void AddBillboard(Billboard* b);
 	void RemoveBillboard(Billboard* b);
+    const Terrain* GetTerrain() const;
     void AddParticleSystem(ParticleSystem* particleSystem);
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
