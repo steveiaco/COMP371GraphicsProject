@@ -286,7 +286,11 @@ void World::LoadScene(const char * scene_path)
 		ci_string result;
 		if( std::getline( iss, result, ']') )
 		{
-			if( result == "cube" )
+			if (result.empty() == false && result[0] == '#')
+			{
+				// this is a comment line
+			}
+			else if( result == "cube" )
 			{
 				// Box attributes
 				CubeModel* cube = new CubeModel();
@@ -334,11 +338,7 @@ void World::LoadScene(const char * scene_path)
 				ObjectModel* obj = new ObjectModel();
 				obj->Load(iss);
 				mModel.push_back(obj);
-			}
-			else if ( result.empty() == false && result[0] == '#')
-			{
-				// this is a comment line
-			}
+			} 
 			else
 			{
 				fprintf(stderr, "Error loading scene file... !");

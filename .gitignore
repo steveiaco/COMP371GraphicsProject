@@ -6,5 +6,6 @@ cmake-build-*/
 out/
 
 # VS
-VS2013/
-VS2017/
+Project/VS2013/
+Project/VS2017/
+Project/Build/
