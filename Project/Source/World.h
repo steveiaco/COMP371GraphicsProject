@@ -12,6 +12,7 @@
 
 #include "ParsingHelper.h"
 #include "Billboard.h"
+#include "SphereModel.h"
 #include <vector>
 
 class Terrain;
@@ -48,6 +49,14 @@ public:
     void AddParticleSystem(ParticleSystem* particleSystem);
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
+
+	void AddSphere(glm::vec3 pos, float size)
+	{
+		SphereModel* pSphere = new SphereModel();
+		pSphere->SetPosition(pos);
+		pSphere->SetScaling(size * glm::vec3(1.f,1.f,1.f));
+		mModel.push_back(pSphere);
+	}
 
     
 private:
