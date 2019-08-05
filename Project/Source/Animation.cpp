@@ -107,20 +107,6 @@ void Animation::Update(float dt)
 
 void Animation::Draw()
 {
-	// @TODO 3 - Draw lines between animation key positions
-	//
-	// Steps:
-	// - Draw the Vertex Buffer
-	// - The Shader used to draw the Animation is PathLines, only requires to send the positions of the key positions
-	// - You need to bind the vertex buffer created in CreateVertexBuffer() as the input of the vertex shader
-	// - Also set the WorldTransform uniform variable in the vertex shader
-	// - You Should use GL_LINE_LOOP as a primitive to draw lines (not triangles)
-	// - You can look at CubeModel::Draw() for a good example!
-    //
-    // Notes:
-    // The shader is bound in World.cpp and the ViewProjection Matrix uniform is set there...
-	// The Model View Projection transforms are computed in the Vertex Shader
-
 	// Draw the Vertex Buffer
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -201,10 +187,6 @@ ci_string Animation::GetName() const
 
 glm::mat4 Animation::GetAnimationWorldMatrix() const
 {
-    // @TODO 4 - Find the 2 keys to interpolate the transformation (before and after current time)
-    //           Interpolate the position, scaling and rotation separately
-    //           Finally concatenate the interpolated transforms into a single
-    //           world transform and return it.
 
 	//Find next key frame, use it to also find previous key frame.
 	uint crrtIndex = 0;

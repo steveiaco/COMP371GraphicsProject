@@ -7,6 +7,8 @@
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
 
+#include <cstdio>
+
 #include "World.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
@@ -40,38 +42,16 @@ World::World()
 
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
-	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
-
     
 #if defined(PLATFORM_OSX)
-//    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
     int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
-//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
     int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
 #endif
     assert(billboardTextureID != 0);
-
-    mpBillboardList = new BillboardList(2048, billboardTextureID);
-
     
-    // TODO - You can un-comment out these 2 temporary billboards and particle system
-    // That can help you debug billboards, you can set the billboard texture to billboardTest.png
-    /*    Billboard *b = new Billboard();
-     b->size  = glm::vec2(2.0, 2.0);
-     b->position = glm::vec3(0.0, 3.0, 0.0);
-     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-     
-     Billboard *b2 = new Billboard();
-     b2->size  = glm::vec2(2.0, 2.0);
-     b2->position = glm::vec3(0.0, 3.0, 1.0);
-     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-     mpBillboardList->AddBillboard(b);
-     mpBillboardList->AddBillboard(b2);
-     */    // TMP
+    mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
 
 World::~World()
@@ -134,30 +114,6 @@ void World::Update(float dt)
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
 	{
 		mCurrentCamera = 0;
-	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_2 ) == GLFW_PRESS)
-	{
-		if (mCamera.size() > 1)
-		{
-			mCurrentCamera = 1;
-		}
-	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_3 ) == GLFW_PRESS)
-	{
-		if (mCamera.size() > 2)
-		{
-			mCurrentCamera = 2;
-		}
-	}
-
-	// Spacebar to change the shader
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_0 ) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_SOLID_COLOR);
-	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9 ) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_BLUE);
 	}
 
     // Update animation and keys
@@ -359,6 +315,8 @@ void World::SetLights()
 	for (int i = 0; i < mLightList.size(); i++)
 	{
 		char sUniformName[32];
+        // sprintf_s is part of an optional annex to the C++11 specification
+        // snprintf is safer and is part of the core standard and provides the same functionality
         snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
         snprintf(sUniformName, 32, "LightColors[%i]", i);

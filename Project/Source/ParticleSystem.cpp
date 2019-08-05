@@ -82,15 +82,6 @@ void ParticleSystem::Update(float dt)
 
 		newParticle->billboard.angle = mpDescriptor->initialRotationAngle + EventManager::GetRandomFloat(0.0f, mpDescriptor->initialRotationAngleRandomness);
 
-		// @TODO 7 - Initial Random Particle Velocity vector
-		//
-		// Adjust the random velocity according to a random vertical angle variation on a cone
-		//
-		// Step 1 : You can rotate the velocity vector by a random number between 0 and
-		//          mpDescriptor->velocityAngleRandomness.
-		// Step 2 : You can rotate the result in step 1 by an random angle from 0 to
-		//          360 degrees about the original velocity vector
-
 		//We need to rotate about a vector perpendicular to the velocity. To find this vector, we need to calculate the cross product of the velocity with some ector that is not parallel to the velocity.
 		glm::vec3 normalizedVel = glm::normalize(newParticle->velocity);
 		//If velocity is parallel to x axis
@@ -118,17 +109,6 @@ void ParticleSystem::Update(float dt)
         Particle* p = *it;
 		p->currentTime += dt;
         p->billboard.position += p->velocity * dt;
-        
-        // @TODO 6 - Update each particle parameters
-        //
-        // Update the velocity of the particle from the acceleration in the descriptor
-        // Update the size of the particle according to its growth
-        // Update The color is also updated in 3 phases
-        //
-        //
-        // Phase 1 - Initial: from t = [0, fadeInTime] - Linearly interpolate between initial color and mid color
-        // Phase 2 - Mid:     from t = [fadeInTime, lifeTime - fadeOutTime] - color is mid color
-        // Phase 3 - End:     from t = [lifeTime - fadeOutTime, lifeTime]
                 
 		//Update velocity
 		p->velocity += mpDescriptor->acceleration * dt;

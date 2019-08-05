@@ -1,3 +1,7 @@
+Project/Build/
+Project/Bin/
+Project/Xcode/
+
 .idea/
 
 # CMake
