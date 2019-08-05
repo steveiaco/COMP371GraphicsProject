@@ -153,14 +153,6 @@ void BillboardList::Update(float dt)
         // Colors
         mVertexBuffer[firstVertexIndex].color = mVertexBuffer[firstVertexIndex + 1].color = mVertexBuffer[firstVertexIndex +2].color = mVertexBuffer[firstVertexIndex + 3].color = mVertexBuffer[firstVertexIndex + 4].color = mVertexBuffer[firstVertexIndex + 5].color = b->color;
 
-        
-        // @TODO 5 - Align billboards with Camera plane
-        //
-        // For each billboard, update each vertex position and normals
-        // Currently, positions are aligned with the X-Y plane, billboards must face the camera
-        //
-        // You must update the positions and normals for the 6 vertices below
-
         //Get up and right vectors, rotate them by rotation of particle
 		glm::vec3 negLookAt = glm::vec3(viewMatrix[0][2], viewMatrix[1][2], viewMatrix[2][2]);
 		glm::mat4 rotation = glm::rotate(glm::mat4(1.f), glm::radians(b->angle), negLookAt);

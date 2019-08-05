@@ -24,11 +24,6 @@ ParticleEmitter::ParticleEmitter(glm::vec3 position, const Model* parent)
 // In these cases, you would sample a random point on these shapes
 glm::vec3 ParticleEmitter::GetPosition()
 {
-    // @TODO 8 - Position from Parented Emitter
-    //
-    // Return the position where the particle is emitted.
-    // If the emitter is parented, the position is relative to its parent
-
 	//There are two solutions here, one only translates the emitter, the other rotates and scales it with the parent obbject. For this assignment, the translating solution would suffice. However, other emitters placed more particularly might require a more robust solution.
 	/*
 	glm::vec3 parentWorldPos = glm::vec3(0,0,0);
