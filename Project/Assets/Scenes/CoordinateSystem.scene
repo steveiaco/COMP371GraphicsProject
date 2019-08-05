@@ -28,7 +28,7 @@ name = "Origin"
 position = 0.0f 0.0f 0.0f
 scaling = 0.12f 0.12f 0.12f
 
-<<<<<<< HEAD
+
 [Object]
 name = "Teapot"
 path = "../Assets/Models/Teapot/Teapot.obj"
@@ -36,14 +36,13 @@ density = 0.31
 placement = "manual"
 position = 15.0f 1.0f 1.0f
 scaling = .6f .6f .6f
-=======
+
 #[Object]
 #name = "Teapot"
 #path = "../Assets/Models/Teapot/Teapot.obj"
 #density = 0.31
 #position = 15.0f 1.0f 1.0f
 #scaling = .6f .6f .6f
->>>>>>> b6aaa2d65d4c799d4d10afc745e1780e6cc430e0
 
 [Object]
 name = "Al"
