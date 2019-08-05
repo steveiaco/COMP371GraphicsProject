@@ -23,9 +23,22 @@ name = "Origin"
 position = 0.0f 0.0f 0.0f
 scaling = 0.12f 0.12f 0.12f
 
+#[Object]
+#name = "Teapot"
+#path = "../Assets/Models/Teapot/Teapot.obj"
+#density = 0.31
+#position = 15.0f 1.0f 1.0f
+#scaling = .6f .6f .6f
+
 [Object]
-name = "Rock"
-path = "../Assets/Models/Rock/Rock.obj"
+name = "Al"
+path = "../Assets/Models/Al/TriangleAl.obj"
 density = 0.31
-position = 1.0f 1.0f 1.0f
-scaling = 1.0f 1.0f 1.0f
+placement = "procedural"
+
+[Object]
+name = "rock1"
+path = "../Assets/Models/Rock_1.OBJ"
+placement = "procedural"
+density = 0.31
+texture = "../Assets/Models/Rock_1_Base_Color.jpg"

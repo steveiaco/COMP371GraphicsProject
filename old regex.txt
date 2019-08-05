@@ -1,0 +1,6 @@
+		//TODO, seems like the regex detection of the obj files is very slow, i'll optimize this soon 
+		std::regex commentRegex("\\s*#.*");
+		std::regex vertexRegex("\\s*(v)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*");
+		std::regex vertexNormalRegex("\\s*(vn)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*");
+		std::regex vertexTextureCoordinateRegex("\\s*(vt)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*([-+]?[0-9]*\\.?[0-9]+)\\s*");
+		std::regex faceRegex("(f)((?:\\s*\\d+\\/\\d+\\/\\d+\\s*|\\s*\\d+\\/\\d+\\s*|\\s*\\d+\\s*)*)");
