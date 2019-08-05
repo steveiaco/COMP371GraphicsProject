@@ -315,7 +315,23 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
+<<<<<<< HEAD
 			else if (result == "particledescriptor")
+=======
+            else if (result == "particledescriptor")
+            {
+                ParticleDescriptor* psd = new ParticleDescriptor();
+                psd->Load(iss);
+                AddParticleDescriptor(psd);
+            }
+			else if (result == "object") 
+			{
+				ObjectModel* obj = new ObjectModel();
+				obj->Load(iss);
+				mModel.push_back(obj);
+			}
+			else if ( result.empty() == false && result[0] == '#')
+>>>>>>> b6aaa2d65d4c799d4d10afc745e1780e6cc430e0
 			{
 				ParticleDescriptor* psd = new ParticleDescriptor();
 				psd->Load(iss);
