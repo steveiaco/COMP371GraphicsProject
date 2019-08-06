@@ -199,6 +199,36 @@ Terrain::~Terrain()
 	delete [] mChunkMap;
 }
 
+float Terrain::GetHeight(float xCoord, float yCoord)
+{
+	//Get coordinates
+	int floorX = glm::floor(xCoord);
+	int floorY = glm::floor(yCoord);
+	float dx = xCoord - floorX;
+	float dy = yCoord - floorX;
+
+	//We are in south-eastern triangle
+	if (dx < dy)
+	{
+		float heightNW = GetHeightRef(floorX, floorY);
+		float heightSW = GetHeightRef(floorX, floorY + 1);
+		float heightSE = GetHeightRef(floorX + 1, floorY + 1);
+
+		float height = dy * (heightSW - heightNW) + heightNW;
+		return dx * (heightSE - height) + height;
+	}
+	//We are in north-western triangle
+	else
+	{
+		float heightNW = GetHeightRef(floorX, floorY);
+		float heightNE = GetHeightRef(floorX + 1, floorY);
+		float heightSE = GetHeightRef(floorX + 1, floorY + 1);
+
+		float height = dx * (heightNE - heightNW) + heightNW;
+		return dy * (heightSE - height) + height;
+	}
+}
+
 void Terrain::Draw()
 {
 	//Set material coefficients

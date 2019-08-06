@@ -36,12 +36,14 @@ public:
 
 	void Draw();
 
-	float GetHeight(unsigned int xCoord, unsigned int yCoord) 
+	float GetHeight(float xCoord, float yCoord);
+	//To get the height at a node, we will have to find the chunk that said node belongs to and the position of the node within that chunk
+	float& GetHeightRef(int xCoord, int yCoord)
 	{
-		unsigned int chunkX = xCoord / Chunk::CHUNK_SIZE;
-		unsigned int chunkY = yCoord / Chunk::CHUNK_SIZE;
-		unsigned int dx = xCoord - chunkX;
-		unsigned int dy = yCoord - chunkY;
+		int chunkX = xCoord / Chunk::CHUNK_SIZE;
+		int chunkY = yCoord / Chunk::CHUNK_SIZE;
+		int dx = xCoord - chunkX * (Chunk::CHUNK_SIZE - 1);
+		int dy = yCoord - chunkY * (Chunk::CHUNK_SIZE - 1);
 
 		return mChunkMap[chunkX][chunkY]->mHeightMap[dx][dy];
 	};
