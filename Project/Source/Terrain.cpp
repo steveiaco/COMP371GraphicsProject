@@ -42,7 +42,7 @@ float Ease(float t)
 
 Terrain::Chunk::Chunk(int xCoord, int yCoord)
 {
-	float amplitude = 50.f;
+	float amplitude = 60.f;
 	float frequency = 1.f/150.f;
 
 	unsigned int numOctaves = 5;
@@ -218,6 +218,8 @@ Terrain::Terrain(unsigned int width, unsigned int height) : mWidth(width), mHeig
 		}
 	}
 
+	Erode();
+
 	for (int i = 0; i < mWidth; i++)
 	{
 		for (int j = 0; j < mHeight; j++)
@@ -253,11 +255,11 @@ void Terrain::Erode()
 	const int maxDropletLifetime = 30;
 
 	//Iterate over droplet simulations
-	for (int i = 0; i < 1000000; i++)
+	for (int i = 0; i < 10000; i++)
 	{
 		//Set initial droplet parameters
-		glm::vec2 pos(	static_cast <float> (mWidth * (Chunk::CHUNK_SIZE - 1)) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX),
-						static_cast <float> (mHeight * (Chunk::CHUNK_SIZE - 1)) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX));
+		glm::vec2 pos(	static_cast <float> (mWidth * (Chunk::CHUNK_SIZE - 1) - 60.f) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + 30.f,
+						static_cast <float> (mHeight * (Chunk::CHUNK_SIZE - 1) - 60.f) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + 30.f);
 		assert(0.f <= pos.x && pos.x <= mWidth * (Chunk::CHUNK_SIZE - 1));
 		assert(0.f <= pos.y && pos.y <= mHeight * (Chunk::CHUNK_SIZE - 1));
 		glm::vec2 dir(0.f, 0.f);
@@ -266,7 +268,7 @@ void Terrain::Erode()
 		float sediment = 1.f;
 
 		//Droplet lifetime is measured in steps
-		for (int step = 0; step < maxDropletLifetime; step++)
+		while (water > 0.1f)
 		{
 			//Get coordinates
 			int floorX = static_cast <int> (glm::floor(pos.x));
@@ -393,14 +395,13 @@ void Terrain::Erode()
 			}
 
 			// Update droplet's speed and water content
-			if (speed * speed + dh * gravity < 0)
-				break;
-			speed = glm::sqrt(speed * speed + dh * gravity);
+			speed = glm::sqrt(glm::max(speed * speed + dh * gravity, 0.f));
 			water *= (1 - evaporateSpeed);
 		}
-		if (i % 100000 == 0)
+		if (i % 10000 == 0)
 			std::cout << i << std::endl;
 	}
+	std::cout << "Done" << std::endl;
 }
 
 float Terrain::GetHeight(float xCoord, float yCoord) 

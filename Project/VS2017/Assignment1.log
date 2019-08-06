@@ -4,34 +4,34 @@ c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\s
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(75): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(212): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(215): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(221): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(223): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(232): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(225): warning C4018: '<': signed/unsigned mismatch
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(234): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(296): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(236): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(298): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(297): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(299): warning C4244: '=': conversion from 'int' to 'T', possible loss of data
           with
           [
               T=float
           ]
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(311): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(313): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(312): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(314): warning C4244: 'initializing': conversion from 'T' to 'int', possible loss of data
           with
           [
               T=float
           ]
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(357): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(358): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(409): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(359): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(360): warning C4244: 'initializing': conversion from 'float' to 'unsigned int', possible loss of data
 c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(410): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(443): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(445): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(411): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(444): warning C4018: '<': signed/unsigned mismatch
+c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(446): warning C4018: '<': signed/unsigned mismatch
   Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
