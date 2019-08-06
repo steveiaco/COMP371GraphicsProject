@@ -1,6 +1,7 @@
-Project/Build/
-Project/Bin/
-Project/Xcode/
+# Extra directories in the project
+Build/
+Bin/
+Xcode/
 
 .idea/
 

@@ -1,9 +1,0 @@
-﻿  Terrain.cpp
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(43): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(179): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(182): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(191): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(193): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(209): warning C4018: '<': signed/unsigned mismatch
-c:\users\sende\onedrive\desktop\comp371 - final\comp371graphicsproject\project\source\terrain.cpp(211): warning C4018: '<': signed/unsigned mismatch
-  Assignment1.vcxproj -> C:\Users\sende\OneDrive\Desktop\COMP371 - FINAL\COMP371GraphicsProject\Project\VS2017\/../Bin/Assignment1-Debug.exe
