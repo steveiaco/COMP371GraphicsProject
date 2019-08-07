@@ -1,3 +1,8 @@
+# Extra directories in the project
+Build/
+Bin/
+Xcode/
+
 .idea/
 
 # CMake

@@ -36,9 +36,9 @@ public:
 
 	void Draw();
 
-	float GetHeight(float xCoord, float yCoord);
+	float GetHeight(float xCoord, float yCoord) const;
 	//To get the height at a node, we will have to find the chunk that said node belongs to and the position of the node within that chunk
-	float& GetHeightRef(int xCoord, int yCoord)
+	float GetVertexHeight(int xCoord, int yCoord) const
 	{
 		int chunkX = xCoord / Chunk::CHUNK_SIZE;
 		int chunkY = yCoord / Chunk::CHUNK_SIZE;

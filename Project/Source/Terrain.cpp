@@ -83,7 +83,7 @@ Terrain::Chunk::~Chunk()
 
 void Terrain::Chunk::GenVertexBuffer()
 {
-	float scale = 0.25f;
+	float scale = 1.0f;
 
 	Vertex* vertexBufer = new Vertex[2 * (CHUNK_SIZE - 1) * (CHUNK_SIZE - 1) * 3];
 	int crrtVertex = 0;
