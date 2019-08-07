@@ -10,59 +10,6 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="..\Assets\Shaders\BlueColor.fragmentshader" />
-    <None Include="..\Assets\Shaders\PathLines.fragmentshader" />
-    <None Include="..\Assets\Shaders\PathLines.vertexshader" />
-    <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
-    <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
-    <None Include="..\Assets\Shaders\Texture.fragmentshader" />
-    <None Include="..\Assets\Shaders\Texture.vertexshader" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\Source\Animation.h" />
-    <ClInclude Include="..\Source\Billboard.h" />
-    <ClInclude Include="..\Source\Camera.h" />
-    <ClInclude Include="..\Source\CubeModel.h" />
-    <ClInclude Include="..\Source\EventManager.h" />
-    <ClInclude Include="..\Source\FirstPersonCamera.h" />
-    <ClInclude Include="..\Source\LightSource.h" />
-    <ClInclude Include="..\Source\Model.h" />
-    <ClInclude Include="..\Source\ObjectModel.h" />
-    <ClInclude Include="..\Source\ParsingHelper.h" />
-    <ClInclude Include="..\Source\ParticleDescriptor.h" />
-    <ClInclude Include="..\Source\ParticleEmitter.h" />
-    <ClInclude Include="..\Source\ParticleSystem.h" />
-    <ClInclude Include="..\Source\PerlinNoise.h" />
-    <ClInclude Include="..\Source\Renderer.h" />
-    <ClInclude Include="..\Source\SphereModel.h" />
-    <ClInclude Include="..\Source\StaticCamera.h" />
-    <ClInclude Include="..\Source\Terrain.h" />
-    <ClInclude Include="..\Source\TextureLoader.h" />
-    <ClInclude Include="..\Source\World.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Source\Animation.cpp" />
-    <ClCompile Include="..\Source\Billboard.cpp" />
-    <ClCompile Include="..\Source\Camera.cpp" />
-    <ClCompile Include="..\Source\CubeModel.cpp" />
-    <ClCompile Include="..\Source\EventManager.cpp" />
-    <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
-    <ClCompile Include="..\Source\LightSource.cpp" />
-    <ClCompile Include="..\Source\main.cpp" />
-    <ClCompile Include="..\Source\Model.cpp" />
-    <ClCompile Include="..\Source\ObjectModel.cpp" />
-    <ClCompile Include="..\Source\ParticleDescriptor.cpp" />
-    <ClCompile Include="..\Source\ParticleEmitter.cpp" />
-    <ClCompile Include="..\Source\ParticleSystem.cpp" />
-    <ClCompile Include="..\Source\PerlinNoise.cpp" />
-    <ClCompile Include="..\Source\Renderer.cpp" />
-    <ClCompile Include="..\Source\SphereModel.cpp" />
-    <ClCompile Include="..\Source\StaticCamera.cpp" />
-    <ClCompile Include="..\Source\Terrain.cpp" />
-    <ClCompile Include="..\Source\TextureLoader.cpp" />
-    <ClCompile Include="..\Source\World.cpp" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{277EAE68-9EED-4EFF-BAD3-2A70787A3E8D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -151,6 +98,62 @@
       </Path>
     </BuildLog>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\Assets\Scenes\AnimatedScene.scene" />
+    <None Include="..\Assets\Scenes\CoordinateSystem.scene" />
+    <None Include="..\Assets\Scenes\StaticScene.scene" />
+    <None Include="..\Assets\Shaders\BlueColor.fragmentshader" />
+    <None Include="..\Assets\Shaders\PathLines.fragmentshader" />
+    <None Include="..\Assets\Shaders\PathLines.vertexshader" />
+    <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
+    <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
+    <None Include="..\Assets\Shaders\Texture.fragmentshader" />
+    <None Include="..\Assets\Shaders\Texture.vertexshader" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\Animation.cpp" />
+    <ClCompile Include="..\Source\Billboard.cpp" />
+    <ClCompile Include="..\Source\Camera.cpp" />
+    <ClCompile Include="..\Source\CubeModel.cpp" />
+    <ClCompile Include="..\Source\EventManager.cpp" />
+    <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
+    <ClCompile Include="..\Source\LightSource.cpp" />
+    <ClCompile Include="..\Source\main.cpp" />
+    <ClCompile Include="..\Source\Model.cpp" />
+    <ClCompile Include="..\Source\ObjectModel.cpp" />
+    <ClCompile Include="..\Source\ParticleDescriptor.cpp" />
+    <ClCompile Include="..\Source\ParticleEmitter.cpp" />
+    <ClCompile Include="..\Source\ParticleSystem.cpp" />
+    <ClCompile Include="..\Source\PerlinNoise.cpp" />
+    <ClCompile Include="..\Source\Renderer.cpp" />
+    <ClCompile Include="..\Source\SphereModel.cpp" />
+    <ClCompile Include="..\Source\StaticCamera.cpp" />
+    <ClCompile Include="..\Source\Terrain.cpp" />
+    <ClCompile Include="..\Source\TextureLoader.cpp" />
+    <ClCompile Include="..\Source\World.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\Animation.h" />
+    <ClInclude Include="..\Source\Billboard.h" />
+    <ClInclude Include="..\Source\Camera.h" />
+    <ClInclude Include="..\Source\CubeModel.h" />
+    <ClInclude Include="..\Source\EventManager.h" />
+    <ClInclude Include="..\Source\FirstPersonCamera.h" />
+    <ClInclude Include="..\Source\LightSource.h" />
+    <ClInclude Include="..\Source\Model.h" />
+    <ClInclude Include="..\Source\ObjectModel.h" />
+    <ClInclude Include="..\Source\ParsingHelper.h" />
+    <ClInclude Include="..\Source\ParticleDescriptor.h" />
+    <ClInclude Include="..\Source\ParticleEmitter.h" />
+    <ClInclude Include="..\Source\ParticleSystem.h" />
+    <ClInclude Include="..\Source\PerlinNoise.h" />
+    <ClInclude Include="..\Source\Renderer.h" />
+    <ClInclude Include="..\Source\SphereModel.h" />
+    <ClInclude Include="..\Source\StaticCamera.h" />
+    <ClInclude Include="..\Source\Terrain.h" />
+    <ClInclude Include="..\Source\TextureLoader.h" />
+    <ClInclude Include="..\Source\World.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

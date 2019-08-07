@@ -30,29 +30,33 @@ scaling = 0.12f 0.12f 0.12f
 
 
 [Object]
-name = "Teapot"
-path = "../Assets/Models/Teapot/Teapot.obj"
-density = 0.31
-placement = "manual"
-position = 15.0f 1.0f 1.0f
-scaling = .6f .6f .6f
-
-#[Object]
-#name = "Teapot"
-#path = "../Assets/Models/Teapot/Teapot.obj"
-#density = 0.31
-#position = 15.0f 1.0f 1.0f
-#scaling = .6f .6f .6f
-
-[Object]
-name = "Al"
-path = "../Assets/Models/Al/TriangleAl.obj"
-density = 0.31
-placement = "procedural"
-
-[Object]
 name = "rock1"
-path = "../Assets/Models/Rock_1.OBJ"
+path = "../Assets/Models/Rock_1/Rock_lowpoly.obj"
+clamp_scale_low = 0.0003f 0.0003f 0.0003f
+clamp_scale_high = 0.003f 0.003f 0.003f
+density = 1.0
 placement = "procedural"
-density = 0.31
 texture = "../Assets/Models/Rock_1_Base_Color.jpg"
+
+[Object]
+name = "al"
+path = "../Assets/Models/Al/TriangleAl.obj"
+clamp_scale_low = 0.03f 0.03f 0.03f
+clamp_scale_high = 0.3f 0.3f 0.3f
+density = 0.3f
+placement = "procedural"
+
+[Object]
+name = "cabin"
+path = "../Assets/Models/House/house_tri.obj"
+placement = "ground"
+position = 105.0f 60.0f 60.0f
+scaling = 0.012f 0.012f 0.012f
+
+[Object]
+name = "tree"
+path = "../Assets/Models/Tree/tree.obj"
+density = 0.3f
+clamp_scale_low = 0.02f 0.02f 0.02f
+clamp_scale_high = 0.05f 0.05f 0.05f
+placement = "procedural"

@@ -266,6 +266,9 @@ void World::Draw()
 
 void World::LoadScene(const char * scene_path)
 {
+	//temporarily moved to beginning of method in order to ensure terrain is generated before placing objects on it
+	mpTerrain = new Terrain(4,4);
+	
 	// Using case-insensitive strings and streams for easier parsing
 	ci_ifstream input;
 	input.open(scene_path, ios::in);
@@ -327,6 +330,10 @@ void World::LoadScene(const char * scene_path)
 				obj->Load(iss);
 				mModel.push_back(obj);
 			}
+			else if (result == "chunkobject") 
+			{
+				//add object to a model list within terrain
+			}
 			else if (result == "light")
 			{
 				// We want no more than 8 lights at a time
@@ -339,12 +346,6 @@ void World::LoadScene(const char * scene_path)
 				lightSource->Load(iss);
 				AddLightSource(lightSource);
 			}
-			else if (result == "object") 
-			{
-				ObjectModel* obj = new ObjectModel();
-				obj->Load(iss);
-				mModel.push_back(obj);
-			} 
 			else
 			{
 				fprintf(stderr, "Error loading scene file... !");
@@ -355,7 +356,6 @@ void World::LoadScene(const char * scene_path)
 	}
 	input.close();
 
-	mpTerrain = new Terrain();
 
 	// Set Animation vertex buffers
 	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
@@ -424,6 +424,11 @@ void World::RemoveLightSource(LightSource* ls)
 {
 	vector<LightSource*>::iterator it = std::find(mLightList.begin(), mLightList.end(), ls);
 	mLightList.erase(it);
+}
+
+const Terrain* World::GetTerrain() const
+{
+	return mpTerrain;
 }
 
 void World::AddBillboard(Billboard* b)

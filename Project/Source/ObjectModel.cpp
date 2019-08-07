@@ -1,9 +1,12 @@
 #include "ObjectModel.h"
 #include "Renderer.h"
+#include "World.h"
+#include "Terrain.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
+#include <FreeImage.h>
 
-ObjectModel::ObjectModel() : Model()
+ObjectModel::ObjectModel() : Model(), placement(manual), isSetup(false)
 {
 
 }
@@ -20,19 +23,18 @@ void ObjectModel::Draw()
 {
 	//TODO implement instancing in cases where the model is specified to be a randomly placed one
 
+	if (!isSetup) 
+	{
+		isSetup = true;
+		SetupObjects();
+	}
+
 	//Draw the vertex buffer
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 
 	
-	if (placement == manual) 
-	{
-		GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-		glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
-
-		glDrawArrays(GL_TRIANGLES, 0, faces.size() * 3);
-	}
-	else if (placement == procedural) 
+	if (placement == procedural) 
 	{
 		std::vector<glm::mat4> worldMatrices = GetWorldMatrices();
 		for (auto it = worldMatrices.begin(); it != worldMatrices.end(); it++) 
@@ -42,6 +44,13 @@ void ObjectModel::Draw()
 
 			glDrawArrays(GL_TRIANGLES, 0, faces.size() * 3);
 		}
+	}
+	else 
+	{
+		GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+		glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
+
+		glDrawArrays(GL_TRIANGLES, 0, faces.size() * 3);
 	}
 }
 
@@ -80,6 +89,8 @@ bool ObjectModel::ParseLine(const std::vector<ci_string>& token)
 
 		ci_string path_ci = token[2].substr(1, token[2].length() - 2);
 		texturePath = path_ci.c_str();
+
+		LoadTexture(texturePath);
 	}
 	//specify placement type
 	else if (token[0] == "placement") 
@@ -90,23 +101,29 @@ bool ObjectModel::ParseLine(const std::vector<ci_string>& token)
 		ci_string pt = token[2].substr(1, token[2].length() - 2);
 
 		if (pt == "procedural") 
-		{
 			placement = procedural;
-			numberOfObjects = 20;
-
-			for (int i = 0; i < numberOfObjects; i++) 
-			{
-				
-				mPositions.push_back(glm::vec3(rand() % 25, 3, rand() % 25));
-				float scale = (rand() % 10) * 0.003f;
-				mScalings.push_back(glm::vec3(scale, scale, scale));
-				mRotationAxes.push_back(glm::vec3((rand() % 10) * 0.1, (rand() % 10) * 0.1, (rand() % 10) * 0.1));
-				mRotationAnglesInDegrees.push_back(rand() % 360);
-			}
-
-		}
-		else //if (pt == "manual")
+		else if (pt == "ground") 
+			placement = ground;
+		else if (pt == "manual")
 			placement = manual;
+	}
+	else if (token[0] == "clamp_scale_low") 
+	{
+		assert(token.size() > 4);
+		assert(token[1] == "=");
+
+		scaleClampLow.x = static_cast<float>(atof(token[2].c_str()));
+		scaleClampLow.y = static_cast<float>(atof(token[3].c_str()));
+		scaleClampLow.z = static_cast<float>(atof(token[4].c_str()));
+	}
+	else if (token[0] == "clamp_scale_high") 
+	{
+		assert(token.size() > 4);
+		assert(token[1] == "=");
+
+		scaleClampHigh.x = static_cast<float>(atof(token[2].c_str()));
+		scaleClampHigh.y = static_cast<float>(atof(token[3].c_str()));
+		scaleClampHigh.z = static_cast<float>(atof(token[4].c_str()));
 	}
 	else
 	{
@@ -202,7 +219,7 @@ Vertex* ObjectModel::LoadVertices(const char * path)
 			//if quads, convert to triangles
 			if (f.vertices.size() == 4) 
 			{
-				std::vector<Face> tris = convertQuadToTris(f);
+				std::vector<Face> tris = ConvertQuadToTris(f);
 
 				for(auto it = tris.begin(); it != tris.end(); it++)
 					faces.push_back(*it);
@@ -244,7 +261,7 @@ Vertex* ObjectModel::LoadVertices(const char * path)
 	glGenVertexArrays(1, &mVAO);
 	glBindVertexArray(mVAO);
 
-	std::vector<Vertex> verts = generateOrderedVertexList();
+	std::vector<Vertex> verts = GenerateOrderedVertexList();
 	Vertex* vertexArray = &verts[0];
 
 	// Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
@@ -286,6 +303,11 @@ Vertex* ObjectModel::LoadVertices(const char * path)
 	//TODO add attribute for texture coordinates?
 }
 
+void ObjectModel::LoadTexture(const char * path)
+{
+
+}
+
 
 std::vector<glm::mat4> ObjectModel::GetWorldMatrices() const
 {
@@ -318,7 +340,7 @@ std::vector<std::string> ObjectModel::split(const std::string &s, char delim) {
 	return result;
 }
 
-std::vector<ObjectModel::Vertex> ObjectModel::generateOrderedVertexList()
+std::vector<ObjectModel::Vertex> ObjectModel::GenerateOrderedVertexList()
 {
 	std::vector<Vertex> vertexList;
 
@@ -344,7 +366,7 @@ std::vector<ObjectModel::Vertex> ObjectModel::generateOrderedVertexList()
 	return vertexList;
 }
 
-std::vector<ObjectModel::Face> ObjectModel::convertQuadToTris(Face quad)
+std::vector<ObjectModel::Face> ObjectModel::ConvertQuadToTris(Face quad)
 {
 	std::vector<ObjectModel::Face> triangles;
 
@@ -393,6 +415,38 @@ std::vector<ObjectModel::Face> ObjectModel::convertQuadToTris(Face quad)
 	triangles.push_back(triangle2);
 
 	return triangles;
+}
+
+void ObjectModel::SetupObjects()
+{
+	Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
+	
+	if (placement == procedural) 
+	{
+		numberOfObjects = density * 200;
+
+		for (int i = 0; i < numberOfObjects; i++)
+		{
+
+			float xPos = rand() % terrain->GetWidth();
+			float zPos = rand() % terrain->GetWidth();
+
+			mPositions.push_back(glm::vec3(xPos, terrain->GetHeight(xPos, zPos), zPos));
+			float scale = ((rand() % 10) * scaleClampHigh.x) + scaleClampLow.x;
+			mScalings.push_back(glm::vec3(scale, scale, scale));
+			mRotationAxes.push_back(glm::vec3(0, (rand() % 10) * 0.1, 0));
+			mRotationAnglesInDegrees.push_back(rand() % 360);
+		}
+	}
+	else if (placement == ground) 
+	{
+		glm::vec3 newPos = GetPosition();
+		SetPosition(glm::vec3(newPos.x, terrain->GetHeight(newPos.x, newPos.z), newPos.z));
+	}
+	else if (placement == manual)
+	{
+		//do nothing, parent class takes care of this
+	}
 }
 
 

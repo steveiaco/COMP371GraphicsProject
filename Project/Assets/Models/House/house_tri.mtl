@@ -1,0 +1,59 @@
+# Blender MTL File: 'None'
+# Material Count: 5
+
+newmtl brench
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588200 0.588200 0.588200
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd development\\house_hatka\\home-hatka\\sub_\\texture_final\\branch_Base_Color.png
+
+newmtl grass
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588200 0.588200 0.588200
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd development\\house_hatka\\home-hatka\\sub_\\texture\\grass_05.tga
+map_d development\\house_hatka\\home-hatka\\sub_\\texture\\grass_05.tga
+
+newmtl grunt
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.000000 1.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd development\\house_hatka\\home-hatka\\sub_\\texture_final\\grunt_Base_Color.png
+
+newmtl home
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588200 0.588200 0.588200
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd development\\house_hatka\\home-hatka\\sub_\\texture_final\\home_hatka_Base_Color.png
+
+newmtl vane
+Ns 10.000002
+Ka 1.000000 1.000000 1.000000
+Kd 0.588200 0.588200 0.588200
+Ks 0.000000 0.000000 0.000000
+Ke 0.0 0.0 0.0
+Ni 1.500000
+d 1.000000
+illum 1
+map_Kd development\\house_hatka\\home-hatka\\sub_\\texture\\uvw.tga
+map_d development\\house_hatka\\home-hatka\\sub_\\texture\\uvw.tga

@@ -23,6 +23,15 @@
     <None Include="..\Assets\Shaders\PathLines.fragmentshader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="..\Assets\Scenes\CoordinateSystem.scene">
+      <Filter>Resource Files\Scenes</Filter>
+    </None>
+    <None Include="..\Assets\Scenes\StaticScene.scene">
+      <Filter>Resource Files\Scenes</Filter>
+    </None>
+    <None Include="..\Assets\Scenes\AnimatedScene.scene">
+      <Filter>Resource Files\Scenes</Filter>
+    </None>
     <None Include="..\Assets\Shaders\PathLines.vertexshader">
       <Filter>Resource Files\Shaders</Filter>
     </None>
@@ -40,6 +49,80 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\Animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Billboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\CubeModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\EventManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\FirstPersonCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Model.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ParticleDescriptor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ParticleEmitter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\SphereModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\StaticCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\TextureLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\LightSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ObjectModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Terrain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\PerlinNoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Source\Animation.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Billboard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\Camera.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\CubeModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="..\Source\EventManager.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -76,16 +159,10 @@
     <ClInclude Include="..\Source\World.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Animation.h">
+    <ClInclude Include="..\Source\LightSource.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\Billboard.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\Camera.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Source\CubeModel.h">
+    <ClInclude Include="..\Source\ObjectModel.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\Terrain.h">
@@ -94,81 +171,5 @@
     <ClInclude Include="..\Source\PerlinNoise.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-<<<<<<< HEAD
-<<<<<<< HEAD
-    <ClInclude Include="..\Source\LightSource.h">
-=======
-    <ClInclude Include="..\Source\ObjectModel.h">
->>>>>>> 49e10d0... Worked on adding a model loader class, make minor changed to scene file loading
-=======
-    <ClInclude Include="..\Source\ObjectModel.h">
->>>>>>> b6aaa2d65d4c799d4d10afc745e1780e6cc430e0
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Source\FirstPersonCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\ParticleDescriptor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\ParticleEmitter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\ParticleSystem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\SphereModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\StaticCamera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\TextureLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Animation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Billboard.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\CubeModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\EventManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\Terrain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\PerlinNoise.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-<<<<<<< HEAD
-    <ClCompile Include="..\Source\LightSource.cpp">
-	    <Filter>Source Files</Filter>
-    </ClCompile>
-=======
->>>>>>> b6aaa2d65d4c799d4d10afc745e1780e6cc430e0
-    <ClCompile Include="..\Source\ObjectModel.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

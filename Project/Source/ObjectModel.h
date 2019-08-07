@@ -2,7 +2,6 @@
 
 #include "Model.h"
 #include <istream>
-#include <regex>
 
 struct Vertex;
 
@@ -18,6 +17,7 @@ public:
 protected:
 	virtual bool ParseLine(const std::vector<ci_string>& token);
 	Vertex* LoadVertices(const char * path);
+	void LoadTexture(const char * path);
 private:
 
 
@@ -41,9 +41,9 @@ private:
 	//Enum which defines the type of placement used
 	enum PlacementType 
 	{
-
 		procedural,
-		manual
+		manual,
+		ground
 	};
 
 	unsigned int mVAO;
@@ -70,7 +70,7 @@ private:
 	//Defines the file path to the model's texture
 	const char * texturePath;
 
-	//Defines the placement method of the object
+	//Defines the placement method of the object, manual by default.
 	PlacementType placement;
 
 	/* The following parameters/functions are used when using procedural placement */
@@ -80,14 +80,20 @@ private:
 	std::vector<glm::vec3> mRotationAxes;
 	std::vector<float> mRotationAnglesInDegrees;
 	
+	glm::vec3 scaleClampLow;
+	glm::vec3 scaleClampHigh;
 
 	std::vector<glm::mat4> GetWorldMatrices() const;
 
 	//todo place this in a more appropriate place...
 	static std::vector<std::string> split(const std::string &s, char delim);
 	
-	std::vector<Vertex> generateOrderedVertexList();
-	std::vector<Face> convertQuadToTris(Face quad);
+	std::vector<Vertex> GenerateOrderedVertexList();
+	std::vector<Face> ConvertQuadToTris(Face quad);
+
+	//Setup object positions depending on placement type
+	void SetupObjects();
+	bool isSetup;
 
 
 };

@@ -40,11 +40,17 @@ public:
 	{
 		unsigned int chunkX = xCoord / Chunk::CHUNK_SIZE;
 		unsigned int chunkY = yCoord / Chunk::CHUNK_SIZE;
-		unsigned int dx = xCoord - chunkX;
-		unsigned int dy = yCoord - chunkY;
+		unsigned int dx = xCoord - (chunkX * Chunk::CHUNK_SIZE);
+		unsigned int dy = yCoord - (chunkY * Chunk::CHUNK_SIZE);
 
 		return mChunkMap[chunkX][chunkY]->mHeightMap[dx][dy];
 	};
+
+	
+	int GetWidth() 
+	{
+		return mWidth * Chunk::CHUNK_SIZE;
+	}
 
 private:
 	const unsigned int mWidth;
