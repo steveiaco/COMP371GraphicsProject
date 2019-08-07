@@ -99,7 +99,10 @@ void FirstPersonCamera::Update(float dt)
         mVelocity += GRAVITY * dt;
     }
 
-    mPosition.y = computeHeight(dt);
+    float newHeight = computeHeight(dt);
+    printf("OLD: %f, NEW: %f\n", mPosition.y, newHeight);
+    mPosition.y = newHeight;
+
 }
 
 float FirstPersonCamera::computeHeight(float dt)
