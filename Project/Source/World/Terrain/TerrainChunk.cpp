@@ -153,9 +153,13 @@ namespace pg
 					glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight));
 					glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight));
 
-					// Color will be average of vertex colors (one color per triangle)
-					glm::vec3 color1 = glm::sqrt((mColorMap[x][y] * mColorMap[x][y] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
-					glm::vec3 color2 = glm::sqrt((mColorMap[x + stride][y + stride] * mColorMap[x + stride][y + stride] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
+					// Color will be average of vertex colors (one color per triangle)float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
+					float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
+					glm::vec3 color1 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48), glm::pow(verticality, 5.f));
+					verticality = glm::dot(normal2, glm::vec3(0.f, 1.f, 0.f));
+					glm::vec3 color2 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48f), glm::pow(verticality, 5.f));
+					//glm::vec3 color1 = glm::sqrt((mColorMap[x][y] * mColorMap[x][y] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
+					//glm::vec3 color2 = glm::sqrt((mColorMap[x + stride][y + stride] * mColorMap[x + stride][y + stride] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
 
 					//Add vertices for triangle 1
 					vertexBufer[crrtVertex++] = Vertex{ topRight, normal1, color1 };
