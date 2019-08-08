@@ -18,7 +18,7 @@ namespace pg
 		Terrain::Terrain(const TerrainGenerator& terrainGenerator)
 			: mTerrainGenerator(terrainGenerator)
 		{
-
+		    GetChunkAt(0,0);
 		}
 
 		Terrain::Terrain(const Terrain& orig)
@@ -26,7 +26,7 @@ namespace pg
 			, mAesthetic(orig.mAesthetic)
 			, mChunkMap(orig.mChunkMap)
 		{
-
+            GetChunkAt(0,0);
 		}
 
 		Terrain::~Terrain()
