@@ -19,6 +19,10 @@ namespace pg
 
 			~TerrainChunk();
 
+			void UpdateNormals();
+			// Generating the Vertex buffer for a Chunk will require that the chunk update it's south and eastern borders to match those of it's neighbors
+			void UpdateBorderVertices();
+
 			// Makes appropriate draw calls given current aesthetic (make sure that aesthetic is not changed between GenVertexBuffer() and this)
 			void Draw();
 			void SetLOD(const unsigned short LOD) 
@@ -48,8 +52,6 @@ namespace pg
 			// Chunks will always share a set of vertices with neighboring chunks (this is inevitable)
 			// We can't let both chunks have authority over these vertices (to do so would require more checks for updating those vertices)
 			// Instead, each chunk will have authority over it's northern and western border
-			// Generating the Vertex buffer for a Chunk will require that the chunk update it's south and eastern borders to match those of it's neighbors
-			void UpdateBorderVertices();
 			// Generates appropriate mesh given current aesthetic (make sure that terrain aesthtic is set before calling this)
 			void GenVertexBuffer();
 			//Generates VAO for low-poly aesthetic

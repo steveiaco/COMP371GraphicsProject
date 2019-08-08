@@ -48,34 +48,152 @@ namespace pg
 			glDeleteVertexArrays(1, &mVAO);
 
 			//Remove reference to self from neighboring chunks
-			mpNChunk->mpSChunk = nullptr;
-			mpWChunk->mpEChunk = nullptr;
-			mpSChunk->mpNChunk = nullptr;
-			mpEChunk->mpWChunk = nullptr;
+			if (mpNChunk != nullptr)
+			{
+				mpNChunk->mpSChunk = nullptr;
+			}
+			if (mpWChunk != nullptr)
+			{
+				mpWChunk->mpEChunk = nullptr;
+			}
+			if (mpSChunk != nullptr)
+			{
+				mpSChunk->mpNChunk = nullptr;
+			}
+			if (mpEChunk != nullptr)
+			{
+				mpEChunk->mpWChunk = nullptr;
+			}
+		}
+
+		void TerrainChunk::UpdateNormals()
+		{
+			// First, reset normals
+			for (int x = 0; x < CHUNK_SIZE; x++)
+			{
+				for (int y = 0; y < CHUNK_SIZE; y++)
+				{
+					mNormalMap[x][y] = glm::vec3(0.f,0.f,0.f);
+				}
+			}
+
+			// We will calulate the normal at each vertex by calculating the normal at all polygons and finding the average of the normals at neighboring polygons
+			for (int x = 0; x < CHUNK_SIZE; x++)
+			{
+				for (int y = 0; y < CHUNK_SIZE; y++)
+				{
+					// Calculate positions of grid points defining this pair of triangles
+					glm::vec3 topLeft = glm::vec3(mXCoord + x, mHeightMap[x][y], mYCoord + y);
+					glm::vec3 bottomLeft = glm::vec3(mXCoord + x, mHeightMap[x][y + 1], mYCoord + y + 1);
+					glm::vec3 bottomRight = glm::vec3(mXCoord + x + 1, mHeightMap[x + 1][y + 1], mYCoord + y + 1);
+					glm::vec3 topRight = glm::vec3(mXCoord + x + 1, mHeightMap[x + 1][y], mYCoord + y);
+					// Caclulate contribution to average normal (we divide by 6 because each vertex has 6 neighboring polygons)
+					glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight)) / 6.f;
+					glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight)) / 6.f;
+
+					// Add normals to average
+					// Top Left
+					mNormalMap[x][y] += normal1;
+					// Top Right
+					mNormalMap[x + 1][y] += normal1;
+					mNormalMap[x + 1][y] += normal2;
+					// Bottom Left
+					mNormalMap[x][y + 1] += normal1;
+					mNormalMap[x][y + 1] += normal2;
+					// Top Left
+					mNormalMap[x + 1][y + 1] += normal2;
+				}
+			}
+
+			// Normalize normals
+			for (int x = 0; x < CHUNK_SIZE; x++)
+			{
+				for (int y = 0; y < CHUNK_SIZE; y++)
+				{
+					mNormalMap[x][y] = glm::normalize(mNormalMap[x][y]);
+				}
+			}
 		}
 
 		void TerrainChunk::UpdateBorderVertices()
 		{
-			//EAST BORDER
+			// EAST BORDER
 			if (mpEChunk != nullptr)
 			{
 				for (int i = 0; i < CHUNK_SIZE; i++)
 				{
+					// Update border heights
 					mHeightMap[CHUNK_SIZE][i] = mpEChunk->mHeightMap[0][i];
-					mNormalMap[CHUNK_SIZE][i] = mpEChunk->mNormalMap[0][i];
+					// Update border colors
 					mColorMap[CHUNK_SIZE][i] = mpEChunk->mColorMap[0][i];
 				}
 			}
-			//SOUTH BORDER
+			// SOUTH BORDER
 			if (mpSChunk != nullptr)
 			{
 				for (int i = 0; i < CHUNK_SIZE; i++)
 				{
+					// Update border heights
 					mHeightMap[i][CHUNK_SIZE] = mpSChunk->mHeightMap[i][0];
-					mNormalMap[i][CHUNK_SIZE] = mpSChunk->mNormalMap[i][0];
+					//mNormalMap[i][CHUNK_SIZE] = mpSChunk->mNormalMap[i][0];
 					mColorMap[i][CHUNK_SIZE] = mpSChunk->mColorMap[i][0];
 				}
 			}
+			// SOUTH-EASTERN CORNER
+			if (mpSChunk != nullptr && mpSChunk->mpEChunk != nullptr)
+			{
+				// Update border heights
+				mHeightMap[CHUNK_SIZE][CHUNK_SIZE] = mpSChunk->mpEChunk->mHeightMap[0][0];
+				// Update border colors
+				mColorMap[CHUNK_SIZE][CHUNK_SIZE] = mpSChunk->mpEChunk->mColorMap[0][0];
+			}
+
+			////We will have to update FOR ALL BORDERS too
+			//// First, reset normals
+			//for (int i = 0; i <= CHUNK_SIZE; i++)
+			//{
+			//	mNormalMap[0][i] = glm::vec3(0.f, 0.f, 0.f);
+			//	mNormalMap[i][0] = glm::vec3(0.f, 0.f, 0.f);
+			//	mNormalMap[CHUNK_SIZE][i] = glm::vec3(0.f, 0.f, 0.f);
+			//	mNormalMap[i][CHUNK_SIZE] = glm::vec3(0.f, 0.f, 0.f);
+			//}
+
+			//// We will calulate the normal at each vertex by calculating the normal at all polygons and finding the average of the normals at neighboring polygons
+			//// NORTH
+			//for (int i = 0; i <= CHUNK_SIZE; i++)
+			//{
+			//	// Calculate positions of grid points defining this pair of triangles
+			//	float y0 = mYCoord;
+			//	float y1 = y0 + 1.f;
+			//	glm::vec3 topLeft = glm::vec3(mXCoord + i, mHeightMap[i][CHUNK_SIZE - 1], y1);
+			//	glm::vec3 bottomLeft = glm::vec3(mXCoord + i, mHeightMap[x][y + 1], y1);
+			//	glm::vec3 bottomRight = glm::vec3(mXCoord + i + 1, mHeightMap[x + 1][y + 1], y1);
+			//	glm::vec3 topRight = glm::vec3(mXCoord + i + 1, mHeightMap[x + 1][y], mYCoord + y);
+			//	// Caclulate contribution to average normal (we divide by 6 because each vertex has 6 neighboring polygons)
+			//	glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight)) / 6.f;
+			//	glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight)) / 6.f;
+
+			//	// Add normals to average
+			//	// Top Left
+			//	mNormalMap[x][y] += normal1;
+			//	// Top Right
+			//	mNormalMap[x + 1][y] += normal1;
+			//	mNormalMap[x + 1][y] += normal2;
+			//	// Bottom Left
+			//	mNormalMap[x][y + 1] += normal1;
+			//	mNormalMap[x][y + 1] += normal2;
+			//	// Top Left
+			//	mNormalMap[x + 1][y + 1] += normal2;
+			//}
+
+			//// Normalize normals
+			//for (int i = 0; i <= CHUNK_SIZE; i++)
+			//{
+			//	mNormalMap[0][i] = glm::normalize(mNormalMap[0][i]);
+			//	mNormalMap[i][0] = glm::normalize(mNormalMap[i][0]);
+			//	mNormalMap[CHUNK_SIZE][i] = glm::normalize(mNormalMap[CHUNK_SIZE][i]);
+			//	mNormalMap[i][CHUNK_SIZE] = glm::normalize(mNormalMap[i][CHUNK_SIZE]);
+			//}
 		}
 
 		void TerrainChunk::SetNeighborChunk(const unsigned short index, TerrainChunk* chunk)
@@ -153,13 +271,9 @@ namespace pg
 					glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight));
 					glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight));
 
-					// Color will be average of vertex colors (one color per triangle)float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
-					float verticality = glm::dot(normal1, glm::vec3(0.f, 1.f, 0.f));
-					glm::vec3 color1 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48), glm::pow(verticality, 5.f));
-					verticality = glm::dot(normal2, glm::vec3(0.f, 1.f, 0.f));
-					glm::vec3 color2 = glm::mix(glm::vec3(0.85f, 0.56f, 0.46f), glm::vec3(0.92f, 1.f, 0.48f), glm::pow(verticality, 5.f));
-					//glm::vec3 color1 = glm::sqrt((mColorMap[x][y] * mColorMap[x][y] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
-					//glm::vec3 color2 = glm::sqrt((mColorMap[x + stride][y + stride] * mColorMap[x + stride][y + stride] + mHeightMap[x][y + stride] * mHeightMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
+					// Color will be average of vertex colors (one color per triangle)
+					glm::vec3 color1 = glm::sqrt((mColorMap[x][y] * mColorMap[x][y] + mColorMap[x][y + stride] * mColorMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
+					glm::vec3 color2 = glm::sqrt((mColorMap[x + stride][y + stride] * mColorMap[x + stride][y + stride] + mColorMap[x][y + stride] * mColorMap[x][y + stride] + mColorMap[x + stride][y] * mColorMap[x + stride][y]) / 3.f);
 
 					//Add vertices for triangle 1
 					vertexBufer[crrtVertex++] = Vertex{ topRight, normal1, color1 };
@@ -181,7 +295,7 @@ namespace pg
 			glGenBuffers(1, &mVBO);
 			glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 			glBufferData(GL_ARRAY_BUFFER, crrtVertex * sizeof(Vertex), vertexBufer, GL_STATIC_DRAW);
-			delete vertexBufer;
+			delete[] vertexBufer;
 
 			//Bind layout attributes
 			BindAttributes();

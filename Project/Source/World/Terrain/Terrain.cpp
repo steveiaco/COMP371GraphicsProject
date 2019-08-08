@@ -13,7 +13,15 @@ namespace pg
 		Terrain::Terrain(const TerrainGenerator& terrainGenerator)
 			: mTerrainGenerator(terrainGenerator)
 		{
-
+			// Pre-generate a perimiter of chunks around origin
+			for (int x = -1; x < 2; x++)
+			{
+				for (int y = -1; y < 2; y++)
+				{
+					// Get chunk at coordinates, generate new one if it does not yet exist
+					TerrainChunk& crrtChunk = GetChunkAt(x, y);
+				}
+			}
 		}
 
 		Terrain::Terrain(const Terrain& orig)
