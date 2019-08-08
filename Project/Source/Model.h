@@ -12,8 +12,8 @@
 #include "ParsingHelper.h"
 
 #include <vector>
-
 #include <glm/glm.hpp>
+
 
 class Animation;
 

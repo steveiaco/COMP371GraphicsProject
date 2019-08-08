@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <glm/glm.hpp>
+#include "../../ChunkObjectInstance.h"
 
 namespace pg
 {
@@ -92,6 +93,9 @@ namespace pg
 				glm::vec3 mNormal;
 				glm::vec3 mColor;
 			};
+
+			//Holds all objects that are to be rendered on this chunk.
+			std::vector<ChunkObjectInstance> objectsInChunk;
 		};
 	}
 }

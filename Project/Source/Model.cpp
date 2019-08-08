@@ -65,6 +65,7 @@ void Model::Load(ci_istringstream& iss)
 	}
 }
 
+//todo fix return value
 bool Model::ParseLine(const std::vector<ci_string> &token)
 {
     if (token.empty() == false)

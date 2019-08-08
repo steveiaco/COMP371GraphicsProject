@@ -162,6 +162,16 @@ namespace pg
 			}
 		}
 
+		float Terrain::GetHumidityAt(const int mXCoord, const int mYCoord) const
+		{
+			return mTerrainGenerator.GetHumidityAt(mXCoord, mYCoord);
+		}
+
+		float Terrain::GetTemperatureAt(const int mXCoord, const int mYCoord) const
+		{
+			return mTerrainGenerator.GetTemperatureAt(mXCoord, mYCoord);
+		}
+
 		TerrainChunk& Terrain::GetChunkAt(const int xCoord, const int yCoord)
 		{
 			//Try to find chunk

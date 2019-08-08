@@ -81,12 +81,17 @@ namespace pg
 			}
 		}
 
-		float TerrainGenerator::GetHumidityAt(const int mXCoord, const int mYCoord) const 
+		void TerrainGenerator::AttachChunkPopulator(ChunkPopulator * c)
+		{
+			chunkPopulator = c;
+		}
+
+		float TerrainGenerator::GetHumidityAt(const float mXCoord, const float mYCoord) const 
 		{ 
 			return mNoise.Perlin(mHumidityFrequency * (HUMIDITY_OFFSET_X + mXCoord), mHumidityFrequency * (HUMIDITY_OFFSET_Y + mYCoord)); 
 		}
 
-		float TerrainGenerator::GetTemperatureAt(const int mXCoord, const int mYCoord) const
+		float TerrainGenerator::GetTemperatureAt(const float mXCoord, const float mYCoord) const
 		{ 
 			return mNoise.Perlin(mTemperatureFrequency * (TEMPERATURE_OFFSET_X + mXCoord), mTemperatureFrequency * (TEMPERATURE_OFFSET_Y + mYCoord)); 
 		}

@@ -30,6 +30,10 @@ namespace pg
 			float GetHeightAt(const float xCoord, const float yCoord) const;
 			// Get interpolated normal
 			glm::vec3 GetNormalAt(const float xCoord, const float yCoord) const;
+			// Get humidity at coordinates (used to determine biome)
+			float GetHumidityAt(const int mXCoord, const int mYCoord) const;
+			// Get temperature at coordinates (used to determine biome)
+			float GetTemperatureAt(const int mXCoord, const int mYCoord) const;
 
 			// Get rendering aesthetic to use
 			TerrainAesthetic GetAesthetic() const { return mAesthetic; }

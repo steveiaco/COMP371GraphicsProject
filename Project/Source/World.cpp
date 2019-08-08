@@ -18,6 +18,8 @@
 
 #include "CubeModel.h"
 #include "SphereModel.h"
+#include "ObjectModel.h"
+#include "ChunkObject.h"
 #include "Animation.h"
 #include "Billboard.h"
 #include <GLFW/glfw3.h>
@@ -28,6 +30,7 @@
 #include "World/Terrain/Terrain.h"
 #include "World/Terrain/TerrainGenerator.h"
 #include "PerlinNoise.h"
+#include "ChunkPopulator.h"
 
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
@@ -46,6 +49,9 @@ World::World()
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
+
+	pg::terrain::ChunkPopulator* chunkPopulator = new pg::terrain::ChunkPopulator(*mpTerrain, *mpPerlin);
+	mpTerrainGenerator->AttachChunkPopulator(chunkPopulator);
 
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
@@ -293,6 +299,16 @@ void World::LoadScene(const char * scene_path)
 				LightSource* lightSource = new LightSource();
 				lightSource->Load(iss);
 				AddLightSource(lightSource);
+			}
+			else if (result == "model") 
+			{
+				ObjectModel* obj = new ObjectModel();
+				obj->Load(iss);
+				mModel.push_back(obj);
+			}
+			else if (result == "chunkmodel") 
+			{
+				//todo implement
 			}
 			else if ( result.empty() == false && result[0] == '#')
 			{

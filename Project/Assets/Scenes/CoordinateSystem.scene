@@ -28,3 +28,10 @@ name = "Origin"
 position = 0.0f 0.0f 0.0f
 scaling = 0.12f 0.12f 0.12f
 
+[model]
+name = "rock"
+texture = "../Assets/Models/Rock/Rock(256)_diffuse.tga"
+path = "../Assets/Models/Rock/Rock.obj"
+position = 10.0f 10.0f 0.5f
+rotation = 0.0f 1.0f 0.0f 0.0f
+scaling = 0.05f 0.05f 0.05f 
