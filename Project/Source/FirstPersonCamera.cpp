@@ -23,7 +23,7 @@ const static float JUMP_FORCE = 200;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(20.0f), mAngularSpeed(2.5f), mVelocity(0.0f)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(20.0f), mAngularSpeed(2.5f), mVelocity(0.0f), freeMode(false)
 {
 }
 
@@ -90,16 +90,26 @@ void FirstPersonCamera::Update(float dt)
         mPosition -= sideVector * dt * mSpeed;
     }
 
-    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F ) == GLFW_PRESS)
     {
-        mVelocity = JUMP_FORCE;
-    }
-    else
-    {
-        mVelocity += GRAVITY * dt;
+        freeMode = !freeMode;
     }
 
-    mPosition.y = computeHeight(dt);
+    if (!freeMode)
+    {
+        if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+        {
+            mVelocity = JUMP_FORCE;
+        }
+        else
+        {
+            mVelocity += GRAVITY * dt;
+        }
+
+        float newHeight = computeHeight(dt);
+        mPosition.y = newHeight;
+    }
+
 }
 
 float FirstPersonCamera::computeHeight(float dt)
