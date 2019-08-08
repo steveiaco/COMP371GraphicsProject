@@ -20,6 +20,7 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class LightSource;
+class Player;
 
 namespace pg
 {
