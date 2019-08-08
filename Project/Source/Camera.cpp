@@ -12,7 +12,13 @@
 
 using namespace glm;
 
-Camera::Camera()
+const float Camera::FOV_Y = 45.f;
+const float Camera::ASPECT_RATIO = 4.0f / 3.f;
+const float Camera::DIST_NEAR_PLANE = 0.1f;
+const float Camera::DIST_FAR_PLANE = 300.0f;
+
+Camera::Camera(glm::vec3 pos)
+	: mPosition(pos)
 {
 }
 
@@ -29,5 +35,5 @@ mat4 Camera::GetViewProjectionMatrix() const
 
 mat4 Camera::GetProjectionMatrix() const
 {
-	return perspective(45.0f, 4.0f / 3.0f, 0.1f, 300.0f);
+	return perspective(FOV_Y, ASPECT_RATIO, DIST_NEAR_PLANE, DIST_FAR_PLANE);
 }

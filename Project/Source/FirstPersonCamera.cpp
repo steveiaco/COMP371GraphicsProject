@@ -90,16 +90,25 @@ void FirstPersonCamera::Update(float dt)
         mPosition -= sideVector * dt * mSpeed;
     }
 
-    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F ) == GLFW_PRESS)
     {
-        mVelocity = JUMP_FORCE;
-    }
-    else
-    {
-        mVelocity += GRAVITY * dt;
+        freeMode = !freeMode;
     }
 
-	//mPosition.y = computeHeight(dt);
+    if (!freeMode)
+    {
+        if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+        {
+            mVelocity = JUMP_FORCE;
+        }
+        else
+        {
+            mVelocity += GRAVITY * dt;
+        }
+
+        float newHeight = computeHeight(dt);
+        mPosition.y = newHeight;
+    }
 }
 
 float FirstPersonCamera::computeHeight(float dt)

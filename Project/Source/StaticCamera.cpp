@@ -16,7 +16,7 @@ using namespace glm;
 
 
 StaticCamera::StaticCamera(glm::vec3 position, glm::vec3 lookAtPoint, glm::vec3 upVector) 
-	: Camera(), mPosition(position), mLookAtPoint(lookAtPoint), mUpVector(upVector)
+	: Camera(position), mLookAtPoint(lookAtPoint), mUpVector(upVector)
 {
 }
 
