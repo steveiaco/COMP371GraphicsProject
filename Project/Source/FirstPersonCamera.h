@@ -28,6 +28,7 @@ private:
 	float mSpeed;			// World units per second
 	float mAngularSpeed;    // Degrees per pixel
 	float mVelocity;        // Used for jumping
+	bool  freeMode;
 
 	glm::vec3 mLookAt;
 
