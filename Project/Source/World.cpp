@@ -24,7 +24,10 @@
 #include "EventManager.h"
 #include "TextureLoader.h"
 #include "LightSource.h"
-#include "Terrain.h"
+
+#include "World/Terrain/Terrain.h"
+#include "World/Terrain/TerrainGenerator.h"
+#include "PerlinNoise.h"
 
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
@@ -39,6 +42,10 @@ World* World::instance;
 World::World()
 {
     instance = this;
+
+	mpPerlin = new PerlinNoise();
+	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
+	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
 
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
@@ -167,6 +174,12 @@ void World::Draw()
 
 	SetLights();
 
+	//Set material coefficients
+	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+	glUniform4f(MaterialID, 0.5f, 0.4f, 0.1f, 50.f);
+	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+	glm::mat4 worldMatrix(1.0f);
+	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
 	mpTerrain->Draw();
 
 	// Draw models
@@ -297,8 +310,6 @@ void World::LoadScene(const char * scene_path)
 	}
 	input.close();
 
-	mpTerrain = new Terrain();
-
 	// Set Animation vertex buffers
 	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
 	{
@@ -368,11 +379,6 @@ void World::RemoveLightSource(LightSource* ls)
 {
 	vector<LightSource*>::iterator it = std::find(mLightList.begin(), mLightList.end(), ls);
 	mLightList.erase(it);
-}
-
-const Terrain* World::GetTerrain() const
-{
-    return mpTerrain;
 }
 
 void World::AddBillboard(Billboard* b)

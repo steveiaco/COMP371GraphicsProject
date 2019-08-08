@@ -9,12 +9,10 @@
 
 #pragma once
 
-
 #include "ParsingHelper.h"
 #include "Billboard.h"
 #include <vector>
 
-class Terrain;
 class Camera;
 class Model;
 class Animation;
@@ -22,6 +20,16 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class LightSource;
+
+namespace pg
+{
+	namespace terrain
+	{
+		class Terrain;
+		class TerrainGenerator;
+	}
+}
+class PerlinNoise;
 
 class World
 {
@@ -45,7 +53,6 @@ public:
 	void RemoveLightSource(LightSource* b);
 	void AddBillboard(Billboard* b);
 	void RemoveBillboard(Billboard* b);
-    const Terrain* GetTerrain() const;
     void AddParticleSystem(ParticleSystem* particleSystem);
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
@@ -53,8 +60,11 @@ public:
     
 private:
     static World* instance;
-    
-	Terrain* mpTerrain;
+
+	PerlinNoise* mpPerlin;
+	pg::terrain::TerrainGenerator* mpTerrainGenerator;
+	pg::terrain::Terrain* mpTerrain;
+
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;
