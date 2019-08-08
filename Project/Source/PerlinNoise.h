@@ -5,10 +5,10 @@ public:
 	PerlinNoise();
 	~PerlinNoise();
 
-	float Perlin(float x, float y);
+	float Perlin(float x, float y) const;
 
 private:
-	float DotGridGradient(unsigned int ix, unsigned int iy, float x, float y);
+	float DotGridGradient(unsigned int ix, unsigned int iy, float dx, float dy) const;
 
 	//Number of gradients in the mGradient array. Higher values will be more memory intensive but allow for less regularity. Value should also be a power of 2 so that we can benefit from bit masking optimizations.
 	static const unsigned int SIZE = 256;
