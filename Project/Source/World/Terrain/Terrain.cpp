@@ -1,11 +1,16 @@
 #include "Terrain.h"
 #include "TerrainChunk.h"
 #include "TerrainGenerator.h"
-#include "..\..\World.h"
-#include "..\..\Camera.h"
 
 #include <glm/glm.hpp>
 
+#if defined(GLM_PLATFORM_APPLE) || defined(GLM_PLATFORM_LINUX)
+#include "../../World.h"
+#include "../../Camera.h"
+#else
+#include "..\..\World.h"
+#include "..\..\Camera.h"
+#endif
 namespace pg
 {
 	namespace terrain
