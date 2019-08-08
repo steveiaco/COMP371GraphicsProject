@@ -14,15 +14,22 @@
 class Camera
 {
 public:
-	Camera();
+	Camera(glm::vec3 pos);
 	virtual ~Camera();
 
 	virtual void Update(float dt) = 0;
+
+	glm::vec3 GetPosition() const { return mPosition; }
 
 	virtual glm::mat4 GetViewMatrix() const = 0;
 	virtual glm::mat4 GetProjectionMatrix() const;
 	glm::mat4 GetViewProjectionMatrix() const;
 
-private:
+	static const float FOV_Y;
+	static const float ASPECT_RATIO;
+	static const float DIST_NEAR_PLANE;
+	static const float DIST_FAR_PLANE;
 
+protected:
+	glm::vec3 mPosition;
 };

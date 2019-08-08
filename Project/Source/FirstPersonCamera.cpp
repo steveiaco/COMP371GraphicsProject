@@ -23,7 +23,7 @@ const static float JUMP_FORCE = 200;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(20.0f), mAngularSpeed(2.5f), mVelocity(0.0f)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(20.0f), mAngularSpeed(2.5f), mVelocity(0.0f)
 {
 }
 
@@ -99,21 +99,21 @@ void FirstPersonCamera::Update(float dt)
         mVelocity += GRAVITY * dt;
     }
 
-    mPosition.y = computeHeight(dt);
+	//mPosition.y = computeHeight(dt);
 }
 
 float FirstPersonCamera::computeHeight(float dt)
 {
-    Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
-    float currentHeight = terrain->GetHeight(mPosition.x, mPosition.z);
+    //Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
+    /*float currentHeight = terrain->GetVertexHeight(mPosition.x, mPosition.z);
     float delta = glm::clamp(dt * CAMERA_RESPONSIVENESS, 0.0f, 1.0f);
     float finalHeight = glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight) + (mVelocity * dt), delta);
     if (finalHeight < BASE_HEIGHT + currentHeight)
     {
         mVelocity = 0;
         return glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight), delta);
-    }
-    return finalHeight;
+    }*/
+    return 0.f;//finalHeight;
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const
