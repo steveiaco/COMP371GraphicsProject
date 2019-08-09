@@ -25,6 +25,7 @@ using namespace glm;
 
 FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(90.0f), mAngularSpeed(2.5f), mVelocity(0.0f), mFreeMode(false)
 {
+    mPreviousHeight = 0;
 }
 
 FirstPersonCamera::~FirstPersonCamera()
@@ -100,6 +101,7 @@ void FirstPersonCamera::Update(float dt)
 
     if (!mFreeMode)
     {
+        /*
         if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
         {
             mVelocity = JUMP_FORCE;
@@ -107,25 +109,27 @@ void FirstPersonCamera::Update(float dt)
         else
         {
             mVelocity += GRAVITY * dt;
-        }
+        }*/
 
         float newHeight = computeHeight(dt);
         mPosition.y = newHeight;
+        mPreviousHeight = newHeight;
     }
 }
 
 float FirstPersonCamera::computeHeight(float dt)
 {
-    //Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
-    /*float currentHeight = terrain->GetVertexHeight(mPosition.x, mPosition.z);
+    auto *terrain = World::GetInstance()->GetTerrain();
+    float currentHeight = terrain->GetHeightAt(mPosition.x, mPosition.z);
+    printf("Pos: < %f, %f>, H: %f\n", mPosition.x, mPosition.z, currentHeight);
     float delta = glm::clamp(dt * CAMERA_RESPONSIVENESS, 0.0f, 1.0f);
-    float finalHeight = glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight) + (mVelocity * dt), delta);
+    float finalHeight = glm::mix(mPreviousHeight, (BASE_HEIGHT + currentHeight) /*+ (mVelocity * dt)*/, delta);
     if (finalHeight < BASE_HEIGHT + currentHeight)
     {
-        mVelocity = 0;
-        return glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight), delta);
-    }*/
-    return 0.f;//finalHeight;
+        //mVelocity = 0;
+        return glm::mix(mPreviousHeight, BASE_HEIGHT + currentHeight, delta);
+    }
+    return finalHeight;
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const
