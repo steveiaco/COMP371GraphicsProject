@@ -19,6 +19,7 @@ namespace pg
 			: mTerrainGenerator(terrainGenerator)
 		{ }
 
+
 		Terrain::Terrain(const Terrain& orig)
 			: mTerrainGenerator(orig.mTerrainGenerator)
 			, mAesthetic(orig.mAesthetic)
@@ -36,7 +37,15 @@ namespace pg
 
 		void Terrain::Start()
 		{
-			GetChunkAt(0, 0);
+			// Pre-generate a perimiter of chunks around origin
+			for (int x = -3; x < 4; x++)
+			{
+				for (int y = -3; y < 4; y++)
+				{
+					// Get chunk at coordinates, generate new one if it does not yet exist
+					TerrainChunk& crrtChunk = GetChunkAt(x, y);
+				}
+			}
 		}
 
 		void Terrain::Draw()
@@ -75,10 +84,10 @@ namespace pg
 
 		float Terrain::GetHeightAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = yCoord / TerrainChunk::CHUNK_SIZE;
-			const int dx = xCoord - chunkX * TerrainChunk::CHUNK_SIZE;
-			const int dy = yCoord - chunkY * TerrainChunk::CHUNK_SIZE;
+			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
 			auto it = mChunkMap.find({ chunkX, chunkY });
 			// DO not call GetHeightAt for unloaded parts of terrain!
@@ -90,10 +99,10 @@ namespace pg
 
 		glm::vec3 Terrain::GetNormalAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = yCoord / TerrainChunk::CHUNK_SIZE;
-			const int dx = xCoord - chunkX * TerrainChunk::CHUNK_SIZE;
-			const int dy = yCoord - chunkY * TerrainChunk::CHUNK_SIZE;
+			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
 			auto it = mChunkMap.find({ chunkX, chunkY });
 			// DO not call GetHeightAt for unloaded parts of terrain!
