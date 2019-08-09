@@ -113,6 +113,7 @@ void FirstPersonCamera::Update(float dt)
     }
     mOldFreeModeKeyState = currentFreeModeKeyState;
 
+    float height = computeHeight(dt);
     if (!mFreeMode)
     {
         int currentSpaceBarState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE);

@@ -229,7 +229,7 @@ namespace pg
                 float height = dy * (heightSW - heightNW) + heightNW;
                 return dx * (heightSE - height) + height;
             }
-                //We are in north-western triangle
+            //We are in north-western triangle
             else
             {
                 float heightNW = GetHeightAt(floorX, floorY);
