@@ -26,6 +26,8 @@ public:
 	inline glm::vec3 GetMinRotationAngle() { return minRotation; }
 	inline glm::vec3 GetMaxRotationAngle() { return maxRotation; }
 
+	inline float GetDensity() { return density; }
+
 private:
 
 
@@ -92,6 +94,8 @@ private:
 	
 	float minAltitude;
 	float maxAltitude;
+
+	float density;
 
 	friend class ChunkObjectInstance;
 };

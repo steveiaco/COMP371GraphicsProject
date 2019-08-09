@@ -21,6 +21,8 @@ namespace pg
 
 			const static int STRIDE_X = 1;
 			const static int STRIDE_Y = 1;
+			
+			const float FREQUENCY_PERLIN = 1.f / 500.f;
 
 			const PerlinNoise& mNoise;
 			const Terrain& mTerrain;

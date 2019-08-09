@@ -113,9 +113,9 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 			assert(token.size() > 4);
 			assert(token[1] == "=");
 
-			minScaling.x = static_cast<float>(atof(token[2].c_str()));
-			minScaling.y = static_cast<float>(atof(token[3].c_str()));
-			minScaling.z = static_cast<float>(atof(token[4].c_str()));
+			maxScaling.x = static_cast<float>(atof(token[2].c_str()));
+			maxScaling.y = static_cast<float>(atof(token[3].c_str()));
+			maxScaling.z = static_cast<float>(atof(token[4].c_str()));
 		}
 		else if (token[0] == "rotation_angle_min")
 		{
@@ -158,6 +158,13 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 
 			minAltitude = static_cast<float>(atof(token[2].c_str()));
 			maxAltitude = static_cast<float>(atof(token[3].c_str()));
+		}
+		else if (token[0] == "density")
+		{
+			assert(token.size() > 2);
+			assert(token[1] == "=");
+
+			density = static_cast<float>(atof(token[2].c_str()));
 		}
 		else
 		{

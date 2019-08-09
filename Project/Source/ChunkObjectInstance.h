@@ -31,6 +31,6 @@ private:
 	//Rotation angles in euler angles
 	glm::vec3 mRotation;
 
-	static int currentVAO;
-	static int currentVBO;
+	static unsigned int currentVAO;
+	static unsigned int currentVBO;
 };

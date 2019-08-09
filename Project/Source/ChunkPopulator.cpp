@@ -15,41 +15,70 @@ namespace pg
 		
 		void ChunkPopulator::PopulateChunk(TerrainChunk * t)
 		{
-			for (std::vector<ChunkObject*>::iterator it = chunkObjects.begin(); it < chunkObjects.end(); it++) 
+
+			float chunkOriginX = t->mXCoord;
+			float chunkOriginY = t->mYCoord;
+
+			for (float x = chunkOriginX; x < t->CHUNK_SIZE + chunkOriginX - 1; x += STRIDE_X)
 			{
-				ChunkObject* co = *it;
-
-				float chunkOriginX = t->mXCoord;
-				float chunkOriginY = t->mYCoord;
-
-				for (float x = chunkOriginX; x < t->CHUNK_SIZE + chunkOriginX - 1; x += STRIDE_X)
+				for (float y = chunkOriginY; y < t->CHUNK_SIZE + chunkOriginY - 1; y += STRIDE_Y)
 				{
-					for (float y = chunkOriginY; y < t->CHUNK_SIZE + chunkOriginY - 1; y += STRIDE_Y)
+					for (std::vector<ChunkObject*>::iterator it = chunkObjects.begin(); it < chunkObjects.end(); it++)
 					{
-						//First, we verify whether or not the object can be placed in position's biome
-						if (VerifyObjectPlacement(*it, x, y)) 
+						ChunkObject* co = *it;
+
+						//Then, if perlin allows for it, we will randomly decide whether the object will spawn
+						//todo, add density attribute that controls this factor
+						if (rand() % 100 <= co->GetDensity() * 10)
 						{
-							//Then we verify whether the perlin noise allows us to place it in this location
-							float perl = mNoise.Perlin(x, y);
-							if (perl > 0) 
+							//First, we verify whether or not the object can be placed in position's biome
+							if (VerifyObjectPlacement(*it, x, y))
 							{
-								//float xWorld = x + 
-								//float yWorld = y + 
+								//Then we verify whether the perlin noise allows us to place it in this location
+								float perl = mNoise.Perlin(x * FREQUENCY_PERLIN, y * FREQUENCY_PERLIN);
+								if (perl > 0)
+								{
+									float terrainHeight = mTerrain.GetHeightAt(x, y);
 
-								//Then, if perlin allows for it, we will randomly decide whether the object will spawn
-								if (rand() % 100 <= 35) {
-									glm::vec3 position = glm::vec3(x, y, mTerrain.GetHeightAt(x, y));
+									/* Position */
+									glm::vec3 position = glm::vec3(x, terrainHeight, y);
 
+
+									/* Scaling */
 									glm::vec3 maxS = co->GetMaxScaling();
 									glm::vec3 minS = co->GetMinScaling();
-									//todo fix this casting
-									glm::vec3 scaling = glm::vec3(rand() % (int)maxS.x + minS.x, rand() % (int)maxS.x + minS.x, rand() % (int)maxS.x + minS.x);
 
+									glm::vec3 scaling;
+
+									//if the scaling factors are uniform, then use the same scaling factor for XYZ
+									if (maxS.x == maxS.y && maxS.x == maxS.z && minS.x == minS.y && minS.x == minS.z)
+									{
+										float scaleRandXYZ = rand() / (float)RAND_MAX;
+										float scale = scaleRandXYZ * (maxS.x - minS.x) + minS.x;
+										scaling = glm::vec3(scale, scale, scale);
+									}
+									else
+									{
+										float scaleRandX = rand() / (float)RAND_MAX;
+										float scaleRandY = rand() / (float)RAND_MAX;
+										float scaleRandZ = rand() / (float)RAND_MAX;
+
+										scaling = glm::vec3(scaleRandX * (maxS.x - minS.x) + minS.x, scaleRandY * (maxS.y - minS.y) + minS.y, scaleRandZ * (maxS.z - minS.z) + minS.z);
+									}
+
+
+									/* Rotation */
 									glm::vec3 maxRA = co->GetMaxRotationAngle();
 									glm::vec3 minRA = co->GetMinRotationAngle();
 									//this generates rotation angles for the x,y,z axis
 									//todo fix this casting
-									glm::vec3 rotation = glm::vec3(rand() % (int)maxRA.x + minRA.x, rand() % (int)maxRA.y + minRA.y, rand() % (int)maxRA.z + minRA.z);
+
+									//generate a number between [0,1]
+									float randRotationX = rand() / (float)RAND_MAX;
+									float randRotationY = rand() / (float)RAND_MAX;
+									float randRotationZ = rand() / (float)RAND_MAX;
+
+									glm::vec3 rotation = glm::vec3(randRotationX * (maxRA.x - minRA.x) + minRA.x, randRotationY * (maxRA.y - minRA.y) + minRA.y, randRotationZ * (maxRA.z - minRA.z) + minRA.z);
 
 									ChunkObjectInstance* coi = new ChunkObjectInstance(co);
 									coi->SetPosition(position);
@@ -65,9 +94,9 @@ namespace pg
 			}
 
 
-			//Order the object instances by type to optimize drawing
-			t->SortObjectInstances();
-
+				//Order the object instances by type to optimize drawing
+				t->SortObjectInstances();
+			
 		}
 		
 		bool ChunkPopulator::VerifyObjectPlacement(ChunkObject * o, const float x, const float y)

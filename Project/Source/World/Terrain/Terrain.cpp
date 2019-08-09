@@ -118,7 +118,7 @@ namespace pg
 			int floorX = glm::floor(xCoord);
 			int floorY = glm::floor(yCoord);
 			float dx = xCoord - floorX;
-			float dy = yCoord - floorX;
+			float dy = yCoord - floorY;
 
 			//We are in south-eastern triangle
 			if (dx < dy)
