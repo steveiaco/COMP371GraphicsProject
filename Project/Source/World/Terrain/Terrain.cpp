@@ -82,8 +82,8 @@ namespace pg
 
 		float Terrain::GetHeightAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkX = glm::floor(static_cast<float> (xCoord) / TerrainChunk::CHUNK_SIZE);
+			const int chunkY = glm::floor(static_cast<float> (yCoord) / TerrainChunk::CHUNK_SIZE);
 			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
@@ -97,8 +97,8 @@ namespace pg
 
 		glm::vec3 Terrain::GetNormalAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkX = glm::floor(static_cast<float> (xCoord) / TerrainChunk::CHUNK_SIZE);
+			const int chunkY = glm::floor(static_cast<float> (yCoord) / TerrainChunk::CHUNK_SIZE);
 			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
