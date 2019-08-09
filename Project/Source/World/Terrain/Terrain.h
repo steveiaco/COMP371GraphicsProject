@@ -39,6 +39,7 @@ namespace pg
 
 			// Get rendering aesthetic to use
 			TerrainAesthetic GetAesthetic() const { return mAesthetic; }
+			const TerrainGenerator& GetTerrainGenerator() const { return mTerrainGenerator; }
 			void SetAesthetic(const TerrainAesthetic aesthetic) { mAesthetic = aesthetic; }
 
 			// Attach ChunkPopulator (MUST BE RUN BEFORE USING THIS CLASS)
