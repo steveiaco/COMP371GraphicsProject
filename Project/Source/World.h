@@ -51,6 +51,8 @@ public:
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
     const Camera* GetCurrentCamera() const;
+    const pg::terrain::Terrain* GetTerrain() const { return mpTerrain; };
+
 	void SetLights();
 	void AddLightSource(LightSource* b);
 	void RemoveLightSource(LightSource* b);

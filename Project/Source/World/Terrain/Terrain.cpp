@@ -1,11 +1,16 @@
 #include "Terrain.h"
 #include "TerrainChunk.h"
 #include "TerrainGenerator.h"
-#include "..\..\World.h"
-#include "..\..\Camera.h"
 
 #include <glm/glm.hpp>
 
+#if defined(GLM_PLATFORM_APPLE) || defined(GLM_PLATFORM_LINUX)
+#include "../../World.h"
+#include "../../Camera.h"
+#else
+#include "..\..\World.h"
+#include "..\..\Camera.h"
+#endif
 namespace pg
 {
 	namespace terrain
@@ -22,14 +27,6 @@ namespace pg
 					TerrainChunk& crrtChunk = GetChunkAt(x, y);
 				}
 			}
-			for (int x = -300.f; x < 300.f; x += 50.f)
-			{
-				for (int y = -300.f; y < 300.f; y += 50.f)
-				{
-					// Get chunk at coordinates, generate new one if it does not yet exist
-					World::GetInstance()->AddSphere(glm::vec3(x, GetHeightAt(x,y), y), 1.f);
-				}
-			}
 		}
 
 		Terrain::Terrain(const Terrain& orig)
@@ -37,7 +34,7 @@ namespace pg
 			, mAesthetic(orig.mAesthetic)
 			, mChunkMap(orig.mChunkMap)
 		{
-
+            GetChunkAt(0,0);
 		}
 
 		Terrain::~Terrain()
@@ -54,7 +51,6 @@ namespace pg
 			// Get view information
 			const Camera& crrtCamera = *World::GetInstance()->GetCurrentCamera();
 			const glm::vec3 pos = crrtCamera.GetPosition();
-			std::cout << pos.x << " " << pos.z << std::endl;
 			const float viewDist = Camera::DIST_FAR_PLANE;
 			// Get range of chunks within draw distance
 			const int chunkLoadRadius = static_cast <int> (viewDist / TerrainChunk::CHUNK_SIZE) + 1;

@@ -4,6 +4,7 @@
 
 #include <cstdlib>
 #include <cmath>
+#include <climits>
 
 // Function to linearly interpolate between a0 and a1
 // Weight w should be in the range [0.0, 1.0]

@@ -12,7 +12,8 @@ add_definitions(${GLM_DEFINITIONS})
 
 set(SOURCE_FILES)
 
-file(GLOB SOURCE_FILES Source/*.cpp Source/*.h)
+file(GLOB SOURCE_FILES Source/*.cpp Source/*.h Source/World/Terrain/*.cpp Source/World/Terrain/*.h)
+list(REMOVE_ITEM SOURCE_FILES "Source/Terrain.cpp" "Source/Terrain.h")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 include_directories(${PROJECT_NAME} ${OPENGL_INCLUDE_DIRS} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})

@@ -133,8 +133,6 @@ void World::Update(float dt)
     {
         (*it)->Update(dt);
     }
-
-
 	// Update current Camera
 	mCamera[mCurrentCamera]->Update(dt);
 
