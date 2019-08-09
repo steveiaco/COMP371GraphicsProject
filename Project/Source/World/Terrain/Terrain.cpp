@@ -14,12 +14,20 @@ namespace pg
 			: mTerrainGenerator(terrainGenerator)
 		{
 			// Pre-generate a perimiter of chunks around origin
-			for (int x = -1; x < 2; x++)
+			for (int x = -3; x < 4; x++)
 			{
-				for (int y = -1; y < 2; y++)
+				for (int y = -3; y < 4; y++)
 				{
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(x, y);
+				}
+			}
+			for (int x = -300.f; x < 300.f; x += 50.f)
+			{
+				for (int y = -300.f; y < 300.f; y += 50.f)
+				{
+					// Get chunk at coordinates, generate new one if it does not yet exist
+					World::GetInstance()->AddSphere(glm::vec3(x, GetHeightAt(x,y), y), 1.f);
 				}
 			}
 		}
@@ -46,6 +54,7 @@ namespace pg
 			// Get view information
 			const Camera& crrtCamera = *World::GetInstance()->GetCurrentCamera();
 			const glm::vec3 pos = crrtCamera.GetPosition();
+			std::cout << pos.x << " " << pos.z << std::endl;
 			const float viewDist = Camera::DIST_FAR_PLANE;
 			// Get range of chunks within draw distance
 			const int chunkLoadRadius = static_cast <int> (viewDist / TerrainChunk::CHUNK_SIZE) + 1;
@@ -77,10 +86,10 @@ namespace pg
 
 		float Terrain::GetHeightAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = yCoord / TerrainChunk::CHUNK_SIZE;
-			const int dx = xCoord - chunkX * TerrainChunk::CHUNK_SIZE;
-			const int dy = yCoord - chunkY * TerrainChunk::CHUNK_SIZE;
+			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
 			auto it = mChunkMap.find({ chunkX, chunkY });
 			// DO not call GetHeightAt for unloaded parts of terrain!
@@ -92,10 +101,10 @@ namespace pg
 
 		glm::vec3 Terrain::GetNormalAt(const int xCoord, const int yCoord) const
 		{
-			const int chunkX = xCoord / TerrainChunk::CHUNK_SIZE;
-			const int chunkY = yCoord / TerrainChunk::CHUNK_SIZE;
-			const int dx = xCoord - chunkX * TerrainChunk::CHUNK_SIZE;
-			const int dy = yCoord - chunkY * TerrainChunk::CHUNK_SIZE;
+			const int chunkX = (xCoord < 0) ? xCoord / TerrainChunk::CHUNK_SIZE - 1 : xCoord / TerrainChunk::CHUNK_SIZE;
+			const int chunkY = (yCoord < 0) ? yCoord / TerrainChunk::CHUNK_SIZE - 1 : yCoord / TerrainChunk::CHUNK_SIZE;
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
 
 			auto it = mChunkMap.find({ chunkX, chunkY });
 			// DO not call GetHeightAt for unloaded parts of terrain!

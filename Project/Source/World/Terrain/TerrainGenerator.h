@@ -73,8 +73,8 @@ namespace pg
 			float maxHumidity = 0.6f;
 			float minHumidity = 0.4f;
 			// TEMPERATURE
-			float maxTemperature = 0.5f;
-			float minTemperature = 0.3f;
+			float maxTemperature = 0.6f;
+			float minTemperature = 0.4f;
 		};
 	}
 }

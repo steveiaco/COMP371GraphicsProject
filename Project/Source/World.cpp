@@ -176,7 +176,7 @@ void World::Draw()
 
 	//Set material coefficients
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
-	glUniform4f(MaterialID, 0.5f, 0.4f, 0.1f, 50.f);
+	glUniform4f(MaterialID, 0.5f, 0.45f, 0.05f, 50.f);
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 	glm::mat4 worldMatrix(1.0f);
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);

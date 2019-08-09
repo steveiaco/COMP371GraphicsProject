@@ -42,7 +42,7 @@ float PerlinNoise::DotGridGradient(unsigned int ix, unsigned int iy, float dx, f
 }
 
 // Compute Perlin noise at coordinates x, y
-float PerlinNoise::Perlin(float x, float y) const 
+float PerlinNoise::Perlin(float x, float y) const
 {
 	// Determine grid cell coordinates
 	// Perlin noise seems to break down for negative values, we will solve for this problem by using a large offset so that the input remains positive.
@@ -62,11 +62,11 @@ float PerlinNoise::Perlin(float x, float y) const
 	float n0, n1, ix0, ix1, value;
 
 	n0 = DotGridGradient(x0, y0, tx, ty);
-	n1 = DotGridGradient(x1, y0, 1-tx, ty);
+	n1 = DotGridGradient(x1, y0, 1 - tx, ty);
 	ix0 = lerp(n0, n1, sx);
 
-	n0 = DotGridGradient(x0, y1, tx, 1-ty);
-	n1 = DotGridGradient(x1, y1, 1-tx, 1-ty);
+	n0 = DotGridGradient(x0, y1, tx, 1 - ty);
+	n1 = DotGridGradient(x1, y1, 1 - tx, 1 - ty);
 	ix1 = lerp(n0, n1, sx);
 
 	//Range of perlin noise ISN'T -1 to 1 (I learned this the hard way). It's actually -sqrt(0.5) to sqrt(0.5). We will map it to -1 to 1 though.
