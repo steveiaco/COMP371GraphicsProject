@@ -35,3 +35,15 @@ path = "../Assets/Models/Rock/Rock.obj"
 position = 10.0f 10.0f 0.5f
 rotation = 0.0f 1.0f 0.0f 0.0f
 scaling = 0.05f 0.05f 0.05f 
+
+[ChunkObject]
+name = "rock"
+texture = "../Assets/Models/Rock/Rock(256)_diffuse.tga"
+path = "../Assets/Models/Rock/Rock.obj"
+scaling_min = 0.01f 0.01f 0.01f 
+scaling_max = 0.05f 0.05f 0.05f 
+rotation_angle_min = 0.0f 0.0f 0.0f
+rotation_angle_max = 90.0f 90.0f 90.0f
+temperature_range = 0.0f 1.0f
+humidity_range = 0.0f 1.0f
+altitude_range = 0.0f 1.0f
