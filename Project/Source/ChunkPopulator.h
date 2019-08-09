@@ -19,8 +19,8 @@ namespace pg
 		
 		private:
 
-			const static int STRIDE_X = 2;
-			const static int STRIDE_Y = 2;
+			const static int STRIDE_X = 1;
+			const static int STRIDE_Y = 1;
 
 			const PerlinNoise& mNoise;
 			const Terrain& mTerrain;

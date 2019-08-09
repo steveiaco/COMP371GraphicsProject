@@ -37,6 +37,9 @@ namespace pg
 			void SetSouthChunk(TerrainChunk* chunk) { SetNeighborChunk(2, chunk); }
 			void SetEastChunk(TerrainChunk* chunk) { SetNeighborChunk(3, chunk); }
 
+			void AddObjectInstance(ChunkObjectInstance* i);
+			void SortObjectInstances();
+
 			//Keep CHUNK_SIZE to a power of 2 (makes swapping LOD easier)
 			const static int CHUNK_SIZE = 128;
 			const static int MIN_LOD = 4;
@@ -44,6 +47,7 @@ namespace pg
 			// We could make the code work without this rlationship, but it'll be more efficient for the Terrain and Terrain Generator classes if they can directly access the chunk data
 			friend class Terrain;
 			friend class TerrainGenerator;
+			friend class ChunkPopulator;
 
 		private:
 			// Chunks will always share a set of vertices with neighboring chunks (this is inevitable)
@@ -95,7 +99,7 @@ namespace pg
 			};
 
 			//Holds all objects that are to be rendered on this chunk.
-			std::vector<ChunkObjectInstance> objectsInChunk;
+			std::vector<ChunkObjectInstance*> objectsInChunk;
 		};
 	}
 }

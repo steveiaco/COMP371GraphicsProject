@@ -17,17 +17,13 @@ namespace pg
 	{
 		Terrain::Terrain(const TerrainGenerator& terrainGenerator)
 			: mTerrainGenerator(terrainGenerator)
-		{
-		    GetChunkAt(0,0);
-		}
+		{ }
 
 		Terrain::Terrain(const Terrain& orig)
 			: mTerrainGenerator(orig.mTerrainGenerator)
 			, mAesthetic(orig.mAesthetic)
 			, mChunkMap(orig.mChunkMap)
-		{
-            GetChunkAt(0,0);
-		}
+		{ }
 
 		Terrain::~Terrain()
 		{
@@ -36,6 +32,11 @@ namespace pg
 			{
 				delete it->second;
 			}
+		}
+
+		void Terrain::Start()
+		{
+			GetChunkAt(0, 0);
 		}
 
 		void Terrain::Draw()
@@ -208,12 +209,25 @@ namespace pg
 				{
 					chunk->SetEastChunk(it->second);
 				}
+
+				chunkPopulator->PopulateChunk(chunk);
+
 				return *chunk;
 			}
 			else
 			{
 				return *it->second;
 			}
+		}
+
+		void Terrain::AttachChunkPopulator(ChunkPopulator * c)
+		{
+			chunkPopulator = c;
+		}
+
+		void Terrain::AddChunkObject(ChunkObject * o)
+		{
+			chunkPopulator->AddObject(o);
 		}
 
 	}

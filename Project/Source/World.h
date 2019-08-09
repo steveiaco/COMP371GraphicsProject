@@ -15,6 +15,7 @@
 
 class Camera;
 class Model;
+class ChunkObject;
 class Animation;
 class AnimationKey;
 class ParticleSystem;
@@ -34,7 +35,7 @@ class PerlinNoise;
 class World
 {
 public:
-	World();
+	World(char * scene);
 	~World();
 	
     static World* GetInstance();
@@ -74,6 +75,7 @@ private:
     std::vector<ParticleSystem*> mParticleSystemList;
 	std::vector<ParticleDescriptor*> mParticleDescriptorList;
 	std::vector<LightSource*> mLightList;
+	std::vector<ChunkObject*> mChunkObject;
 	unsigned int mCurrentCamera;
 
     BillboardList* mpBillboardList;

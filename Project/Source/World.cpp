@@ -42,17 +42,21 @@ using namespace glm;
 World* World::instance;
 
 
-World::World()
+World::World(char * scene)
 {
     instance = this;
+
 
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
 
 	pg::terrain::ChunkPopulator* chunkPopulator = new pg::terrain::ChunkPopulator(*mpTerrain, *mpPerlin);
-	mpTerrainGenerator->AttachChunkPopulator(chunkPopulator);
+	mpTerrain->AttachChunkPopulator(chunkPopulator);
 
+	LoadScene(scene);
+
+	mpTerrain->Start();
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCurrentCamera = 0;
@@ -306,9 +310,11 @@ void World::LoadScene(const char * scene_path)
 				obj->Load(iss);
 				mModel.push_back(obj);
 			}
-			else if (result == "chunkmodel") 
+			else if (result == "chunkobject") 
 			{
-				//todo implement
+				ChunkObject* obj = new ChunkObject();
+				obj->Load(iss);
+				mpTerrain->AddChunkObject(obj);
 			}
 			else if ( result.empty() == false && result[0] == '#')
 			{

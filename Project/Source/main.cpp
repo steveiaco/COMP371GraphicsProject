@@ -18,20 +18,24 @@ int main(int argc, char*argv[])
 	EventManager::Initialize();
 	Renderer::Initialize();
 
-	World world;    
-    
-	if (argc > 1)
-	{
-		world.LoadScene(argv[1]);
-	}
-	else
-	{
+	char * scene;
+
 #if defined(PLATFORM_OSX)
-		world.LoadScene("Scenes/CoordinateSystem.scene");
+	scene = "Scenes/CoordinateSystem.scene";
 #else
-		world.LoadScene("../Assets/Scenes/CoordinateSystem.scene");
+	scene = "../Assets/Scenes/CoordinateSystem.scene";
 #endif
-	}
+
+
+	World world(scene);    
+    
+	//if (argc > 1)
+	//{
+	//	world.LoadScene(argv[1]);
+	//}
+	//else
+	//{
+
 
 	// Main Loop
 	do

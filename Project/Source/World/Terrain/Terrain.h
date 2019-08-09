@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TerrainChunk.h"
+#include "../../ChunkPopulator.h"
+
 
 #include <map>
 
@@ -39,6 +41,15 @@ namespace pg
 			TerrainAesthetic GetAesthetic() const { return mAesthetic; }
 			void SetAesthetic(const TerrainAesthetic aesthetic) { mAesthetic = aesthetic; }
 
+			// Attach ChunkPopulator (MUST BE RUN BEFORE USING THIS CLASS)
+			void AttachChunkPopulator(ChunkPopulator* c);
+			
+			//Add chunk object to chunk populator
+			void AddChunkObject(ChunkObject * o);
+
+			//Start terrain generation, used to synchronize object loading (so that chunks do not start getting generated before all other setup is complete)
+			void Start();
+
 			//Draw visible chunks. Create chunks and update their LOD as needed. We do updates within draw to avoid having to look-up nearby chunks more than once.
 			void Draw();
 
@@ -50,6 +61,9 @@ namespace pg
 
 			// Will get chunk at coordinates if it exists, will create it otherwise
 			TerrainChunk& GetChunkAt(const int xCoord, const int yCoord);
+
+			//Used to populate new chunks with objects
+			ChunkPopulator* chunkPopulator;
 
 			// Generator used to generate new chunks
 			const TerrainGenerator& mTerrainGenerator;

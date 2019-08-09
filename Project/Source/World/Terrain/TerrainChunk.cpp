@@ -3,6 +3,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <algorithm>
 
 namespace pg
 {
@@ -249,6 +250,28 @@ namespace pg
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				break;
 			}
+
+			//todo, make compatible with Aesthetic
+
+			//Next, draw objects contained in the chunk
+			for (auto it = objectsInChunk.begin(); it < objectsInChunk.end(); it++) 
+			{
+				(*it)->Draw();
+			}
+		}
+		void TerrainChunk::AddObjectInstance(ChunkObjectInstance * i)
+		{
+			objectsInChunk.push_back(i);
+		}
+		void TerrainChunk::SortObjectInstances()
+		{
+			//The following lambda function sorts the object instance array, putting identical object types next to each other, minimizing the number of times we swap out the VBO and VAO.
+			//todo test if this actually works properly
+			std::sort(objectsInChunk.begin(), objectsInChunk.end(),
+				[](const ChunkObjectInstance * a, const ChunkObjectInstance * b) -> bool
+			{
+				return a->GetModel() > b->GetModel();
+			});
 		}
 	}
 }

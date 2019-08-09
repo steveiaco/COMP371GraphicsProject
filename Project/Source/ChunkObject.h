@@ -21,6 +21,11 @@ public:
 	inline glm::vec2 GetAltitudeRange() { return glm::vec2(minAltitude, maxAltitude); }
 	inline glm::vec2 GetHumidityRange() { return glm::vec2(minHumidity, maxHumidity); }
 
+	inline glm::vec3 GetMinScaling() { return minScaling; }
+	inline glm::vec3 GetMaxScaling() { return maxScaling; }
+	inline glm::vec3 GetMinRotationAngle() { return minRotation; }
+	inline glm::vec3 GetMaxRotationAngle() { return maxRotation; }
+
 private:
 
 
@@ -88,5 +93,5 @@ private:
 	float minAltitude;
 	float maxAltitude;
 
-
+	friend class ChunkObjectInstance;
 };

@@ -79,11 +79,8 @@ namespace pg
 					chunk.mHeightMap[i][j] = Ease((chunk.mHeightMap[i][j] - minHeight) / (maxHeight - minHeight)) * (maxHeight - minHeight) + minHeight;
 				}
 			}
-		}
 
-		void TerrainGenerator::AttachChunkPopulator(ChunkPopulator * c)
-		{
-			chunkPopulator = c;
+			
 		}
 
 		float TerrainGenerator::GetHumidityAt(const float mXCoord, const float mYCoord) const 
