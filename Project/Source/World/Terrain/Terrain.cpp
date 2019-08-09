@@ -19,9 +19,9 @@ namespace pg
 			: mTerrainGenerator(terrainGenerator)
 		{
 			// Pre-generate a perimiter of chunks around origin
-			for (int x = -3; x < 4; x++)
+			for (int x = -5; x <= 5; x++)
 			{
-				for (int y = -3; y < 4; y++)
+				for (int y = -5; y <= 5; y++)
 				{
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(x, y);
@@ -70,12 +70,12 @@ namespace pg
 					// Get LOD of chunk
 					unsigned short LODY = (offsetY < 0) ? -static_cast <short> (LODFactor * offsetY) : static_cast <short> (LODFactor * offsetY);
 					unsigned int LOD = glm::max(LODX, LODY);
-					crrtChunk.SetLOD((LOD == 0) ? 0 : LOD - 1);
+					LOD = (LOD == 0) ? 0 : LOD - 1;
 
 					// Draw Chunk
 					// TODO - Only draw chunks in front of camera 
 					// This could be done by checking distance between 4 corners of chunk and near plane. If distance is positive for any of the four, draw chunk.
-					crrtChunk.Draw();
+					crrtChunk.Draw(LOD);
 				}
 			}
 		}

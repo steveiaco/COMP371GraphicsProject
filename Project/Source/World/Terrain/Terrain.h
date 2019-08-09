@@ -33,6 +33,7 @@ namespace pg
 
 			// Get rendering aesthetic to use
 			TerrainAesthetic GetAesthetic() const { return mAesthetic; }
+			const TerrainGenerator& GetTerrainGenerator() const { return mTerrainGenerator; }
 			void SetAesthetic(const TerrainAesthetic aesthetic) { mAesthetic = aesthetic; }
 
 			//Draw visible chunks. Create chunks and update their LOD as needed. We do updates within draw to avoid having to look-up nearby chunks more than once.

@@ -1,11 +1,6 @@
 #include "TerrainGenerator.h"
 #include "TerrainChunk.h"
-
-#if defined(GLM_PLATFORM_APPLE) || defined(GLM_PLATFORM_LINUX)
-#include "../../PerlinNoise.h"
-#else
 #include "..\..\PerlinNoise.h"
-#endif
 
 namespace pg
 {
@@ -33,21 +28,15 @@ namespace pg
 
 		void TerrainGenerator::FillChunk(TerrainChunk& chunk) const
 		{
-			static float test = mNoise.Perlin(10.f, 10.f);
-			float newTest = mNoise.Perlin(10.f, 10.f);
-			assert(newTest == test);
-
 			float crrtAmplitude = mAmplitude;
 			float crrtFrequency = mFrequency;
+			float cumAmplitude = crrtAmplitude;
 
-			float maxHeight = 0.f;
-			float minHeight = 0.f;
-
-			for (int i = 0; i <= TerrainChunk::CHUNK_SIZE; i++)
+			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 			{
-				for (int j = 0; j <= TerrainChunk::CHUNK_SIZE; j++)
+				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
 				{
-					chunk.mHeightMap[i][j] = crrtAmplitude * Ease(mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j)));
+					chunk.mHeightMap[i][j] = crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
 				}
 			}
 			crrtAmplitude *= mPersistence;
@@ -55,9 +44,10 @@ namespace pg
 
 			for (int octave = 1; octave < mNumOctaves; octave++)
 			{
-				for (int i = 0; i <= TerrainChunk::CHUNK_SIZE; i++)
+				cumAmplitude += crrtAmplitude;
+				for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 				{
-					for (int j = 0; j <= TerrainChunk::CHUNK_SIZE; j++)
+					for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
 					{
 						chunk.mHeightMap[i][j] += crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
 					}
@@ -66,8 +56,30 @@ namespace pg
 				crrtFrequency *= mLacunarity;
 			}
 
-			chunk.UpdateNormals();
-			ColorChunk(chunk);
+			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
+			{
+				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
+				{
+					chunk.mHeightMap[i][j] = cumAmplitude * Ease(chunk.mHeightMap[i][j] / cumAmplitude);
+				}
+			}
+
+			crrtAmplitude = mAmplitude / 10.f;
+			crrtFrequency = 1.f/5.f;
+			cumAmplitude = crrtAmplitude;
+
+			for (int octave = 1; octave < 3; octave++)
+			{
+				for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
+				{
+					for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
+					{
+						chunk.mHeightMap[i][j] += crrtAmplitude * (0.3f + 0.3f * mNoise.Perlin( static_cast <float> (chunk.mXCoord + i) / 300.f + 300.f, crrtFrequency *  static_cast <float> (chunk.mYCoord + j) / 300.f + 300.f) * Ease(mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i) + 300.f, crrtFrequency *  static_cast <float> (chunk.mYCoord + j) + 300.f)));
+					}
+				}
+				crrtAmplitude *= 2.f;
+				crrtFrequency *= mLacunarity;
+			}
 		}
 
 		void TerrainGenerator::ColorChunk(TerrainChunk& chunk) const

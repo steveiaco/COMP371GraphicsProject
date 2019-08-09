@@ -55,8 +55,8 @@ namespace pg
 			glm::vec3 colorHotDryFlat = glm::vec3(0.9f, 0.6f, 0.3f);
 			glm::vec3 colorHotDrySteep = glm::vec3(0.5f, 0.3f, 0.15f);
 			// RAINFOREST
-			glm::vec3 colorHotHumidFlat = glm::vec3(0.5f, 0.8f, 0.5f);
-			glm::vec3 colorHotHumidSteep = glm::vec3(0.6f, 0.5f, 0.4f);
+			glm::vec3 colorHotHumidFlat = glm::vec3(0.92f, 1.f, 0.48f);
+			glm::vec3 colorHotHumidSteep = glm::vec3(0.85f, 0.56f, 0.46f);
 			// POLAR
 			glm::vec3 colorColdDryFlat = glm::vec3(0.85f, 0.85f, 0.85f);
 			glm::vec3 colorColdDrySteep = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -70,8 +70,8 @@ namespace pg
 			float maxSlope = 0.99f;
 			float minSlope = 0.90f;
 			// HUMIDITY
-			float maxHumidity = 0.6f;
-			float minHumidity = 0.4f;
+			float maxHumidity = 0.8f;
+			float minHumidity = 0.6f;
 			// TEMPERATURE
 			float maxTemperature = 0.6f;
 			float minTemperature = 0.4f;
