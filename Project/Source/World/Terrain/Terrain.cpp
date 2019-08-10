@@ -9,11 +9,13 @@
 #include "../../Camera.h"
 #include "../../Renderer.h"
 #include "../../ChunkPopulator.h"
+#include "../Collisions/BoundingVolume.h"
 #else
 #include "..\..\World.h"
 #include "..\..\Camera.h"
 #include "..\..\Renderer.h"
 #include "..\..\ChunkPopulator.h"
+#include "..\Collisions\BoundingVolume.h"
 #endif
 
 namespace pg
@@ -346,6 +348,24 @@ namespace pg
 		void Terrain::AddChunkObject(ChunkObject * o)
 		{
 			chunkPopulator->AddObject(o);
+		}
+
+		bool Terrain::CheckCollisionsAt(const float xCoord, const float yCoord, BoundingVolume* volume)
+		{
+            const int chunkX = glm::floor(xCoord / TerrainChunk::CHUNK_SIZE);
+            const int chunkY = glm::floor(yCoord / TerrainChunk::CHUNK_SIZE);
+
+            auto terrainChunk = GetChunkAt(chunkX, chunkY);
+            printf("Number of objects in chunk (%d, %d): %zu\n", chunkX, chunkY, terrainChunk.objectsInChunk.size());
+
+            for (auto & it : terrainChunk.objectsInChunk)
+            {
+                if (it->CheckCollision(volume))
+                {
+                    return true;
+                }
+            }
+            return false;
 		}
 
 	}

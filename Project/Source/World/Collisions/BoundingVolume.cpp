@@ -1,14 +1,19 @@
 #include <map>
+#include <cstring>
 #include "BoundingVolume.h"
 #include "BoundingBox.h"
 #include "BoundingSphere.h"
+#include "EmptyVolume.h"
 
 std::map<char, Type> supportedTypes = {
         {'S', SPHERE},
         {'B', BOX}
 };
 
-BoundingVolume::BoundingVolume() : mPosition(glm::vec3(0.0f, 0.0f, 0.0f)), mRotationAxis(glm::vec3(0.0f, 1.0f, 0.0f)), mRotationAngleInDegrees(0.0f) {}
+BoundingVolume::BoundingVolume() : mPosition(glm::vec3(0.0f, 0.0f, 0.0f)), mRotationAxis(glm::vec3(0.0f, 1.0f, 0.0f)), mRotationAngleInDegrees(0.0f)
+{
+
+}
 
 BoundingVolume* BoundingVolume::InitializeVolume(const std::vector<ci_string>& token)
 {
@@ -18,22 +23,37 @@ BoundingVolume* BoundingVolume::InitializeVolume(const std::vector<ci_string>& t
         switch (type) {
             case SPHERE:
             {
+                if (token.size() != 4)
+                {
+                    printf("The sphere collider requires 'S' and the single radius as parameters\nDiscarding collider...\n");
+                    return new EmptyVolume();;
+                }
                 BoundingSphere *s = new BoundingSphere();
                 s->SetRadius(static_cast<float>(atof(token[3].c_str())));
                 return s;
             }
             case BOX:
             {
+                if (token.size() != 6)
+                {
+                    printf("The box collider requires 'B' and the 3 stride values (on x, y, z) as parameters\nDiscarding collider...\n");
+                    return new EmptyVolume();;
+                }
                 BoundingBox* b = new BoundingBox();
                 b->SetStrides(static_cast<float>(atof(token[3].c_str())), static_cast<float>(atof(token[4].c_str())), static_cast<float>(atof(token[5].c_str())));
                 return b;
             }
             default:
-                return nullptr;
+                return new EmptyVolume();
         }
     }
-    return nullptr;
+    return new EmptyVolume();
 }
+BoundingVolume* BoundingVolume::InitializeVolume()
+{
+    return new EmptyVolume();
+}
+
 void BoundingVolume::SetPosition(glm::vec3 position)
 {
     mPosition = position;
@@ -55,20 +75,20 @@ bool BoundingVolume::SphereBoxCollision(BoundingSphere *sphere, BoundingBox *box
     float y = glm::max(min.y, glm::min(spherePos.y, max.y));
     float z = glm::max(min.z, glm::min(spherePos.z, max.z));
 
-    double distance = sqrt((x - spherePos.x) * (x - spherePos.x) +
+    double distanceSquared = ((x - spherePos.x) * (x - spherePos.x) +
                            (y - spherePos.y) * (y - spherePos.y) +
                            (z - spherePos.z) * (z - spherePos.z));
 
-    return distance < sphere->GetRadius();
+    return distanceSquared < (sphere->GetRadius() * sphere->GetRadius());
 }
 
 bool BoundingVolume::SphereCollision(BoundingSphere *a, BoundingSphere *b)
 {
-    double distanceBetweenSpheres = sqrt(pow(a->GetPosition().x - b->GetPosition().x, 2)
-                                         + pow(a->GetPosition().y - b->GetPosition().y, 2)
-                                         + pow(a->GetPosition().z - b->GetPosition().z, 2));
+    double distanceBetweenSpheresSquared = (a->GetPosition().x - b->GetPosition().x) * (a->GetPosition().x - b->GetPosition().x)
+                                         + (a->GetPosition().y - b->GetPosition().y) * (a->GetPosition().y - b->GetPosition().y)
+                                         + (a->GetPosition().z - b->GetPosition().z) * (a->GetPosition().z - b->GetPosition().z);
 
-    return distanceBetweenSpheres < (a->GetRadius() + b->GetRadius());
+    return distanceBetweenSpheresSquared < (a->GetRadius() + b->GetRadius()) * (a->GetRadius() + b->GetRadius());
 }
 
 bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
@@ -82,4 +102,9 @@ bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
     return (minA.x <= maxB.x && maxA.x >= minB.x) &&
            (minA.y <= maxB.y && maxA.y >= minB.y) &&
            (minA.z <= maxB.z && maxA.z >= minB.z);
+}
+
+bool BoundingVolume::IsValid(BoundingVolume *volume) {
+    std::string target = "BoundingVolume";
+    return strstr(typeid(volume).name(), target.c_str());
 }

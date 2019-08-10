@@ -8,23 +8,18 @@
 class BoundingBox : public BoundingVolume {
 public:
     BoundingBox();
-    ~BoundingBox() = default;
-    void SetPosition(glm::vec3 position);
-    void SetRotation(glm::vec3 axis, float angleDegrees);
+    BoundingBox(const BoundingBox* box);
+    ~BoundingBox();
     void SetStrides(float x, float y, float z);
     void SetStrides(glm::vec3 strides);
 
-    glm::vec3 GetPosition() const		{ return mPosition; }
-    glm::vec3 GetRotationAxis() const	{ return mRotationAxis; }
-    float     GetRotationAngle() const	{ return mRotationAngleInDegrees; }
+    virtual BoundingBox* Clone() const;
+
     glm::vec3 GetStrides() const		{ return mStrides; }
     glm::vec3 GetMax() const;
     glm::vec3 GetMin() const;
 
     bool IsInVolume(BoundingVolume *volume);
 private:
-    glm::vec3 mPosition{};
-    glm::vec3 mRotationAxis{};
-    float     mRotationAngleInDegrees{};
-    glm::vec3 mStrides{};
+    glm::vec3 mStrides;
 };

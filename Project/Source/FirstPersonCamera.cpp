@@ -12,6 +12,7 @@
 #include "World/Terrain/Terrain.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "World/Collisions/BoundingSphere.h"
 
 #include <GLFW/glfw3.h>
 #include <algorithm>
@@ -28,11 +29,10 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mL
     mPreviousHeight = 0;
     mOldSpaceBarState = -1;
     mOldFreeModeKeyState = -1;
+    mBoundingVolume = new BoundingSphere(position, 200);
 }
 
-FirstPersonCamera::~FirstPersonCamera()
-{
-}
+FirstPersonCamera::~FirstPersonCamera() {}
 
 void FirstPersonCamera::Update(float dt)
 {
@@ -63,35 +63,6 @@ void FirstPersonCamera::Update(float dt)
 	float phi = radians(mVerticalAngle);
 
 	mLookAt = vec3(cosf(phi)*cosf(theta), sinf(phi), -cosf(phi)*sinf(theta));
-	
-	vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
-	glm::normalize(sideVector);
-
-	// A S D W for motion along the camera basis vectors
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
-	{
-		mPosition += mLookAt * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
-	{
-		mPosition -= mLookAt * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
-	{
-		mPosition += sideVector * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
-	{
-		mPosition -= sideVector * dt * mSpeed;
-	}
-
-    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
-    {
-        mPosition -= sideVector * dt * mSpeed;
-    }
 
     int currentFreeModeKeyState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F );
     if (currentFreeModeKeyState == GLFW_PRESS)
@@ -113,9 +84,16 @@ void FirstPersonCamera::Update(float dt)
     }
     mOldFreeModeKeyState = currentFreeModeKeyState;
 
-    float height = computeHeight(dt);
     if (!mFreeMode)
     {
+        if (!World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume))
+        {
+            handleInput(dt);
+        }
+        else
+        {
+            printf("Collision found at (%f, %f)", mPosition.x, mPosition.z);
+        }
         int currentSpaceBarState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE);
         if (currentSpaceBarState == GLFW_PRESS && !mJumping)
         {
@@ -136,6 +114,45 @@ void FirstPersonCamera::Update(float dt)
         mPosition.y = newHeight;
         mPreviousHeight = newHeight;
 
+    }
+    else
+    {
+        // Uncomment for debugging
+        World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume);
+
+        handleInput(dt);
+    }
+
+    if (mBoundingVolume != nullptr)
+    {
+        mBoundingVolume->SetPosition(mPosition);
+    }
+}
+
+void FirstPersonCamera::handleInput(float dt)
+{
+    vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
+    glm::normalize(sideVector);
+
+    // A S D W for motion along the camera basis vectors
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
+    {
+        mPosition += mLookAt * dt * mSpeed;
+    }
+
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
+    {
+        mPosition -= mLookAt * dt * mSpeed;
+    }
+
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
+    {
+        mPosition += sideVector * dt * mSpeed;
+    }
+
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
+    {
+        mPosition -= sideVector * dt * mSpeed;
     }
 }
 

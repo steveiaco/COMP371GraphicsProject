@@ -4,6 +4,8 @@
 #include "Renderer.h"
 #include "World.h"
 #include "Camera.h"
+#include "World/Collisions/BoundingVolume.h"
+#include <typeinfo>
 
 
 unsigned int ChunkObjectInstance::currentVAO;
@@ -15,11 +17,28 @@ ChunkObjectInstance::ChunkObjectInstance(ChunkObject * c) : model(c)
 	mPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 	mScaling = glm::vec3(0.0f, 0.0f, 0.0f);
 	mRotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	InitBoundingVolume();
+}
+
+void ChunkObjectInstance::InitBoundingVolume()
+{
+    if (BoundingVolume::IsValid(model->mBoundingVolume))
+    {
+        mBoundingVolume = BoundingVolume::InitializeVolume();
+    }
+    else
+    {
+        mBoundingVolume = model->mBoundingVolume->Clone();
+    }
 }
 
 void ChunkObjectInstance::SetPosition(glm::vec3 position)
 {
 	mPosition = position;
+    if (mBoundingVolume != nullptr)
+    {
+        mBoundingVolume->SetPosition(mPosition);
+    }
 }
 
 void ChunkObjectInstance::SetScaling(glm::vec3 scaling)
@@ -43,8 +62,23 @@ glm::mat4 ChunkObjectInstance::GetWorldMatrix() const
 	return translation * rotateX * rotateY * rotateZ * scale;
 }
 
+bool ChunkObjectInstance::CheckCollision(BoundingVolume *volume)
+{
+    if (mBoundingVolume != nullptr && volume != nullptr)
+    {
+        return mBoundingVolume->IsInVolume(volume);
+    }
+    return false; // Default to no collision
+}
+
 void ChunkObjectInstance::Draw()
 {
+    // Make sure the BoundingVolume follows the instance
+    if (mBoundingVolume != nullptr)
+    {
+        mBoundingVolume->SetPosition(mPosition);
+    }
+
 	//Draw the vertex buffer
 
 	glBindVertexArray(model->mVAO);

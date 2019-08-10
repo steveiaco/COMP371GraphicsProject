@@ -36,6 +36,7 @@ namespace pg
 	}
 }
 class PerlinNoise;
+class BoundingVolume;
 
 class World
 {
@@ -44,6 +45,7 @@ public:
 	~World();
 	
     static World* GetInstance();
+    static bool CheckCollisions(float x, float y, BoundingVolume* volume);
 
 	void Update(float dt);
 	void Draw();
@@ -54,7 +56,7 @@ public:
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
     const Camera* GetCurrentCamera() const;
-    const pg::terrain::Terrain* GetTerrain() const { return mpTerrain; };
+    pg::terrain::Terrain *const GetTerrain() const { return mpTerrain; };
 
 	void SetLights();
 	void AddLightSource(LightSource* b);

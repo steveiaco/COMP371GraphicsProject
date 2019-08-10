@@ -37,6 +37,8 @@
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
 
+#include "World/Collisions/BoundingVolume.h"
+
 using namespace std;
 using namespace glm;
 
@@ -117,6 +119,10 @@ World::~World()
 World* World::GetInstance()
 {
     return instance;
+}
+
+bool World::CheckCollisions(float x, float y, BoundingVolume* volume) {
+    return World::GetInstance()->GetTerrain()->CheckCollisionsAt(x, y, volume);
 }
 
 void World::Update(float dt)

@@ -52,6 +52,11 @@ void ChunkObject::Load(ci_istringstream& iss)
 			exit(-1);
 		}
 	}
+
+	if (mBoundingVolume == nullptr)
+    {
+	    mBoundingVolume = BoundingVolume::InitializeVolume();
+    }
 }
 
 bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
@@ -156,7 +161,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 		}
         else if (token[0] == "collider")
         {
-            assert(token.size() > 5);
+            assert(token.size() > 3);
             assert(token[1] == "=");
             mBoundingVolume = BoundingVolume::InitializeVolume(token);
         }
@@ -557,7 +562,7 @@ std::vector<std::string> ChunkObject::split(const std::string &s, char delim) {
 
 bool ChunkObject::CheckCollision(BoundingVolume *volume)
 {
-    if (mBoundingVolume && volume)
+    if (mBoundingVolume != nullptr && volume != nullptr)
     {
         return mBoundingVolume->IsInVolume(volume);
     }
