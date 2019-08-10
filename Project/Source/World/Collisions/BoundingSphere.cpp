@@ -1,17 +1,23 @@
 #include "BoundingSphere.h"
+#include "BoundingBox.h"
 
-bool BoundingSphere::isInVolume(BoundingSphere *sphere) {
-    double distanceBetweenSpheres = sqrt(pow(mPosition.x - sphere->mPosition.x, 2)
-                                          + pow(mPosition.y - sphere->mPosition.y, 2)
-                                          + pow(mPosition.z - sphere->mPosition.z, 2));
-
-    return distanceBetweenSpheres < (mRadius + sphere->mRadius);
+BoundingSphere::BoundingSphere() : BoundingVolume(), mPosition(0.0f, 0.0f, 0.0f), mRotationAngleInDegrees(0.0f), mRotationAxis(0.f, 0.0f, 0.0f), mRadius(0.0f)
+{
 }
 
-bool BoundingSphere::isInVolume(BoundingVolume *volume) {
+void BoundingSphere::SetRadius(float radius)
+{
+    mRadius = radius;
+}
+
+bool BoundingSphere::IsInVolume(BoundingVolume *volume) {
     if(dynamic_cast<BoundingSphere*>(volume))
     {
-        return isInVolume(dynamic_cast<BoundingSphere*>(volume));
+        return BoundingVolume::SphereCollision(this, dynamic_cast<BoundingSphere*>(volume));
+    }
+    else if (dynamic_cast<BoundingBox*>(volume))
+    {
+        return BoundingVolume::SphereBoxCollision(this, dynamic_cast<BoundingBox*>(volume));
     }
     return false;
 }

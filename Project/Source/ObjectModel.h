@@ -4,6 +4,8 @@
 #include <istream>
 #include "TextureLoader.h"
 
+class BoundingVolume;
+
 class ObjectModel : public Model 
 {
 public:
@@ -12,7 +14,6 @@ public:
 
 	virtual void Update(float dt);
 	virtual void Draw();
-
 
 private:
 
