@@ -68,16 +68,6 @@
     <ClCompile Include="..\Source\World\Terrain\TerrainChunk.cpp" />
     <ClCompile Include="..\Source\World\Terrain\TerrainGenerator.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Assets\Textures\back.jpg" />
-    <Image Include="..\Assets\Textures\BillboardTest.bmp" />
-    <Image Include="..\Assets\Textures\bottom.jpg" />
-    <Image Include="..\Assets\Textures\front.jpg" />
-    <Image Include="..\Assets\Textures\left.jpg" />
-    <Image Include="..\Assets\Textures\Particle.png" />
-    <Image Include="..\Assets\Textures\right.jpg" />
-    <Image Include="..\Assets\Textures\top.jpg" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{277EAE68-9EED-4EFF-BAD3-2A70787A3E8D}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

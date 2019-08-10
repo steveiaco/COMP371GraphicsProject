@@ -49,6 +49,7 @@ World::World(char * scene)
 {
     instance = this;
 
+	mDayCycle = 0;
 	mSkybox = new Skybox();
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
@@ -63,15 +64,6 @@ World::World(char * scene)
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCurrentCamera = 0;
-    
-#if defined(PLATFORM_OSX)
-    int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
-#else
-    //int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
-#endif
-    //assert(billboardTextureID != 0);
-    
-    //mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
 
 World::~World()
@@ -129,6 +121,7 @@ World* World::GetInstance()
 
 void World::Update(float dt)
 {
+	mDayCycle += dt;
 	// User Inputs
 	// 0 1 2 to change the Camera
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
@@ -154,15 +147,6 @@ void World::Update(float dt)
 	{
 		(*it)->Update(dt);
 	}
-    
-    // Update billboards
-    
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    //mpBillboardList->Update(dt);
 
 }
 
@@ -170,14 +154,13 @@ void World::Draw()
 {
 	Renderer::BeginFrame();
 
-	unsigned int prevShader = Renderer::GetCurrentShader();
 	Renderer::SetShader(SHADER_SKYBOX);
 	glUseProgram(Renderer::GetShaderProgramID());
 	
 	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
 
 	// Send the view projection constants to the shader
-	mat4 V = mat4(mat3(mCamera[mCurrentCamera]->GetViewMatrix()));
+	mat4 V = mat4(mat3(mCamera[mCurrentCamera]->GetViewMatrix())); //removing translate component for skybox
 	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 
 	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
@@ -186,20 +169,22 @@ void World::Draw()
 	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
 
-	mSkybox->Draw();
+	int dayPhase = fmod(mDayCycle, 100.0f) > 50.0f ? 1 : 0;
+	float sigmoid = 1.0f / (1.0f + std::exp(-(fmod(mDayCycle, 50.0f) / 5.0f - 8.5f)));
+	mSkybox->Draw(dayPhase, sigmoid);
 
-	Renderer::SetShader((ShaderType)prevShader);
+	Renderer::SetShader(SHADER_SOLID_COLOR);
 	glUseProgram(Renderer::GetShaderProgramID());
 
 	// This looks for the MVP Uniform variable in the Vertex Program
-	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
-	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+	VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 V = mCamera[mCurrentCamera]->GetViewMatrix();
-	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
-	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
-	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
+	mat4 VM = mCamera[mCurrentCamera]->GetViewMatrix();
+	mat4 PM = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &VM[0][0]);
+	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &PM[0][0]);
 
 	SetLights();
 
@@ -223,9 +208,6 @@ void World::Draw()
 		(*it)->Draw();
 	}
     Renderer::CheckForErrors();
-
-	// Restore previous shader
-	Renderer::SetShader((ShaderType) prevShader);
 
 	Renderer::EndFrame();
 }

@@ -22,26 +22,40 @@
 using namespace glm;
 
 #if defined(PLATFORM_OSX)
-const std::vector<std::string> skyboxFaces{
-"Textures/right.jpg",
-"Textures/up.jpg",
-"Textures/top.jpg",
-"Textures/down.jpg",
-"Textures/front.jpg",
-"Textures/back.jpg"
+const std::vector<std::string> daySkyboxFaces{
+"Textures/day_right.jpg",
+"Textures/day_left.jpg",
+"Textures/day_top.jpg",
+"Textures/day_bottom.jpg",
+"Textures/day_front.jpg",
+"Textures/day_back.jpg"
+};
+const std::vector<std::string> nightSkyboxFaces{
+"Textures/night_right.jpg",
+"Textures/night_left.jpg",
+"Textures/night_top.jpg",
+"Textures/night_bottom.jpg",
+"Textures/night_front.jpg",
+"Textures/night_back.jpg"
 };
 #else
-const std::vector<std::string> skyboxFaces{
-"../Assets/Textures/right.jpg",
-"../Assets/Textures/left.jpg",
-"../Assets/Textures/top.jpg",
-"../Assets/Textures/bottom.jpg",
-"../Assets/Textures/front.jpg",
-"../Assets/Textures/back.jpg"
+const std::vector<std::string> daySkyboxFaces{
+"../Assets/Textures/day_right.jpg",
+"../Assets/Textures/day_left.jpg",
+"../Assets/Textures/day_top.jpg",
+"../Assets/Textures/day_bottom.jpg",
+"../Assets/Textures/day_front.jpg",
+"../Assets/Textures/day_back.jpg"
+};
+const std::vector<std::string> nightSkyboxFaces{
+"../Assets/Textures/night_right.jpg",
+"../Assets/Textures/night_left.jpg",
+"../Assets/Textures/night_top.jpg",
+"../Assets/Textures/night_bottom.jpg",
+"../Assets/Textures/night_front.jpg",
+"../Assets/Textures/night_back.jpg"
 };
 #endif
-
-
 
 Skybox::Skybox() {
 	float SIZE = 1.0f;
@@ -111,16 +125,15 @@ Skybox::~Skybox() {
 }
 
 void Skybox::loadSkybox() {
-    unsigned int texture;
-    glGenTextures(1, &texture);
-	assert(texture != 0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
+    unsigned int dayTexture;
+    glGenTextures(1, &dayTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, dayTexture);
     
     int width, height;
-    for (unsigned int i = 0; i < skyboxFaces.size(); i++)
+    for (unsigned int i = 0; i < daySkyboxFaces.size(); i++)
     {
-		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(skyboxFaces[i].c_str(), 0);
-        FIBITMAP* image = FreeImage_Load(format, skyboxFaces[i].c_str());
+		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(daySkyboxFaces[i].c_str(), 0);
+        FIBITMAP* image = FreeImage_Load(format, daySkyboxFaces[i].c_str());
         FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
 		FreeImage_FlipVertical(image);
         if (image)
@@ -134,7 +147,7 @@ void Skybox::loadSkybox() {
             
         }
         else {
-            std::cout << "Could not load texture " << skyboxFaces[i].c_str() << std::endl;
+            std::cout << "Could not load texture " << daySkyboxFaces[i].c_str() << std::endl;
         }
         FreeImage_Unload(image);
         FreeImage_Unload(image32bits);
@@ -145,14 +158,59 @@ void Skybox::loadSkybox() {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
     
-	mTexture = texture;
+	mDayTexture = dayTexture;
+
+	unsigned int nightTexture;
+	glGenTextures(1, &nightTexture);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, nightTexture);
+
+	for (unsigned int i = 0; i < nightSkyboxFaces.size(); i++)
+	{
+		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(nightSkyboxFaces[i].c_str(), 0);
+		FIBITMAP* image = FreeImage_Load(format, nightSkyboxFaces[i].c_str());
+		FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
+		FreeImage_FlipVertical(image);
+		if (image)
+		{
+
+			width = FreeImage_GetWidth(image32bits);
+			height = FreeImage_GetHeight(image32bits);
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
+				0, GL_RGB, width, height,
+				0, GL_BGR, GL_UNSIGNED_BYTE, (const void*)FreeImage_GetBits(image));
+
+		}
+		else {
+			std::cout << "Could not load texture " << nightSkyboxFaces[i].c_str() << std::endl;
+		}
+		FreeImage_Unload(image);
+		FreeImage_Unload(image32bits);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+	mNightTexture = nightTexture;
 }
 
-void Skybox::Draw() {
+void Skybox::Draw(int dayNightPhase, float dayNightRatio) {
+	std::cout << dayNightRatio << std::endl;
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture);
+	GLuint dayNightPhaseLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightPhase");
+	GLuint dayNightRatioLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightRatio");
+	glUniform1f(dayNightRatioLocation, dayNightRatio);
+	if (dayNightPhase == 0) {
+		glUniform4f(dayNightPhaseLocation, 0.1f, 0.1f, 0.1f, 0.1f);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, mDayTexture);
+	}
+	else {
+		glUniform4f(dayNightPhaseLocation, 0.6f, 0.8f, 0.95f, 0.9f);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, mNightTexture);
+	}
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 }

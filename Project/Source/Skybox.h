@@ -18,11 +18,12 @@ public:
     Skybox();
     ~Skybox();
     void loadSkybox();
-    void Draw();
+    void Draw(int dayNightPhase, float dayNightRatio);
 private:
     unsigned int mVAO;
     unsigned int mVBO;
-    unsigned int mTexture;
+    unsigned int mDayTexture;
+	unsigned int mNightTexture;
 
 	struct Vertex
 	{

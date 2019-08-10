@@ -187,30 +187,4 @@
       <Filter>Source Files\World\Terrain</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="..\Assets\Textures\back.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\BillboardTest.bmp">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\bottom.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\front.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\left.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\Particle.png">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\right.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-    <Image Include="..\Assets\Textures\top.jpg">
-      <Filter>Resource Files\Textures</Filter>
-    </Image>
-  </ItemGroup>
 </Project>
