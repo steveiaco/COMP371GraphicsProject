@@ -12,6 +12,7 @@
 #include "World.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
+#include "Skybox.h"
 
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
@@ -48,6 +49,7 @@ World::World(char * scene)
 {
     instance = this;
 
+	mSkybox = new Skybox();
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
@@ -181,6 +183,11 @@ void World::Draw()
 	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
 
+	unsigned int prevShader = Renderer::GetCurrentShader();
+	Renderer::SetShader(SHADER_SKYBOX);
+	glUseProgram(Renderer::GetShaderProgramID());
+	mSkybox->Draw();
+
 	SetLights();
 
 	//Set material coefficients
@@ -202,35 +209,6 @@ void World::Draw()
 	{
 		(*it)->Draw();
 	}
-
-	// Draw Path Lines
-	
-	// Set Shader for path lines
-	unsigned int prevShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(SHADER_PATH_LINES);
-	glUseProgram(Renderer::GetShaderProgramID());
-
-	// Send the view projection constants to the shader
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-	{
-		mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-		(*it)->Draw();
-	}
-
-	for (vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-	{
-		mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-		(*it)->Draw();
-	}
-
     Renderer::CheckForErrors();
     
     // Draw Billboards
@@ -238,7 +216,6 @@ void World::Draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //mpBillboardList->Draw();
     glDisable(GL_BLEND);
-
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);

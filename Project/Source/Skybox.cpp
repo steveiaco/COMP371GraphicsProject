@@ -149,13 +149,9 @@ void Skybox::loadSkybox() {
 }
 
 void Skybox::Draw() {
-	unsigned int prevShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(SHADER_SKYBOX);
-	glUseProgram(Renderer::GetShaderProgramID());
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(mVAO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
-	Renderer::SetShader((ShaderType)prevShader);
 }

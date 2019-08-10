@@ -3,11 +3,11 @@ in vec3 aPos;
 
 out vec3 TexCoords;
 
-uniform mat4 ViewMatrix;
-uniform mat4 ProjectionMatrix;
+uniform mat4 ViewTransform;
+uniform mat4 ProjectionTransform;
 
 void main()
 {
 TexCoords = aPos;
-gl_Position = ProjectionMatrix * ViewMatrix * vec4(aPos, 1.0f);
+gl_Position = ProjectionTransform * ViewTransform * vec4(aPos, 1.0f);
 }
