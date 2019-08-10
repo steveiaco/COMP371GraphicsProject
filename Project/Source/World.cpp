@@ -169,8 +169,26 @@ void World::Update(float dt)
 void World::Draw()
 {
 	Renderer::BeginFrame();
+
+	unsigned int prevShader = Renderer::GetCurrentShader();
+	Renderer::SetShader(SHADER_SKYBOX);
+	glUseProgram(Renderer::GetShaderProgramID());
 	
-	// Set shader to use
+	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+
+	// Send the view projection constants to the shader
+	mat4 V = mat4(mat3(mCamera[mCurrentCamera]->GetViewMatrix()));
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
+
+	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+
+	// Send the view projection constants to the shader
+	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
+
+	mSkybox->Draw();
+
+	Renderer::SetShader((ShaderType)prevShader);
 	glUseProgram(Renderer::GetShaderProgramID());
 
 	// This looks for the MVP Uniform variable in the Vertex Program
@@ -182,11 +200,6 @@ void World::Draw()
 	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
 	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
-
-	unsigned int prevShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(SHADER_SKYBOX);
-	glUseProgram(Renderer::GetShaderProgramID());
-	mSkybox->Draw();
 
 	SetLights();
 
@@ -210,12 +223,6 @@ void World::Draw()
 		(*it)->Draw();
 	}
     Renderer::CheckForErrors();
-    
-    // Draw Billboards
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //mpBillboardList->Draw();
-    glDisable(GL_BLEND);
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
@@ -330,13 +337,8 @@ void World::SetLights()
 	for (int i = 0; i < mLightList.size(); i++)
 	{
 		char sUniformName[32];
-        // sprintf_s is part of an optional annex to the C++11 specification
-        // snprintf is safer and is part of the core standard and provides the same functionality
-        snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-        snprintf(sUniformName, 32, "LightColors[%i]", i);
 		GLuint LightColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-        snprintf(sUniformName, 32, "LightAttenuations[%i]", i);
 		GLuint LightAttenuationLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
 
 		glUniform4fv(WorldLightPositionLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetPosition()[0]));

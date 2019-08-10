@@ -44,7 +44,7 @@ const std::vector<std::string> skyboxFaces{
 
 
 Skybox::Skybox() {
-	float SIZE = 50.0f;
+	float SIZE = 1.0f;
 	const Vertex skyboxVertices[]{
 		// positions
 		
@@ -151,6 +151,7 @@ void Skybox::loadSkybox() {
 void Skybox::Draw() {
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(mVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, mTexture);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
