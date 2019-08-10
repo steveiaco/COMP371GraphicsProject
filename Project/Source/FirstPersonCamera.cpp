@@ -18,12 +18,12 @@
 
 const static float BASE_HEIGHT = 10.0;
 const static float CAMERA_RESPONSIVENESS = 10;
-const static float GRAVITY = -2000;
-const static float JUMP_FORCE = 800;
+const static float GRAVITY = -1000;
+const static float JUMP_FORCE = 400;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(90.0f), mAngularSpeed(2.5f), mVelocity(0.0f), mFreeMode(false)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(45.0f), mAngularSpeed(2.5f), mVelocity(0.0f), mFreeMode(false)
 {
     mPreviousHeight = 0;
     mOldSpaceBarState = -1;
