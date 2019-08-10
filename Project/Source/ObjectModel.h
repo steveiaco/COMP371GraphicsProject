@@ -13,6 +13,7 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw();
 
+
 private:
 
 	struct Vertex 
@@ -64,5 +65,5 @@ private:
 
 protected:
     virtual bool ParseLine(const std::vector<ci_string>& token);
-    ObjectModel::Vertex* LoadVertices(const char * path);
+    Vertex* LoadVertices(const char * path);
 };

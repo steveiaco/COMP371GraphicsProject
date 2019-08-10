@@ -15,6 +15,7 @@
 #include "..\..\Renderer.h"
 #include "..\..\ChunkPopulator.h"
 #endif
+
 namespace pg
 {
 	namespace terrain

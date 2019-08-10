@@ -10,6 +10,8 @@ namespace pg
 	{
 		class TerrainGenerator;
 
+		class ChunkPopulator;
+
 		enum TerrainAesthetic
 		{
 			LOW_POLY,
