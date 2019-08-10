@@ -43,9 +43,10 @@ World* World::instance;
 
 
 World::World(char * scene)
+: mFBOs()
+, mWaterRenderer(SHADER_WATER, mFBOs)
 {
     instance = this;
-
 
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
@@ -64,11 +65,11 @@ World::World(char * scene)
 #if defined(PLATFORM_OSX)
     int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+    //int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
 #endif
-    assert(billboardTextureID != 0);
+    //assert(billboardTextureID != 0);
     
-    mpBillboardList = new BillboardList(2048, billboardTextureID);
+    //mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
 
 World::~World()
@@ -116,7 +117,7 @@ World::~World()
 
 	delete mpTerrain;
     
-	delete mpBillboardList;
+	//delete mpBillboardList;
 }
 
 World* World::GetInstance()
@@ -159,7 +160,7 @@ void World::Update(float dt)
         (*it)->Update(dt);
     }
     
-    mpBillboardList->Update(dt);
+    //mpBillboardList->Update(dt);
 
 }
 
@@ -189,6 +190,12 @@ void World::Draw()
 	glm::mat4 worldMatrix(1.0f);
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
 	mpTerrain->Draw();
+
+	mFBOs.BindReflectionFrameBuffer();
+	mpTerrain->Draw();
+	mFBOs.UnbindCurrentFrameBuffer();
+	mpTerrain->Draw();
+	mpTerrain->DrawWater(mWaterRenderer);
 
 	// Draw models
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
@@ -229,7 +236,7 @@ void World::Draw()
     // Draw Billboards
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    mpBillboardList->Draw();
+    //mpBillboardList->Draw();
     glDisable(GL_BLEND);
 
 
@@ -403,12 +410,12 @@ void World::RemoveLightSource(LightSource* ls)
 
 void World::AddBillboard(Billboard* b)
 {
-	mpBillboardList->AddBillboard(b);
+	//mpBillboardList->AddBillboard(b);
 }
 
 void World::RemoveBillboard(Billboard* b)
 {
-	mpBillboardList->RemoveBillboard(b);
+	//mpBillboardList->RemoveBillboard(b);
 }
 
 void World::AddParticleSystem(ParticleSystem* particleSystem)

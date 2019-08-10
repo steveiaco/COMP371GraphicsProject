@@ -3,6 +3,7 @@
 #include <cassert>
 #include <glm/glm.hpp>
 #include "../../ChunkObjectInstance.h"
+#include "../Water/WaterQuad.h"
 
 namespace pg
 {
@@ -36,7 +37,7 @@ namespace pg
 			void SortObjectInstances();
 
 			//Keep CHUNK_SIZE to a power of 2 (makes swapping LOD easier)
-			const static unsigned short CHUNK_SIZE = 128;
+			const static unsigned short CHUNK_SIZE = 256;
 			const static int MIN_LOD = 4;
 
 			// We could make the code work without this rlationship, but it'll be more efficient for the Terrain and Terrain Generator classes if they can directly access the chunk data
@@ -58,6 +59,7 @@ namespace pg
 
 			// Terrain that chunk belongs to
 			const Terrain& mTerrain;
+			water::WaterQuad mWater;
 			// NEIGHBOR DATA (probably faster then searching map)
 			// Also used to generate vertices for border
 			// North is -z direction

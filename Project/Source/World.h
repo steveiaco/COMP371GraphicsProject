@@ -13,7 +13,8 @@
 #include "Billboard.h"
 #include <vector>
 
-
+#include "World/Water/WaterFrameBuffers.h"
+#include "World/Water/WaterRenderer.h"
 #include "SphereModel.h"
 
 class Camera;
@@ -78,6 +79,8 @@ private:
 	PerlinNoise* mpPerlin;
 	pg::terrain::TerrainGenerator* mpTerrainGenerator;
 	pg::terrain::Terrain* mpTerrain;
+	pg::water::WaterFrameBuffers mFBOs;
+	pg::water::WaterRenderer mWaterRenderer;
 
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
@@ -89,5 +92,5 @@ private:
 	std::vector<ChunkObject*> mChunkObject;
 	unsigned int mCurrentCamera;
 
-    BillboardList* mpBillboardList;
+    //BillboardList* mpBillboardList;
 };
