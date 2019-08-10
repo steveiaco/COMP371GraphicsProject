@@ -18,8 +18,8 @@
 
 const static float BASE_HEIGHT = 10.0;
 const static float CAMERA_RESPONSIVENESS = 10;
-const static float GRAVITY = -400;
-const static float JUMP_FORCE = 200;
+const static float GRAVITY = -2000;
+const static float JUMP_FORCE = 800;
 
 using namespace glm;
 
@@ -27,6 +27,7 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mL
 {
     mPreviousHeight = 0;
     mOldSpaceBarState = -1;
+    mOldFreeModeKeyState = -1;
 }
 
 FirstPersonCamera::~FirstPersonCamera()
@@ -35,10 +36,7 @@ FirstPersonCamera::~FirstPersonCamera()
 
 void FirstPersonCamera::Update(float dt)
 {
-    float starfeDelta = 0;
-    float forwardDelta = 0;
-
-	// Prevent from having the camera move only when the cursor is within the windows
+    // Prevent from having the camera move only when the cursor is within the windows
 	EventManager::DisableMouseCursor();
 
 	// The Camera moves based on the User inputs
@@ -95,10 +93,23 @@ void FirstPersonCamera::Update(float dt)
         mPosition -= sideVector * dt * mSpeed;
     }
 
-    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F ) == GLFW_PRESS)
+    int currentFreeModeKeyState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F );
+    if (currentFreeModeKeyState == GLFW_PRESS)
     {
-        mFreeMode = !mFreeMode;
+        if (currentFreeModeKeyState != mOldFreeModeKeyState)
+        {
+            mFreeMode = !mFreeMode;
+            if (mFreeMode)
+            {
+                printf("Flying Mode enabled!\n");
+            }
+            else
+            {
+                printf("Flying Mode disabled!\n");
+            }
+        }
     }
+    mOldFreeModeKeyState = currentFreeModeKeyState;
 
     if (!mFreeMode)
     {

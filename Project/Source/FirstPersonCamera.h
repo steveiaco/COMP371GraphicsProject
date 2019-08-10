@@ -31,6 +31,7 @@ private:
 	bool  mJumping;
 	int   mOldSpaceBarState;
 	float mPreviousHeight;
+    int   mOldFreeModeKeyState;
 
 	glm::vec3 mLookAt;
 
