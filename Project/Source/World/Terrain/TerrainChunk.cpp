@@ -153,25 +153,25 @@ namespace pg
 			// Bottom Left
 			mNormalMap[0][0] += normal2;
 
-			//// WEST
-			//for (int y = 0; y < CHUNK_SIZE + 1; y++)
-			//{
-			//	// Calculate positions of grid points defining this pair of triangles
-			//	glm::vec3 topLeft = glm::vec3(x0, mHeightMap[CHUNK_SIZE + 2][y], mYCoord + y);
-			//	glm::vec3 bottomLeft = glm::vec3(x0, mHeightMap[CHUNK_SIZE + 2][y + 1], mYCoord + y + 1);
-			//	glm::vec3 bottomRight = glm::vec3(x1, mHeightMap[0][y + 1], mYCoord + y + 1);
-			//	glm::vec3 topRight = glm::vec3(x1, mHeightMap[0][y], mYCoord + y);
-			//	// Caclulate contribution to average normal (we divide by 6 because each vertex has 6 neighboring polygons)
-			//	glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight)) / 6.f;
-			//	glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight)) / 6.f;
+			// WEST
+			for (int y = 0; y < CHUNK_SIZE + 1; y++)
+			{
+				// Calculate positions of grid points defining this pair of triangles
+				glm::vec3 topLeft = glm::vec3(x0, mHeightMap[CHUNK_SIZE + 2][y], mYCoord + y);
+				glm::vec3 bottomLeft = glm::vec3(x0, mHeightMap[CHUNK_SIZE + 2][y + 1], mYCoord + y + 1);
+				glm::vec3 bottomRight = glm::vec3(x1, mHeightMap[0][y + 1], mYCoord + y + 1);
+				glm::vec3 topRight = glm::vec3(x1, mHeightMap[0][y], mYCoord + y);
+				// Caclulate contribution to average normal (we divide by 6 because each vertex has 6 neighboring polygons)
+				glm::vec3 normal1 = glm::normalize(glm::cross(topLeft - topRight, bottomLeft - topRight)) / 6.f;
+				glm::vec3 normal2 = glm::normalize(glm::cross(bottomLeft - topRight, bottomRight - topRight)) / 6.f;
 
-			//	// Add normals to average
-			//	// Top Right
-			//	mNormalMap[0][y] += normal1;
-			//	mNormalMap[0][y] += normal2;
-			//	// Bottom Right
-			//	mNormalMap[0][y + 1] += normal2;
-			//}
+				// Add normals to average
+				// Top Right
+				mNormalMap[0][y] += normal1;
+				mNormalMap[0][y] += normal2;
+				// Bottom Right
+				mNormalMap[0][y + 1] += normal2;
+			}
 
 			// SOUTH-WEST
 			// Calculate positions of grid points defining this pair of triangles

@@ -25,6 +25,7 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class LightSource;
+class Skybox;
 
 namespace pg
 {
@@ -79,6 +80,8 @@ private:
 	PerlinNoise* mpPerlin;
 	pg::terrain::TerrainGenerator* mpTerrainGenerator;
 	pg::terrain::Terrain* mpTerrain;
+	Skybox* mSkybox;
+	float mDayCycle;
 	pg::water::WaterFrameBuffers mFBOs;
 	pg::water::WaterRenderer mWaterRenderer;
 

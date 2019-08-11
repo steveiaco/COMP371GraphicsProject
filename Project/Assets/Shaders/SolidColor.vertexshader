@@ -23,16 +23,22 @@ out vec3 normal;					// Transformed normal in View Space
 out vec3 eyeVector;					// Vector from the vertex to the Camera in View Space
 out vec4 lightVectors[MAX_LIGHTS];  // Vector from the vertex to the Light in View Space
 									// Length of lightVector is the distance between light and vertex
+out float visibility; //used for the fog
+
+const float density = 0.003;
+const float gradient = 1.8;
 
 void main()
 {
 	//Transforms
 	mat4 MV = ViewTransform * WorldTransform;
-	mat4 MVP = ProjectionTransform * MV;
 
+	vec4 positionViewSpace = MV * vec4(vertexPosition_modelspace, 1.0f);
 	// Output position of the vertex, in clip space : MVP * position
-	gl_Position =  MVP * vec4(vertexPosition_modelspace,1.0);
+	gl_Position =  ProjectionTransform * positionViewSpace;
 	v_color = vertexColor;
+
+	
 
 	// Prepare Data for Fragment Shader
 	normal = vec3(transpose(inverse(MV)) * vec4(vertexNormal_modelspace, 0.0));
@@ -41,4 +47,7 @@ void main()
 	{
 		lightVectors[i] = mix(-ViewTransform * LightPositions[i], ViewTransform * LightPositions[i] + vec4(eyeVector,0.0), LightPositions[i].w);
 	}
+
+	float distanceFromCamera = length(positionViewSpace.xyz);
+	visibility = clamp(exp(-pow((distanceFromCamera*density), gradient)), 0.0f, 1.0f);
 }

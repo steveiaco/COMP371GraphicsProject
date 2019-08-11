@@ -54,13 +54,13 @@ namespace pg
 
 			// Send reflection and refraction textures
 			GLuint reflectionTextureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "reflectionTexture");
-			GLuint refractionTextureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "refractionTexture");
-			glUniform1i(reflectionTextureLocation, 0);
-			glUniform1i(refractionTextureLocation, 1);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mFBOs.GetReflectionTexture());
+			glUniform1i(reflectionTextureLocation, 0);
+			GLuint refractionTextureLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "refractionTexture");
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mFBOs.GetRefractionTexture());
+			glUniform1i(refractionTextureLocation, 1);
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}

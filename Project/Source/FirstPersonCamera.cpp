@@ -128,9 +128,11 @@ void FirstPersonCamera::Update(float dt)
         }
         mOldSpaceBarState = currentSpaceBarState;
 
+
         float newHeight = computeHeight(dt);
         mPosition.y = newHeight;
         mPreviousHeight = newHeight;
+
     }
 }
 

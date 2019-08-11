@@ -1,0 +1,13 @@
+#version 330 core
+in vec3 aPos;
+
+out vec3 TexCoords;
+
+uniform mat4 ViewTransform;
+uniform mat4 ProjectionTransform;
+
+void main()
+{
+TexCoords = aPos;
+gl_Position = ProjectionTransform * ViewTransform * vec4(aPos, 1.0f);
+}

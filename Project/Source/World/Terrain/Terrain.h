@@ -64,6 +64,9 @@ namespace pg
 			void DrawWater(water::WaterRenderer& waterRenderer);
 
 		private:
+
+			const static bool GenerateInfiniteTerrain = true;
+
 			// Get normal at vertex
 			glm::vec3 GetNormalAt(const int xCoord, const int yCoord) const;
 
@@ -76,9 +79,11 @@ namespace pg
 			const TerrainGenerator& mTerrainGenerator;
 
 			//Terrain aesthetic used for rendering
-			TerrainAesthetic mAesthetic = LOW_POLY;
+			TerrainAesthetic mAesthetic = SMOOTH;
 			// Map of previously generated chunks
 			std::map<std::pair<int, int>, TerrainChunk*> mChunkMap = std::map<std::pair<int, int>, TerrainChunk*>();
+
+			bool initialGenDone;
 		};
 	}
 }

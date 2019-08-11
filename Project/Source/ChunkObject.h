@@ -36,7 +36,7 @@ private:
 		glm::vec3 position;
 		glm::vec3 normal;
 		glm::vec4 color;
-		glm::vec2 texture;
+		glm::ivec2 material; //passing GL_INT is not supported for some reason
 	};
 
 	struct Face
@@ -44,9 +44,26 @@ private:
 		std::vector<int> vertices;
 		std::vector<int> textures;
 		std::vector<int> normals;
+		std::string mtlName;
+	};
+
+	struct  MtlProperties 
+	{
+		std::string name;
+		//Ns
+		float specularExponent;
+		//Ka
+		glm::vec3 ambientCoefficient;
+		//Kd
+		glm::vec3 diffuseCoefficient;
+		//Ks
+		glm::vec3 specularColor;
+		//d
+		float alpha;
 	};
 
 	void LoadOBJ(const char * path);
+	void LoadMTL(const char * path);
 	std::vector<ChunkObject::Vertex> GenerateOrderedVertexList();
 	std::vector<ChunkObject::Face> ConvertQuadToTris(Face quad);
 
@@ -69,11 +86,14 @@ private:
 	//Stores a list of texture coordinates for the model
 	std::vector<glm::vec3> textureCoordinates; //todo change this to a vec2
 
+	//Material list
+	std::vector<MtlProperties*> materials;
+
 	//Defines the file path for the .obj file to be loaded.
 	char * path;
 
 	//Defines the file path to the model's texture
-	char * texturePath;
+	char * mtlPath;
 
 	int textureID;
 

@@ -33,6 +33,13 @@ mat4 Camera::GetViewProjectionMatrix() const
 	return viewProjection;
 }
 
+vec3 Camera::GetLookAt() const
+{
+	mat4 V = GetViewMatrix();
+
+	return vec3(V[0][2], V[1][2], V[2][2]);
+}
+
 mat4 Camera::GetProjectionMatrix() const
 {
 	return perspective(FOV_Y, ASPECT_RATIO, DIST_NEAR_PLANE, DIST_FAR_PLANE);

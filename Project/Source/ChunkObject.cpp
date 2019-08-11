@@ -21,6 +21,8 @@ ChunkObject::ChunkObject()
 
 	minRotation = glm::vec3(0, 0, 0);
 	maxRotation = glm::vec3(360, 360, 360);
+
+	mName = "";
 }
 
 ChunkObject::~ChunkObject()
@@ -62,7 +64,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 			assert(token.size() > 2);
 			assert(token[1] == "=");
 
-			mName = token[2];
+			mName = token[2].substr(1, token[2].length() - 2);
 		}
 		//required, specified path in which to load object file
 		//no space allowed due to the way tokens are separated
@@ -71,7 +73,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 		{
 			assert(token.size() > 2);
 			assert(token[1] == "=");
-
+			assert(!mName.empty());
 			ci_string path_ci = token[2].substr(1, token[2].length() - 2);
 
 			//since ci_string::c_str() returns a const char * that is stack allocated, leaving the scope of this method will invalidate the contents that the pointer points to.
@@ -80,25 +82,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 			path = new char[size + 1];   //we need extra char for NUL
 			memcpy(path, path_ci.c_str(), size + 1);
 
-			LoadOBJ(path);
-		}
-		//specify texture file
-		else if (token[0] == "texture")
-		{
-			assert(token.size() > 2);
-			assert(token[1] == "=");
-
-			ci_string texturePath_ci = token[2].substr(1, token[2].length() - 2);
-
-			//since ci_string::c_str() returns a const char * that is stack allocated, leaving the scope of this method will invalidate the contents that the pointer points to.
-			//because of this, we copy the contents of the const char * returned to the heap
-			const std::string::size_type size = texturePath_ci.size();
-			texturePath = new char[size + 1];   //we need extra char for NUL
-			memcpy(texturePath, texturePath_ci.c_str(), size + 1);
-
-			TextureLoader t;
-			textureID = t.LoadTexture(texturePath);
-
+			LoadOBJ((ci_string(path) + mName + ci_string(".obj")).c_str());
 		}
 		else if (token[0] == "scaling_min") 
 		{
@@ -192,9 +176,11 @@ void ChunkObject::LoadOBJ(const char * path)
 		exit(-1);
 	}
 
+	std::string currentMtl = "";
+
 	std::string line;
 
-	std::cout << "Loading model: " << path << ", this will take some time... ";
+	std::cout << "Loading model: " << path << ", this will take some time... \n";
 
 	//I am going to assume the Obj files are well formed (information is defined in the order of vertices, vertex normals, vertex texture coordinates)
 	while (std::getline(input, line))
@@ -204,6 +190,20 @@ void ChunkObject::LoadOBJ(const char * path)
 		if (line[0] == '#' || line.find_first_not_of(' ') == std::string::npos)
 		{
 			continue;
+		}
+
+		else if (line[0] == 'm' && line[1] == 't' && line[2] == 'l' && line[3] == 'l' && line[4] == 'i' && line[5] == 'b')
+		{
+			std::vector<std::string> mtl = split(line, ' ');
+
+			LoadMTL((ci_string(this->path) + mtl[1].c_str()).c_str());
+		}
+
+		else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e' && line[3] == 'm' && line[4] == 't' && line[5] == 'l')
+		{
+			std::vector<std::string> mtl = split(line, ' ');
+
+			currentMtl = mtl[1];
 		}
 
 		/* when a vertex descriptor is found */
@@ -258,6 +258,8 @@ void ChunkObject::LoadOBJ(const char * path)
 						f.normals.push_back(static_cast<int>(atoi(info[2].c_str())));
 
 				}
+
+				f.mtlName = currentMtl;
 			}
 
 			//if quads, convert to triangles
@@ -339,20 +341,111 @@ void ChunkObject::LoadOBJ(const char * path)
 	glEnableVertexAttribArray(2);
 
 	// 4th attribute buffer : texture coordinates
-	glVertexAttribPointer(3,
+	glVertexAttribIPointer(3,
 		2,
-		GL_FLOAT,
-		GL_FALSE,
+		GL_INT,
 		sizeof(Vertex),
 		(void*)(2 * sizeof(glm::vec3) + sizeof(glm::vec4)) // texture coordinates are Offseted by 2 vec3 (see class Vertex) and a vec4
 	);
 	glEnableVertexAttribArray(3);
 }
 
+void ChunkObject::LoadMTL(const char * path)
+{
+	/*Read obj file*/
+
+	// Using case-insensitive strings and streams for easier parsing
+	std::ifstream input;
+	input.open(path);
+
+	// Invalid file
+	if (input.fail())
+	{
+		fprintf(stderr, "Error loading file: %s\n", path);
+		getchar();
+		exit(-1);
+	}
+
+	std::string line;
+
+	std::cout << "Loading mtl file: " << path << ", this will take some time... \n";
+
+	MtlProperties* currentMtl = new MtlProperties;
+
+	//I am going to assume the Obj files are well formed (information is defined in the order of vertices, vertex normals, vertex texture coordinates)
+	while (std::getline(input, line))
+	{
+
+		/* ignore comments and empty lines */
+		if (line[0] == '#' || line.find_first_not_of(' ') == std::string::npos)
+		{
+			continue;
+		}
+
+		else if (line[0] == 'n' && line[1] == 'e' && line[2] == 'w' && line[3] == 'm' && line[4] == 't' && line[5] == 'l')
+		{
+			std::vector<std::string> mtl = split(line, ' ');
+
+			currentMtl = new MtlProperties;
+			materials.push_back(currentMtl);
+			currentMtl->name = mtl[1];
+		}
+		else if (line[0] == 'N' && line[1] == 's') 
+		{
+			std::vector<std::string> res = split(line, ' ');
+
+			currentMtl->specularExponent = static_cast<float>(atof(res[1].c_str()));
+		}
+		else if (line[0] == 'K' && line[1] == 'a')
+		{
+			std::vector<std::string> res = split(line, ' ');
+
+			glm::vec3 t;
+
+			t.x = static_cast<float>(atof(res[1].c_str()));
+			t.y = static_cast<float>(atof(res[2].c_str()));
+			t.z = static_cast<float>(atof(res[3].c_str()));
+
+			currentMtl->ambientCoefficient = t;
+		}
+		else if (line[0] == 'K' && line[1] == 'd')
+		{
+			std::vector<std::string> res = split(line, ' ');
+
+			glm::vec3 t;
+
+			t.x = static_cast<float>(atof(res[1].c_str()));
+			t.y = static_cast<float>(atof(res[2].c_str()));
+			t.z = static_cast<float>(atof(res[3].c_str()));
+
+			currentMtl->diffuseCoefficient = t;
+		}
+		else if (line[0] == 'K' && line[1] == 's')
+		{
+			std::vector<std::string> res = split(line, ' ');
+
+			glm::vec3 t;
+
+			t.x = static_cast<float>(atof(res[1].c_str()));
+			t.y = static_cast<float>(atof(res[2].c_str()));
+			t.z = static_cast<float>(atof(res[3].c_str()));
+
+			currentMtl->specularColor = t;
+		}
+		else if (line[0] == 'd') 
+		{
+			std::vector<std::string> res = split(line, ' ');
+
+			currentMtl->alpha = static_cast<float>(atof(res[1].c_str()));
+		}
+	}
+}
+
 std::vector<ChunkObject::Vertex> ChunkObject::GenerateOrderedVertexList()
 {
 	std::vector<Vertex> vertexList;
 
+	//Faces are ordered by mtl type, meaning vertices will also be ordered by mtl type
 	for (auto face = faces.begin(); face != faces.end(); face++)
 	{
 		for (int i = 0; i < face->vertices.size(); i++)
@@ -362,13 +455,17 @@ std::vector<ChunkObject::Vertex> ChunkObject::GenerateOrderedVertexList()
 			v.position = vertices[face->vertices[i] - 1];
 			v.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-			if (textureCoordinates.size() != 0)
-				v.texture = textureCoordinates[face->textures[i] - 1];
+			//if (textureCoordinates.size() != 0)
+			//	v.texture = textureCoordinates[face->textures[i] - 1];
+
+			for (int materialInd = 0; materialInd < materials.size(); materialInd++) 
+			{
+				if (materials[materialInd]->name == face->mtlName)
+					v.material = glm::ivec2(materialInd,0);
+			}
 
 			if (normals.size() != 0)
 				v.normal = normals[face->normals[i] - 1];
-
-
 
 			vertexList.push_back(v);
 		}
@@ -404,6 +501,8 @@ std::vector<ChunkObject::Face> ChunkObject::ConvertQuadToTris(Face quad)
 		triangle1.textures.push_back(quad.textures[2]);
 	}
 
+	triangle1.mtlName = quad.mtlName;
+
 	//generate triangle 2
 	triangle2.vertices.push_back(quad.vertices[0]);
 	triangle2.vertices.push_back(quad.vertices[2]);
@@ -422,6 +521,8 @@ std::vector<ChunkObject::Face> ChunkObject::ConvertQuadToTris(Face quad)
 		triangle2.textures.push_back(quad.textures[2]);
 		triangle2.textures.push_back(quad.textures[3]);
 	}
+
+	triangle2.mtlName = quad.mtlName;
 
 	triangles.push_back(triangle1);
 	triangles.push_back(triangle2);

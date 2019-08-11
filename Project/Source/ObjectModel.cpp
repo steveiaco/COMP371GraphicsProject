@@ -1,7 +1,6 @@
 #include "ObjectModel.h"
 #include "Renderer.h"
 #include "World.h"
-#include "Terrain.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 #include <cstring>
