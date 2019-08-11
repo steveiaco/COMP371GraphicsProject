@@ -64,7 +64,7 @@ namespace pg
 
 		private:
 
-			const static bool GenerateInfiniteTerrain = true;
+			const static bool GenerateInfiniteTerrain = false;
 
 			// Get normal at vertex
 			glm::vec3 GetNormalAt(const int xCoord, const int yCoord) const;

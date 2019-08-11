@@ -45,7 +45,7 @@ namespace pg
 
 		void Terrain::Start()
 		{
-			int range = 1;
+			int range = 2;
 			int numChunks = (2 * range) * (2 * range);
 			int i = 0;
 			// Pre-generate a perimiter of chunks around origin
@@ -54,7 +54,6 @@ namespace pg
 			{
 				for (int y = -range; y < range; y++)
 				{
-					std::cout << "Generating starting chunk " << chunkCount << "/49\n";
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(x, y);
 
@@ -292,7 +291,7 @@ namespace pg
 				    mTerrainGenerator.FillChunk(*chunk);
 				    mChunkMap.insert({ { xCoord, yCoord }, chunk });
 
-				    //chunkPopulator->PopulateChunk(chunk);
+				    chunkPopulator->PopulateChunk(chunk);
 
 				    return *chunk;
                 }
