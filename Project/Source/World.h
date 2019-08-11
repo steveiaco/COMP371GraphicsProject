@@ -13,7 +13,8 @@
 #include "Billboard.h"
 #include <vector>
 
-
+#include "World/Water/WaterFrameBuffers.h"
+#include "World/Water/WaterRenderer.h"
 #include "SphereModel.h"
 
 class Camera;
@@ -24,6 +25,7 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class LightSource;
+class Skybox;
 
 namespace pg
 {
@@ -78,6 +80,10 @@ private:
 	PerlinNoise* mpPerlin;
 	pg::terrain::TerrainGenerator* mpTerrainGenerator;
 	pg::terrain::Terrain* mpTerrain;
+	Skybox* mSkybox;
+	float mDayCycle;
+	pg::water::WaterFrameBuffers mFBOs;
+	pg::water::WaterRenderer mWaterRenderer;
 
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
@@ -89,5 +95,5 @@ private:
 	std::vector<ChunkObject*> mChunkObject;
 	unsigned int mCurrentCamera;
 
-    BillboardList* mpBillboardList;
+    //BillboardList* mpBillboardList;
 };

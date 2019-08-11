@@ -1,0 +1,14 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition_worldspace;
+
+out vec2 textureCoords;
+
+uniform mat4 ProjectionTransform;
+uniform mat4 ViewTransform;
+
+void main(void) 
+{
+	gl_Position = ProjectionTransform * ViewTransform * vec4(vertexPosition_worldspace.x, vertexPosition_worldspace.y, vertexPosition_worldspace.z, 1.0);
+	textureCoords = vec2(vertexPosition_worldspace.x, vertexPosition_worldspace.z);
+}

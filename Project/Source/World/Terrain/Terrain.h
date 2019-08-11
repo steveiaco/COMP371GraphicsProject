@@ -2,6 +2,7 @@
 
 #include "TerrainChunk.h"
 #include "../../ChunkPopulator.h"
+#include "../Water/WaterRenderer.h"
 
 
 #include <map>
@@ -30,6 +31,12 @@ namespace pg
 
 			// Get interpolated height
 			float GetHeightAt(const float xCoord, const float yCoord) const;
+			// Get height at vertex
+			float GetHeightAt(const int xCoord, const int yCoord) const;
+			// Get height at vertex
+			float* GetHeightRefAt(const int xCoord, const int yCoord);
+			// Set height at vertex
+			void SetHeightAt(const int xCoord, const int yCoord, const float value);
 			// Get interpolated normal
 			glm::vec3 GetNormalAt(const float xCoord, const float yCoord) const;
 			// Get humidity at coordinates (used to determine biome)
@@ -53,12 +60,12 @@ namespace pg
 
 			//Draw visible chunks. Create chunks and update their LOD as needed. We do updates within draw to avoid having to look-up nearby chunks more than once.
 			void Draw();
+			void DrawWater(water::WaterRenderer& waterRenderer);
 
 		private:
+
 			const static bool GenerateInfiniteTerrain = true;
 
-			// Get height at vertex
-			float GetHeightAt(const int xCoord, const int yCoord) const;
 			// Get normal at vertex
 			glm::vec3 GetNormalAt(const int xCoord, const int yCoord) const;
 
@@ -67,9 +74,9 @@ namespace pg
 
 			//Used to populate new chunks with objects
 			ChunkPopulator* chunkPopulator;
-
 			// Generator used to generate new chunks
 			const TerrainGenerator& mTerrainGenerator;
+
 			//Terrain aesthetic used for rendering
 			TerrainAesthetic mAesthetic = LOW_POLY;
 			// Map of previously generated chunks

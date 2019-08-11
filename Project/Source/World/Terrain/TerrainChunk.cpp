@@ -10,27 +10,19 @@ namespace pg
 {
 	namespace terrain
 	{
-		TerrainChunk::TerrainChunk(const Terrain& terrain, const int mXCoord, const int mYCoord)
-			: mXCoord(mXCoord)
-			, mYCoord(mYCoord)
+		TerrainChunk::TerrainChunk(const Terrain& terrain, const int xCoord, const int yCoord)
+			: mXCoord(xCoord)
+			, mYCoord(yCoord)
 			, mTerrain(terrain)
+			, mWater(xCoord, 0.f, yCoord, CHUNK_SIZE, CHUNK_SIZE)
 		{
-			// Uncomment for testing flat meshes
-			for (int x = 0; x < CHUNK_SIZE + 1; x++)
-			{
-				for (int y = 0; y < CHUNK_SIZE + 1; y++)
-				{
-					mHeightMap[x][y] = 0.f;
-					mNormalMap[x][y] = {0.f, 1.f, 0.f};
-					mColorMap[x][y] = {0.5f, 0.5f, 0.5f};
-				}
-			}
 		}
 
 		TerrainChunk::TerrainChunk(const TerrainChunk& orig)
 			: mXCoord(orig.mXCoord)
 			, mYCoord(orig.mYCoord)
 			, mTerrain(orig.mTerrain)
+			, mWater(orig.mWater)
 		{
 			for (int x = 0; x < CHUNK_SIZE + 1; x++)
 			{

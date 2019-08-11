@@ -1,0 +1,18 @@
+#version 330 core
+out vec4 color;
+
+in vec3 TexCoords;
+
+uniform samplerCube skybox;
+uniform int dayNightPhase;
+uniform float dayNightRatio;
+
+void main()
+{
+if(dayNightPhase == 0){
+color = mix(texture(skybox, TexCoords), vec4(0.1f, 0.1f, 0.1f, 0.5f), dayNightRatio);
+}
+else{
+color = mix(vec4(0.1f, 0.1f, 0.1f, 0.5f), texture(skybox, TexCoords), dayNightRatio);
+}
+}

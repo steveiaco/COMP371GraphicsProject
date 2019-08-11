@@ -1,5 +1,6 @@
 #include "TerrainGenerator.h"
 #include "TerrainChunk.h"
+#include "Terrain.h"
 #include "..\..\PerlinNoise.h"
 
 namespace pg
@@ -20,6 +21,7 @@ namespace pg
 		{
 		}
 		
+		// Helper function (use this to yield sharper terrain features)
 		float Ease(float t)
 		{
 			const float exp = 3.f;
@@ -30,13 +32,21 @@ namespace pg
 		{
 			float crrtAmplitude = mAmplitude;
 			float crrtFrequency = mFrequency;
-			float cumAmplitude = crrtAmplitude;
+			float flatness[TerrainChunk::CHUNK_SIZE + 2][TerrainChunk::CHUNK_SIZE + 2];
 
 			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 			{
 				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
 				{
-					chunk.mHeightMap[i][j] = crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
+					flatness[i][j] = glm::pow(0.5f * (1.f + mNoise.Perlin(static_cast <float> (chunk.mXCoord + i) * mFlatnessFrequency, static_cast <float> (chunk.mYCoord + j) * mFlatnessFrequency)), mFlatnessDegree);
+				}
+			}
+
+			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
+			{
+				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
+				{
+					chunk.mHeightMap[i][j] = flatness[i][j] * crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
 				}
 			}
 			crrtAmplitude *= mPersistence;
@@ -44,40 +54,14 @@ namespace pg
 
 			for (int octave = 1; octave < mNumOctaves; octave++)
 			{
-				cumAmplitude += crrtAmplitude;
 				for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 				{
 					for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
 					{
-						chunk.mHeightMap[i][j] += crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
+						chunk.mHeightMap[i][j] += flatness[i][j] * crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
 					}
 				}
 				crrtAmplitude *= mPersistence;
-				crrtFrequency *= mLacunarity;
-			}
-
-			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
-			{
-				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
-				{
-					chunk.mHeightMap[i][j] = cumAmplitude * Ease(chunk.mHeightMap[i][j] / cumAmplitude);
-				}
-			}
-
-			crrtAmplitude = mAmplitude / 10.f;
-			crrtFrequency = 1.f/5.f;
-			cumAmplitude = crrtAmplitude;
-
-			for (int octave = 1; octave < 3; octave++)
-			{
-				for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
-				{
-					for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
-					{
-						chunk.mHeightMap[i][j] += crrtAmplitude * (0.3f + 0.3f * mNoise.Perlin( static_cast <float> (chunk.mXCoord + i) / 300.f + 300.f, crrtFrequency *  static_cast <float> (chunk.mYCoord + j) / 300.f + 300.f) * Ease(mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i) + 300.f, crrtFrequency *  static_cast <float> (chunk.mYCoord + j) + 300.f)));
-					}
-				}
-				crrtAmplitude *= 2.f;
 				crrtFrequency *= mLacunarity;
 			}
 		}
@@ -117,8 +101,6 @@ namespace pg
 					chunk.mColorMap[i][j] = glm::mix(cold, hot, temperature);
 				}
 			}
-
-			
 		}
 
 		float TerrainGenerator::GetHumidityAt(const float mXCoord, const float mYCoord) const 
@@ -129,6 +111,153 @@ namespace pg
 		float TerrainGenerator::GetTemperatureAt(const float mXCoord, const float mYCoord) const
 		{ 
 			return 0.5f + 0.5f * mNoise.Perlin(mTemperatureFrequency * (TEMPERATURE_OFFSET_X + mXCoord), mTemperatureFrequency * (TEMPERATURE_OFFSET_Y + mYCoord)); 
+		}
+
+		void TerrainGenerator::Erode(Terrain& terrain, const float minXCoord, const float minYCoord, const float maxXCoord, const float maxYCoord) const
+		{
+			const float inertia = .05f; // At zero, water will instantly change direction to flow downhill. At 1, water will never change direction. 
+			const float sedimentCapacityFactor = 5.f; // Multiplier for how much sediment a droplet can carry
+			const float minSedimentCapacity = .01f; // Used to prevent carry capacity getting too close to zero on flatter terrain
+			constexpr float erosionRadius = 1.f;
+			const float erodeSpeed = .5f;
+			const float depositSpeed = .3f;
+			const float evaporateSpeed = .01f;
+			const float gravity = 4.f;
+			const int maxDropletLifetime = 30;
+
+			//Iterate over droplet simulations
+			for (int i = 0; i < 150000; i++)
+			{
+				//Set initial droplet parameters
+				glm::vec2 pos	(		
+									(maxXCoord - minXCoord) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + minXCoord,
+									(maxYCoord - minYCoord) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + minYCoord
+								);
+				glm::vec2 dir(0.f, 0.f);
+				float speed = 1.f;
+				float water = 1.f;
+				float sediment = 1.f;
+
+				//Droplet lifetime is measured in steps
+				for (int n = 0; n < maxDropletLifetime; n++)
+				{
+					//Get coordinates
+					int floorX = static_cast <int> (glm::floor(pos.x));
+					int floorY = static_cast <int> (glm::floor(pos.y));
+					float dx = pos.x - static_cast <float> (floorX);
+					float dy = pos.y - static_cast <float> (floorY);
+
+					//Get height of corners
+					float heightNE = terrain.GetHeightAt(floorX + 1, floorY);
+					float heightNW = terrain.GetHeightAt(floorX, floorY);
+					float heightSW = terrain.GetHeightAt(floorX, floorY + 1);
+					float heightSE = terrain.GetHeightAt(floorX + 1, floorY + 1);
+
+					//Interpolate height of droplet and gradient of height map (We will use the four corners of the square instead of the triangles)
+					float height = (heightNW * (1 - dx) + heightNE * dx) * (1 - dy) + (heightSW * (1 - dx) + heightSE * dx) * dy;
+					glm::vec2 gradient{ (heightNE - heightNW) * (1 - dy) + (heightSE - heightSW) * dy,
+										(heightSW - heightNW) * (1 - dx) + (heightSE - heightNE) * dx };
+
+					// Update direction and position of water droplet (direction will be old direction under influence of gradient according to inertia)
+					dir = dir * inertia - gradient * (1.f - inertia);
+					// If direction is null, give random direction (alternative is to break)
+					if (dir.x == 0.f && dir.y == 0.f)
+					{
+						dir.x = rand() - RAND_MAX / 2;
+						dir.y = rand() - RAND_MAX / 2;
+					}
+					dir = glm::normalize(dir);
+					pos += dir;
+
+					//Stop simulation if water droplet has gone off of map
+					if (pos.x < minXCoord || pos.y < minYCoord || pos.x > maxXCoord || pos.y > maxYCoord)
+					{
+						break;
+					}
+
+					//Get new coordinates
+					int newFloorX = static_cast <int> (glm::floor(pos.x));
+					int newFloorY = static_cast <int> (glm::floor(pos.y));
+					int newDX = pos.x - newFloorX;
+					int newDY = pos.y - newFloorY;
+
+					//Get height of new corners
+					float newHeightNE = terrain.GetHeightAt(newFloorX + 1, newFloorY);
+					float newHeightNW = terrain.GetHeightAt(newFloorX, newFloorY);
+					float newHeightSW = terrain.GetHeightAt(newFloorX, newFloorY + 1);
+					float newHeightSE = terrain.GetHeightAt(newFloorX + 1, newFloorY + 1);
+
+					//Interpolate height of droplet (We will use the four corners of the square instead of the triangles)
+					float newHeight = (newHeightNW * (1 - newDX) + newHeightNE * newDX) * (1 - newDY) + (newHeightSW * (1 - newDX) + newHeightSE * newDX) * newDY;
+					float dh = newHeight - height;
+
+					// Calculate the droplet's sediment capacity (higher when moving fast down a slope and contains lots of water)
+					float sedimentCapacity = glm::max(-dh * speed * water * sedimentCapacityFactor, minSedimentCapacity);
+
+					// If carrying more sediment than capacity, or if flowing uphill, deposit sediment:
+					if (sediment > sedimentCapacity || dh > 0) {
+						// If moving uphill (deltaHeight > 0) try fill up to the current height, otherwise deposit a fraction of the excess sediment
+						float amountToDeposit = (dh > 0.f) ? glm::min(dh, sediment) : (sediment - sedimentCapacity) * depositSpeed;
+						sediment -= amountToDeposit;
+
+						// Add the sediment to the four nodes of the current cell using bilinear interpolation
+						terrain.SetHeightAt(floorX, floorY, heightNW + amountToDeposit * (1 - dx) * (1 - dy));
+						terrain.SetHeightAt(floorX + 1, floorY, heightNE + amountToDeposit * dx * (1 - dy));
+						terrain.SetHeightAt(floorX, floorY + 1, heightSW + amountToDeposit * (1 - dx) * dy);
+						terrain.SetHeightAt(floorX + 1, floorY + 1, heightSE + amountToDeposit * dx * dy);
+					}
+					else {
+						// Erode a fraction of the droplet's current carry capacity.
+						// Clamp the erosion to the change in height so that it doesn't dig a hole in the terrain behind the droplet
+						float amountToErode = glm::min(-dh, (sedimentCapacity - sediment) * erodeSpeed);
+						if (amountToErode == 0.f)
+							continue;
+
+						////Get boundaries
+						int left = glm::max(static_cast <int> (glm::ceil(pos.x - erosionRadius)), 0);
+						int right = glm::min(static_cast <int> (glm::floor(pos.x + erosionRadius)), static_cast <int> (maxXCoord));
+						int top = glm::max(static_cast <int> (glm::ceil(pos.y - erosionRadius)), 0);
+						int bottom = glm::min(static_cast <int> (glm::floor(pos.y + erosionRadius)), static_cast <int> (maxXCoord));
+
+						float* nodes[4 * static_cast<int> (erosionRadius) * static_cast<int> (erosionRadius)];
+						float weight[4 * static_cast<int> (erosionRadius) * static_cast<int> (erosionRadius)];
+						float weightSum = 0.f;
+						int count = 0;
+
+						//Iterate over nodes within boundaries and add those which are within radius to list
+						for (int x = left; x <= right; x++)
+						{
+							for (int y = top; y <= bottom; y++)
+							{
+								//If node is within radius, erode it
+								float distance = glm::length(glm::vec2(x, y) - pos);
+								if (distance <= erosionRadius)
+								{
+									float weightedAmountToErode = amountToErode * (1 - distance / erosionRadius);
+									nodes[count] = terrain.GetHeightRefAt(x, y);
+									weight[count] = weightedAmountToErode;
+									count++;
+									weightSum += weightedAmountToErode;
+								}
+							}
+						}
+
+						//Iterate over nodes within list and erode them
+						for (int index = 0; index < count; index++)
+						{
+							float weighedErodeAmount = amountToErode * weight[index] / weightSum;
+							float heighthere = *nodes[index];
+							float deltaSediment = (*nodes[index] < weighedErodeAmount) ? *nodes[index] : weighedErodeAmount;
+							*nodes[index] -= deltaSediment;
+							sediment += deltaSediment;
+						}
+					}
+
+					// Update droplet's speed and water content
+					speed = glm::sqrt(glm::max(speed * speed + dh * gravity, 0.f));
+					water *= (1 - evaporateSpeed);
+				}
+			}
 		}
 	}
 }

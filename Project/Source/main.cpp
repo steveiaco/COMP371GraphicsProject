@@ -38,6 +38,7 @@ int main(int argc, char*argv[])
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_BACK);
 
+
 	// Main Loop
 	do
 	{

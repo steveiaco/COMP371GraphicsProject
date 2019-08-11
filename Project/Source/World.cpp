@@ -12,6 +12,7 @@
 #include "World.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
+#include "Skybox.h"
 
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
@@ -43,10 +44,13 @@ World* World::instance;
 
 
 World::World(char * scene)
+: mFBOs()
+, mWaterRenderer(SHADER_WATER, mFBOs)
 {
     instance = this;
 
-
+	mDayCycle = 0;
+	mSkybox = new Skybox();
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
@@ -60,15 +64,6 @@ World::World(char * scene)
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCurrentCamera = 0;
-    
-#if defined(PLATFORM_OSX)
-    int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
-#else
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
-#endif
-    assert(billboardTextureID != 0);
-    
-    mpBillboardList = new BillboardList(2048, billboardTextureID);
 }
 
 World::~World()
@@ -116,7 +111,7 @@ World::~World()
 
 	delete mpTerrain;
     
-	delete mpBillboardList;
+	//delete mpBillboardList;
 }
 
 World* World::GetInstance()
@@ -126,6 +121,7 @@ World* World::GetInstance()
 
 void World::Update(float dt)
 {
+	mDayCycle += dt;
 	// User Inputs
 	// 0 1 2 to change the Camera
 	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
@@ -151,34 +147,44 @@ void World::Update(float dt)
 	{
 		(*it)->Update(dt);
 	}
-    
-    // Update billboards
-    
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    mpBillboardList->Update(dt);
 
 }
 
 void World::Draw()
 {
 	Renderer::BeginFrame();
-	
-	// Set shader to use
-	glUseProgram(Renderer::GetShaderProgramID());
 
-	// This looks for the MVP Uniform variable in the Vertex Program
+	Renderer::SetShader(SHADER_SKYBOX);
+	glUseProgram(Renderer::GetShaderProgramID());
+	
 	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+
+	// Send the view projection constants to the shader
+	mat4 V = mat4(mat3(mCamera[mCurrentCamera]->GetViewMatrix())); //removing translate component for skybox
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
+
 	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 V = mCamera[mCurrentCamera]->GetViewMatrix();
 	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
-	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
+
+	int dayPhase = fmod(mDayCycle, 100.0f) > 50.0f ? 1 : 0;
+	float ratio = fmod(mDayCycle, 50.0f) / 50.0f;
+	mSkybox->Draw(dayPhase, ratio);
+
+	Renderer::SetShader(SHADER_SOLID_COLOR);
+	glUseProgram(Renderer::GetShaderProgramID());
+
+	// This looks for the MVP Uniform variable in the Vertex Program
+	VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+
+	// Send the view projection constants to the shader
+	mat4 VM = mCamera[mCurrentCamera]->GetViewMatrix();
+	mat4 PM = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &VM[0][0]);
+	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &PM[0][0]);
 
 	SetLights();
 
@@ -190,52 +196,18 @@ void World::Draw()
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
 	mpTerrain->Draw();
 
+	mFBOs.BindReflectionFrameBuffer();
+	mpTerrain->Draw();
+	mFBOs.UnbindCurrentFrameBuffer();
+	mpTerrain->Draw();
+	mpTerrain->DrawWater(mWaterRenderer);
+
 	// Draw models
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{
 		(*it)->Draw();
 	}
-
-	// Draw Path Lines
-	
-	// Set Shader for path lines
-	unsigned int prevShader = Renderer::GetCurrentShader();
-	Renderer::SetShader(SHADER_PATH_LINES);
-	glUseProgram(Renderer::GetShaderProgramID());
-
-	// Send the view projection constants to the shader
-	GLuint VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
-	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-	{
-		mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-		(*it)->Draw();
-	}
-
-	for (vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-	{
-		mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
-		glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
-
-		(*it)->Draw();
-	}
-
     Renderer::CheckForErrors();
-    
-    // Draw Billboards
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    mpBillboardList->Draw();
-    glDisable(GL_BLEND);
-
-
-	// Restore previous shader
-	Renderer::SetShader((ShaderType) prevShader);
-	glUseProgram(Renderer::GetShaderProgramID());
 
 	Renderer::EndFrame();
 }
@@ -347,13 +319,13 @@ void World::SetLights()
 	for (int i = 0; i < mLightList.size(); i++)
 	{
 		char sUniformName[32];
-        // sprintf_s is part of an optional annex to the C++11 specification
-        // snprintf is safer and is part of the core standard and provides the same functionality
-        snprintf(sUniformName, 32, "LightPositions[%i]", i);
+		// sprintf_s is part of an optional annex to the C++11 specification
+// snprintf is safer and is part of the core standard and provides the same functionality
+		snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-        snprintf(sUniformName, 32, "LightColors[%i]", i);
+		snprintf(sUniformName, 32, "LightColors[%i]", i);
 		GLuint LightColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
-        snprintf(sUniformName, 32, "LightAttenuations[%i]", i);
+		snprintf(sUniformName, 32, "LightAttenuations[%i]", i);
 		GLuint LightAttenuationLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
 
 		glUniform4fv(WorldLightPositionLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetPosition()[0]));
@@ -404,12 +376,12 @@ void World::RemoveLightSource(LightSource* ls)
 
 void World::AddBillboard(Billboard* b)
 {
-	mpBillboardList->AddBillboard(b);
+	//mpBillboardList->AddBillboard(b);
 }
 
 void World::RemoveBillboard(Billboard* b)
 {
-	mpBillboardList->RemoveBillboard(b);
+	//mpBillboardList->RemoveBillboard(b);
 }
 
 void World::AddParticleSystem(ParticleSystem* particleSystem)

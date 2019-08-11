@@ -7,9 +7,11 @@
 #if defined(GLM_PLATFORM_APPLE) || defined(GLM_PLATFORM_LINUX)
 #include "../../World.h"
 #include "../../Camera.h"
+#include "../../Renderer.h"
 #else
 #include "..\..\World.h"
 #include "..\..\Camera.h"
+#include "..\..\Renderer.h"
 #endif
 namespace pg
 {
@@ -22,12 +24,15 @@ namespace pg
 		{ }
 
 
+
 		Terrain::Terrain(const Terrain& orig)
-			: mTerrainGenerator(orig.mTerrainGenerator)
+			: chunkPopulator(orig.chunkPopulator)
+			, mTerrainGenerator(orig.mTerrainGenerator)
 			, mAesthetic(orig.mAesthetic)
 			, mChunkMap(orig.mChunkMap)
 			, initialGenDone(false)
 		{ }
+
 
 		Terrain::~Terrain()
 		{
@@ -40,16 +45,20 @@ namespace pg
 
 		void Terrain::Start()
 		{
+			int range = 1;
+			int numChunks = (2 * range) * (2 * range);
+			int i = 0;
 			// Pre-generate a perimiter of chunks around origin
-			int chunkCount = 1;
-			for (int x = -3; x <= 3; x++)
+
+			for (int x = -range; x < range; x++)
 			{
-				for (int y = -3; y <= 3; y++)
+				for (int y = -range; y < range; y++)
 				{
 					std::cout << "Generating starting chunk " << chunkCount << "/49\n";
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(x, y);
-					chunkCount++;
+
+					std::cout << i++ << "/" << numChunks << std::endl;
 				}
 			}
 			initialGenDone = true;
@@ -89,6 +98,30 @@ namespace pg
 			}
 		}
 
+		void Terrain::DrawWater(water::WaterRenderer& waterRenderer)
+		{
+			// Get view information
+			const Camera& crrtCamera = *World::GetInstance()->GetCurrentCamera();
+			const glm::vec3 pos = crrtCamera.GetPosition();
+			const float viewDist = Camera::DIST_FAR_PLANE;
+			// Get range of chunks within draw distance
+			const int chunkLoadRadius = static_cast <int> (viewDist / TerrainChunk::CHUNK_SIZE) + 1;
+			const int centerChunkX = static_cast <int> (glm::floor(pos.x / TerrainChunk::CHUNK_SIZE));
+			const int centerChunkY = static_cast <int> (glm::floor(pos.z / TerrainChunk::CHUNK_SIZE));
+			waterRenderer.Start();
+			// Loop over chunks within draw distance
+			for (int offsetX = -chunkLoadRadius; offsetX <= chunkLoadRadius; offsetX++)
+			{
+				for (int offsetY = -chunkLoadRadius; offsetY <= chunkLoadRadius; offsetY++)
+				{
+					// Get chunk at coordinates, generate new one if it does not yet exist
+					TerrainChunk& crrtChunk = GetChunkAt(centerChunkX + offsetX, centerChunkY + offsetY);
+					waterRenderer.Draw(crrtChunk.mWater);
+				}
+			}
+			waterRenderer.Stop();
+		}
+
 		float Terrain::GetHeightAt(const int xCoord, const int yCoord) const
 		{
 			const int chunkX = glm::floor(static_cast<float> (xCoord) / TerrainChunk::CHUNK_SIZE);
@@ -102,6 +135,36 @@ namespace pg
 			TerrainChunk* chunk = it->second;
 
 			return chunk->mHeightMap[dx][dy];
+		}
+
+		float* Terrain::GetHeightRefAt(const int xCoord, const int yCoord)
+		{
+			const int chunkX = glm::floor(static_cast<float> (xCoord) / TerrainChunk::CHUNK_SIZE);
+			const int chunkY = glm::floor(static_cast<float> (yCoord) / TerrainChunk::CHUNK_SIZE);
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+
+			auto it = mChunkMap.find({ chunkX, chunkY });
+			// DO not call GetHeightAt for unloaded parts of terrain!
+			assert(it != mChunkMap.end());
+			TerrainChunk* chunk = it->second;
+
+			return &(chunk->mHeightMap[dx][dy]);
+		}
+
+		void Terrain::SetHeightAt(const int xCoord, const int yCoord, const float value)
+		{
+			const int chunkX = glm::floor(static_cast<float> (xCoord) / TerrainChunk::CHUNK_SIZE);
+			const int chunkY = glm::floor(static_cast<float> (yCoord) / TerrainChunk::CHUNK_SIZE);
+			const int dx = (xCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+			const int dy = (yCoord % TerrainChunk::CHUNK_SIZE + TerrainChunk::CHUNK_SIZE) % TerrainChunk::CHUNK_SIZE;
+
+			auto it = mChunkMap.find({ chunkX, chunkY });
+			// DO not call GetHeightAt for unloaded parts of terrain!
+			assert(it != mChunkMap.end());
+			TerrainChunk* chunk = it->second;
+
+			chunk->mHeightMap[dx][dy] = value;
 		}
 
 		glm::vec3 Terrain::GetNormalAt(const int xCoord, const int yCoord) const
@@ -196,43 +259,45 @@ namespace pg
 			//Generate new chunk if it does not exist
 			if (it == mChunkMap.end())
 			{
-				if (!initialGenDone || GenerateInfiniteTerrain) {
 
-					//Create chunk
-					TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
-					mTerrainGenerator.FillChunk(*chunk);
-					mChunkMap.insert({ { xCoord, yCoord }, chunk });
-					// Add neighboring chunks
-					// NORTH
-					it = mChunkMap.find({ xCoord, yCoord - 1 });
-					if (it != mChunkMap.end())
-					{
-						chunk->SetNorthChunk(it->second);
-					}
-					// WEST
-					it = mChunkMap.find({ xCoord - 1, yCoord });
-					if (it != mChunkMap.end())
-					{
-						chunk->SetWestChunk(it->second);
-					}
-					// SOUTH
-					it = mChunkMap.find({ xCoord, yCoord + 1 });
-					if (it != mChunkMap.end())
-					{
-						chunk->SetSouthChunk(it->second);
-					}
-					// EAST
-					it = mChunkMap.find({ xCoord + 1, yCoord });
-					if (it != mChunkMap.end())
-					{
-						chunk->SetEastChunk(it->second);
-					}
+                if (!initialGenDone || GenerateInfiniteTerrain) 
+                {
+				    //Create chunk
+				    TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
+				    // Add neighboring chunks
+				    // NORTH
+				    it = mChunkMap.find({ xCoord, yCoord - 1 });
+				    if (it != mChunkMap.end())
+				    {
+				    	chunk->SetNorthChunk(it->second);
+				    }
+				    // WEST
+				    it = mChunkMap.find({ xCoord - 1, yCoord });
+				    if (it != mChunkMap.end())
+				    {
+				    	chunk->SetWestChunk(it->second);
+				    }
+				    // SOUTH
+				    it = mChunkMap.find({ xCoord, yCoord + 1 });
+				    if (it != mChunkMap.end())
+				    {
+				    	chunk->SetSouthChunk(it->second);
+				    }
+				    // EAST
+				    it = mChunkMap.find({ xCoord + 1, yCoord });
+				    if (it != mChunkMap.end())
+				    {
+				    	chunk->SetEastChunk(it->second);
+				    }
+				    mTerrainGenerator.FillChunk(*chunk);
+				    mChunkMap.insert({ { xCoord, yCoord }, chunk });
 
-					chunkPopulator->PopulateChunk(chunk);
+				    //chunkPopulator->PopulateChunk(chunk);
 
-					return *chunk;
-				}
-				else {
+				    return *chunk;
+                }
+                else {
+                    //todo fix this hack
 					auto i = mChunkMap.find({ 0,0 });
 					return *i->second;
 				}
