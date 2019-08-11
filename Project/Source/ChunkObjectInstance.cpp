@@ -22,7 +22,7 @@ ChunkObjectInstance::ChunkObjectInstance(ChunkObject * c) : model(c)
 
 void ChunkObjectInstance::InitBoundingVolume()
 {
-    if (BoundingVolume::IsValid(model->mBoundingVolume))
+    if (!BoundingVolume::IsValid(model->mBoundingVolume))
     {
         mBoundingVolume = BoundingVolume::InitializeVolume();
     }
@@ -68,6 +68,7 @@ bool ChunkObjectInstance::CheckCollision(BoundingVolume *volume)
     {
         return mBoundingVolume->IsInVolume(volume);
     }
+    printf("Both are null...\n");
     return false; // Default to no collision
 }
 

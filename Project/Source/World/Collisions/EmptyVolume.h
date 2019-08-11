@@ -9,6 +9,7 @@ public:
     ~EmptyVolume();
 
     virtual EmptyVolume* Clone() const;
+    std::string GetType() { return "E"; };
 
     bool IsInVolume(BoundingVolume *volume);
 };

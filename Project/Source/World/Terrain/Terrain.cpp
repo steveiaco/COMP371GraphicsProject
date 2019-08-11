@@ -355,18 +355,17 @@ namespace pg
             const int chunkX = glm::floor(xCoord / TerrainChunk::CHUNK_SIZE);
             const int chunkY = glm::floor(yCoord / TerrainChunk::CHUNK_SIZE);
 
-            auto terrainChunk = GetChunkAt(chunkX, chunkY);
-            printf("Number of objects in chunk (%d, %d): %zu\n", chunkX, chunkY, terrainChunk.objectsInChunk.size());
+            TerrainChunk& terrainChunk = GetChunkAt(chunkX, chunkY);
 
-            for (auto & it : terrainChunk.objectsInChunk)
+            printf("Number of objects at (%d, %d): %zu\n", chunkX, chunkY, terrainChunk.objectsInChunk.size());
+            for (auto it = terrainChunk.objectsInChunk.begin(); it != terrainChunk.objectsInChunk.end(); it++)
             {
-                if (it->CheckCollision(volume))
+                if ((*it)->CheckCollision(volume))
                 {
                     return true;
                 }
             }
             return false;
 		}
-
 	}
 }

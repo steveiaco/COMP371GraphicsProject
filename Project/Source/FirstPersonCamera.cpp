@@ -29,7 +29,7 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mL
     mPreviousHeight = 0;
     mOldSpaceBarState = -1;
     mOldFreeModeKeyState = -1;
-    mBoundingVolume = new BoundingSphere(position, 200);
+    mBoundingVolume = new BoundingSphere(position, 20.0);
 }
 
 FirstPersonCamera::~FirstPersonCamera() {}
@@ -86,13 +86,15 @@ void FirstPersonCamera::Update(float dt)
 
     if (!mFreeMode)
     {
-        if (!World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume))
+        glm::vec3 newPosition = mPosition + computeMovement(dt);
+
+        if (!World::CheckCollisions(newPosition.x, newPosition.z, mBoundingVolume))
         {
-            handleInput(dt);
+            mPosition = newPosition;
         }
         else
         {
-            printf("Collision found at (%f, %f)", mPosition.x, mPosition.z);
+            printf("Collision found at (%f, %f)", newPosition.x, newPosition.z);
         }
         int currentSpaceBarState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE);
         if (currentSpaceBarState == GLFW_PRESS && !mJumping)
@@ -118,9 +120,8 @@ void FirstPersonCamera::Update(float dt)
     else
     {
         // Uncomment for debugging
-        World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume);
-
-        handleInput(dt);
+        //World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume);
+        mPosition += computeMovement(dt);
     }
 
     if (mBoundingVolume != nullptr)
@@ -129,31 +130,34 @@ void FirstPersonCamera::Update(float dt)
     }
 }
 
-void FirstPersonCamera::handleInput(float dt)
+glm::vec3 FirstPersonCamera::computeMovement(float dt)
 {
+    glm::vec3 movement(0.0f, 0.0f, 0.0f);
     vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
     glm::normalize(sideVector);
 
     // A S D W for motion along the camera basis vectors
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
     {
-        mPosition += mLookAt * dt * mSpeed;
+        movement += mLookAt * dt * mSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
     {
-        mPosition -= mLookAt * dt * mSpeed;
+        movement -= mLookAt * dt * mSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
     {
-        mPosition += sideVector * dt * mSpeed;
+        movement += sideVector * dt * mSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
     {
-        mPosition -= sideVector * dt * mSpeed;
+        movement -= sideVector * dt * mSpeed;
     }
+
+    return movement;
 }
 
 float FirstPersonCamera::computeHeight(float dt)

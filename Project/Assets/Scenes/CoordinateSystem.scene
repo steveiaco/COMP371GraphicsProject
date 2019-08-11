@@ -118,4 +118,3 @@ altitude_range = -40.0f -5.0f
 density = 0.30
 altitude_range = 0.0f 1.0f
 density = 0.01
-collider = S 100.0

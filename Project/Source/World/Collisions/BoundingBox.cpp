@@ -1,10 +1,12 @@
 #include "BoundingBox.h"
+#include "BoundingSphere.h"
+#include "EmptyVolume.h"
 
 BoundingBox::BoundingBox() : BoundingVolume(),  mStrides(0.0f, 0.0f, 0.0f)
 {
 }
 
-BoundingBox::BoundingBox(const BoundingBox *box)
+BoundingBox::BoundingBox(const BoundingBox *box) : BoundingBox()
 {
     mPosition = box->mPosition;
     mRotationAxis = box->mRotationAxis;
@@ -43,7 +45,7 @@ void BoundingBox::SetStrides(float x, float y, float z)
 }
 
 bool BoundingBox::IsInVolume(BoundingVolume *volume) {
-    printf("Check collision at (%f, %f, %f)\n", GetPosition().x, GetPosition().y, GetPosition().z);
+    printf("[B] Check collision at (%f, %f, %f)\n", GetPosition().x, GetPosition().y, GetPosition().z);
     if(dynamic_cast<BoundingBox*>(volume))
     {
         return BoundingVolume::BoxCollision(this, dynamic_cast<BoundingBox*>(volume));
@@ -51,6 +53,10 @@ bool BoundingBox::IsInVolume(BoundingVolume *volume) {
     else if (dynamic_cast<BoundingSphere*>(volume))
     {
         return BoundingVolume::SphereBoxCollision(dynamic_cast<BoundingSphere*>(volume), this);
+    }
+    else if (dynamic_cast<EmptyVolume*>(volume))
+    {
+        return BoundingVolume::CollisionWithEmpty(dynamic_cast<EmptyVolume*>(volume), this);
     }
 
     return false;

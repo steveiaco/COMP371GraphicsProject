@@ -4,7 +4,7 @@ EmptyVolume::EmptyVolume() : BoundingVolume()
 {
 }
 
-EmptyVolume::EmptyVolume(const EmptyVolume *empty)
+EmptyVolume::EmptyVolume(const EmptyVolume *empty) : EmptyVolume()
 {
     mPosition = empty->mPosition;
     mRotationAxis = empty->mRotationAxis;
@@ -22,5 +22,5 @@ EmptyVolume::~EmptyVolume()
 }
 
 bool EmptyVolume::IsInVolume(BoundingVolume *volume) {
-    return false;
+    return CollisionWithEmpty(this, volume);
 }

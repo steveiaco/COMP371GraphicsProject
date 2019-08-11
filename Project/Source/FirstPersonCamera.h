@@ -40,4 +40,5 @@ private:
 
     float computeHeight(float dt);
     void handleInput(float dt);
+    glm::vec3 computeMovement(float dt);
 };

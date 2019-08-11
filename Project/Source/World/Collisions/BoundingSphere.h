@@ -14,6 +14,7 @@ public:
     void SetRadius(float radius);
 
     virtual BoundingSphere* Clone() const;
+    std::string GetType() { return "Sphere"; };
 
     bool IsInVolume(BoundingVolume *volume);
     float GetRadius() const { return mRadius; }

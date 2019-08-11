@@ -79,7 +79,7 @@ bool BoundingVolume::SphereBoxCollision(BoundingSphere *sphere, BoundingBox *box
                            (y - spherePos.y) * (y - spherePos.y) +
                            (z - spherePos.z) * (z - spherePos.z));
 
-    return distanceSquared < (sphere->GetRadius() * sphere->GetRadius());
+    return sqrt(distanceSquared) < sphere->GetRadius();
 }
 
 bool BoundingVolume::SphereCollision(BoundingSphere *a, BoundingSphere *b)
@@ -88,7 +88,7 @@ bool BoundingVolume::SphereCollision(BoundingSphere *a, BoundingSphere *b)
                                          + (a->GetPosition().y - b->GetPosition().y) * (a->GetPosition().y - b->GetPosition().y)
                                          + (a->GetPosition().z - b->GetPosition().z) * (a->GetPosition().z - b->GetPosition().z);
 
-    return distanceBetweenSpheresSquared < (a->GetRadius() + b->GetRadius()) * (a->GetRadius() + b->GetRadius());
+    return sqrt(distanceBetweenSpheresSquared) < (a->GetRadius() + b->GetRadius());
 }
 
 bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
@@ -105,6 +105,9 @@ bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
 }
 
 bool BoundingVolume::IsValid(BoundingVolume *volume) {
-    std::string target = "BoundingVolume";
-    return strstr(typeid(volume).name(), target.c_str());
+    if (volume->GetType().size() > 0)
+    {
+        return (volume->GetType().c_str()[0] != 'E');
+    }
+    return false;
 }

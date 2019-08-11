@@ -2,7 +2,6 @@
 
 #include <glm/glm.hpp>
 #include "BoundingVolume.h"
-#include "BoundingSphere.h"
 
 // The BoundingBox is Axis-Aligned
 class BoundingBox : public BoundingVolume {
@@ -14,6 +13,7 @@ public:
     void SetStrides(glm::vec3 strides);
 
     virtual BoundingBox* Clone() const;
+    std::string GetType() { return "B"; };
 
     glm::vec3 GetStrides() const		{ return mStrides; }
     glm::vec3 GetMax() const;
