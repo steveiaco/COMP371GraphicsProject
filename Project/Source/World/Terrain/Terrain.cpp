@@ -76,6 +76,8 @@ namespace pg
 			const int centerChunkY = static_cast <int> (glm::floor(pos.z / TerrainChunk::CHUNK_SIZE));
 			const float LODFactor = static_cast <float> (TerrainChunk::MIN_LOD - 1) / static_cast <float> (chunkLoadRadius);
 
+			int drawnChunks = 0;
+
 			// Loop over chunks within draw distance
 			for (int offsetX = -chunkLoadRadius; offsetX < chunkLoadRadius; offsetX++)
 			{
@@ -103,8 +105,11 @@ namespace pg
 
 					// Draw Chunk
 					crrtChunk.Draw(LOD);
+					drawnChunks++;
 				}
 			}
+
+			std::cout << "Chunks rendered " << drawnChunks << "\n";
 		}
 
 		void Terrain::DrawWater(water::WaterRenderer& waterRenderer)

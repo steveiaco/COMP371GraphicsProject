@@ -25,6 +25,8 @@ in vec4 lightVectors[MAX_LIGHTS];    // Vector from the vertex to the Light in V
 //integer must be flat when passed according to opengl specification
 flat in int material;
 
+in float visibility;
+
 // Ouput data
 out vec4 color;
 
@@ -55,4 +57,6 @@ void main()
 	
 
 	color = vec4(clamp(sumColor, 0.0, 1), alpha[material]);
+	color = mix(vec4(0.5f, 0.5f, 0.5f, 0.1f), color, visibility);
+
 }
