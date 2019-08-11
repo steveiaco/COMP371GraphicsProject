@@ -10,5 +10,5 @@ uniform mat4 ViewTransform;
 void main(void) 
 {
 	gl_Position = ProjectionTransform * ViewTransform * vec4(vertexPosition_worldspace.x, vertexPosition_worldspace.y, vertexPosition_worldspace.z, 1.0);
-	textureCoords = vec2(vertexPosition_worldspace.x/2.0 + 0.5, vertexPosition_worldspace.y/2.0 + 0.5);
+	textureCoords = vec2(vertexPosition_worldspace.x, vertexPosition_worldspace.z);
 }

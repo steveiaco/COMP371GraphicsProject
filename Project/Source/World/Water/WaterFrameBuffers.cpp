@@ -49,8 +49,7 @@ namespace pg
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, mReflectionDepthBuffer, 0);
 
 			// Return binding to default frame buffer
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, 1024, 768); // THIS SHOULD NOT BE HARDCODED
+			UnbindCurrentFrameBuffer();
 		}
 
 		void WaterFrameBuffers::InitializeRefractionBuffers()
@@ -79,8 +78,7 @@ namespace pg
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, mRefractionDepthTexture, 0);
 
 			// Return binding to default frame buffer
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glViewport(0, 0, 1024, 768); // THIS SHOULD NOT BE HARDCODED
+			UnbindCurrentFrameBuffer();
 		}
 
 		void WaterFrameBuffers::BindReflectionFrameBuffer()
@@ -88,6 +86,7 @@ namespace pg
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindFramebuffer(GL_FRAMEBUFFER, mReflectionFrameBuffer);
 			glViewport(0, 0, REFLECTION_WIDTH, REFLECTION_HEIGHT);
+			assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 		}
 
 		void WaterFrameBuffers::BindRefractionFrameBuffer()
@@ -95,6 +94,7 @@ namespace pg
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glBindFramebuffer(GL_FRAMEBUFFER, mRefractionFrameBuffer);
 			glViewport(0, 0, REFRACTION_WIDTH, REFRACTION_HEIGHT);
+			assert(glCheckFramebufferStatus(GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
 		}
 
 		void WaterFrameBuffers::UnbindCurrentFrameBuffer()
