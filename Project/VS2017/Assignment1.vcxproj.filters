@@ -24,6 +24,9 @@
     <Filter Include="Resource Files\Textures">
       <UniqueIdentifier>{f999c657-94dd-4cec-b0e7-b2e5f0216bb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\World\Water">
+      <UniqueIdentifier>{2d1f5105-8027-4848-bfed-e8f3bbb59ab2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Assets\Shaders\BlueColor.fragmentshader">
@@ -121,6 +124,28 @@
     <ClInclude Include="..\Source\World\Terrain\TerrainGenerator.h">
       <Filter>Source Files\World\Terrain</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\World\Water\WaterFrameBuffers.h">
+      <Filter>Source Files\World\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\World\Water\WaterQuad.h">
+      <Filter>Source Files\World\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\World\Water\WaterRenderer.h">
+      <Filter>Source Files\World\Water</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ObjectModel.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ChunkObject.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ChunkObjectInstance.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ChunkPopulator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\LightSource.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\FirstPersonCamera.cpp">
@@ -185,6 +210,30 @@
     </ClCompile>
     <ClCompile Include="..\Source\World\Terrain\TerrainGenerator.cpp">
       <Filter>Source Files\World\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\World\Water\WaterFrameBuffers.cpp">
+      <Filter>Source Files\World\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\World\Water\WaterQuad.cpp">
+      <Filter>Source Files\World\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\World\Water\WaterRenderer.cpp">
+      <Filter>Source Files\World\Water</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ObjectModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ChunkObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ChunkObjectInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ChunkPopulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\LightSource.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -55,17 +55,13 @@ void Renderer::Initialize()
     glGetError();
     
 	// Black background
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);     
+
 	// Enable depth test
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     
-    
     CheckForErrors();
-    
-
-    
     
 	// Loading Shaders
 #if defined(PLATFORM_OSX)

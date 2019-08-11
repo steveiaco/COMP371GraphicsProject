@@ -125,9 +125,8 @@ Skybox::~Skybox() {
 }
 
 void Skybox::loadSkybox() {
-    unsigned int dayTexture;
-    glGenTextures(1, &dayTexture);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, dayTexture);
+    glGenTextures(1, &mDayTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, mDayTexture);
     
     int width, height;
     for (unsigned int i = 0; i < daySkyboxFaces.size(); i++)
@@ -157,60 +156,18 @@ void Skybox::loadSkybox() {
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-    
-	mDayTexture = dayTexture;
 
-	unsigned int nightTexture;
-	glGenTextures(1, &nightTexture);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, nightTexture);
-
-	for (unsigned int i = 0; i < nightSkyboxFaces.size(); i++)
-	{
-		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(nightSkyboxFaces[i].c_str(), 0);
-		FIBITMAP* image = FreeImage_Load(format, nightSkyboxFaces[i].c_str());
-		FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
-		FreeImage_FlipVertical(image);
-		if (image)
-		{
-
-			width = FreeImage_GetWidth(image32bits);
-			height = FreeImage_GetHeight(image32bits);
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-				0, GL_RGB, width, height,
-				0, GL_BGR, GL_UNSIGNED_BYTE, (const void*)FreeImage_GetBits(image));
-
-		}
-		else {
-			std::cout << "Could not load texture " << nightSkyboxFaces[i].c_str() << std::endl;
-		}
-		FreeImage_Unload(image);
-		FreeImage_Unload(image32bits);
-	}
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-	mNightTexture = nightTexture;
 }
 
 void Skybox::Draw(int dayNightPhase, float dayNightRatio) {
-	std::cout << dayNightRatio << std::endl;
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	GLuint dayNightPhaseLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightPhase");
+	glUniform1i(dayNightPhaseLocation, dayNightPhase);
 	GLuint dayNightRatioLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightRatio");
 	glUniform1f(dayNightRatioLocation, dayNightRatio);
-	if (dayNightPhase == 0) {
-		glUniform4f(dayNightPhaseLocation, 0.1f, 0.1f, 0.1f, 0.1f);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, mDayTexture);
-	}
-	else {
-		glUniform4f(dayNightPhaseLocation, 0.6f, 0.8f, 0.95f, 0.9f);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, mNightTexture);
-	}
+	glBindTexture(GL_TEXTURE_CUBE_MAP, mDayTexture);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glDepthMask(GL_TRUE);
 }

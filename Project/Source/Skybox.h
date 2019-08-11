@@ -23,7 +23,6 @@ private:
     unsigned int mVAO;
     unsigned int mVBO;
     unsigned int mDayTexture;
-	unsigned int mNightTexture;
 
 	struct Vertex
 	{

@@ -26,10 +26,15 @@
     <ClInclude Include="..\Source\Animation.h" />
     <ClInclude Include="..\Source\Billboard.h" />
     <ClInclude Include="..\Source\Camera.h" />
+    <ClInclude Include="..\Source\ChunkObject.h" />
+    <ClInclude Include="..\Source\ChunkObjectInstance.h" />
+    <ClInclude Include="..\Source\ChunkPopulator.h" />
     <ClInclude Include="..\Source\CubeModel.h" />
     <ClInclude Include="..\Source\EventManager.h" />
     <ClInclude Include="..\Source\FirstPersonCamera.h" />
+    <ClInclude Include="..\Source\LightSource.h" />
     <ClInclude Include="..\Source\Model.h" />
+    <ClInclude Include="..\Source\ObjectModel.h" />
     <ClInclude Include="..\Source\ParsingHelper.h" />
     <ClInclude Include="..\Source\ParticleDescriptor.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />
@@ -44,16 +49,24 @@
     <ClInclude Include="..\Source\World\Terrain\Terrain.h" />
     <ClInclude Include="..\Source\World\Terrain\TerrainChunk.h" />
     <ClInclude Include="..\Source\World\Terrain\TerrainGenerator.h" />
+    <ClInclude Include="..\Source\World\Water\WaterFrameBuffers.h" />
+    <ClInclude Include="..\Source\World\Water\WaterQuad.h" />
+    <ClInclude Include="..\Source\World\Water\WaterRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\Animation.cpp" />
     <ClCompile Include="..\Source\Billboard.cpp" />
     <ClCompile Include="..\Source\Camera.cpp" />
+    <ClCompile Include="..\Source\ChunkObject.cpp" />
+    <ClCompile Include="..\Source\ChunkObjectInstance.cpp" />
+    <ClCompile Include="..\Source\ChunkPopulator.cpp" />
     <ClCompile Include="..\Source\CubeModel.cpp" />
     <ClCompile Include="..\Source\EventManager.cpp" />
     <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
+    <ClCompile Include="..\Source\LightSource.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
+    <ClCompile Include="..\Source\ObjectModel.cpp" />
     <ClCompile Include="..\Source\ParticleDescriptor.cpp" />
     <ClCompile Include="..\Source\ParticleEmitter.cpp" />
     <ClCompile Include="..\Source\ParticleSystem.cpp" />
@@ -67,6 +80,9 @@
     <ClCompile Include="..\Source\World\Terrain\Terrain.cpp" />
     <ClCompile Include="..\Source\World\Terrain\TerrainChunk.cpp" />
     <ClCompile Include="..\Source\World\Terrain\TerrainGenerator.cpp" />
+    <ClCompile Include="..\Source\World\Water\WaterFrameBuffers.cpp" />
+    <ClCompile Include="..\Source\World\Water\WaterQuad.cpp" />
+    <ClCompile Include="..\Source\World\Water\WaterRenderer.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{277EAE68-9EED-4EFF-BAD3-2A70787A3E8D}</ProjectGuid>

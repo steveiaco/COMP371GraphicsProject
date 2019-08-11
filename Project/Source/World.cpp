@@ -170,8 +170,8 @@ void World::Draw()
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
 
 	int dayPhase = fmod(mDayCycle, 100.0f) > 50.0f ? 1 : 0;
-	float sigmoid = 1.0f / (1.0f + std::exp(-(fmod(mDayCycle, 50.0f) / 5.0f - 8.5f)));
-	mSkybox->Draw(dayPhase, sigmoid);
+	float ratio = fmod(mDayCycle, 50.0f) / 50.0f;
+	mSkybox->Draw(dayPhase, ratio);
 
 	Renderer::SetShader(SHADER_SOLID_COLOR);
 	glUseProgram(Renderer::GetShaderProgramID());
@@ -319,8 +319,13 @@ void World::SetLights()
 	for (int i = 0; i < mLightList.size(); i++)
 	{
 		char sUniformName[32];
+		// sprintf_s is part of an optional annex to the C++11 specification
+// snprintf is safer and is part of the core standard and provides the same functionality
+		snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "LightColors[%i]", i);
 		GLuint LightColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "LightAttenuations[%i]", i);
 		GLuint LightAttenuationLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
 
 		glUniform4fv(WorldLightPositionLocation, 1, reinterpret_cast<GLfloat*>(&mLightList[i]->GetPosition()[0]));
