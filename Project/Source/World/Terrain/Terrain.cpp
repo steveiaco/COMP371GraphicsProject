@@ -8,11 +8,14 @@
 #include "../../World.h"
 #include "../../Camera.h"
 #include "../../Renderer.h"
+#include "../../ChunkPopulator.h"
 #else
 #include "..\..\World.h"
 #include "..\..\Camera.h"
 #include "..\..\Renderer.h"
+#include "..\..\ChunkPopulator.h"
 #endif
+
 namespace pg
 {
 	namespace terrain
@@ -216,26 +219,26 @@ namespace pg
 			float dx = xCoord - floorX;
 			float dy = yCoord - floorY;
 
-			//We are in south-eastern triangle
-			if (dx < dy)
-			{
-				float heightNW = GetHeightAt(floorX, floorY);
-				float heightSW = GetHeightAt(floorX, floorY + 1);
-				float heightSE = GetHeightAt(floorX + 1, floorY + 1);
+            //We are in south-eastern triangle
+            if (dx < dy)
+            {
+                float heightNW = GetHeightAt(floorX, floorY);
+                float heightSW = GetHeightAt(floorX, floorY + 1);
+                float heightSE = GetHeightAt(floorX + 1, floorY + 1);
 
-				float height = dy * (heightSW - heightNW) + heightNW;
-				return dx * (heightSE - height) + height;
-			}
-			//We are in north-western triangle
-			else
-			{
-				float heightNW = GetHeightAt(floorX, floorY);
-				float heightNE = GetHeightAt(floorX + 1, floorY);
-				float heightSE = GetHeightAt(floorX + 1, floorY + 1);
+                float height = dy * (heightSW - heightNW) + heightNW;
+                return dx * (heightSE - height) + height;
+            }
+                //We are in north-western triangle
+            else
+            {
+                float heightNW = GetHeightAt(floorX, floorY);
+                float heightNE = GetHeightAt(floorX + 1, floorY);
+                float heightSE = GetHeightAt(floorX + 1, floorY + 1);
 
-				float height = dx * (heightNE - heightNW) + heightNW;
-				return dy * (heightSE - height) + height;
-			}
+                float height = dx * (heightNE - heightNW) + heightNW;
+                return dy * (heightSE - height) + height;
+            }
 		}
 
 		glm::vec3 Terrain::GetNormalAt(const float xCoord, const float yCoord) const

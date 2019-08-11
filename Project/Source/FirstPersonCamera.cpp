@@ -18,13 +18,16 @@
 
 const static float BASE_HEIGHT = 10.0;
 const static float CAMERA_RESPONSIVENESS = 10;
-const static float GRAVITY = -400;
-const static float JUMP_FORCE = 200;
+const static float GRAVITY = -1000;
+const static float JUMP_FORCE = 400;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(90.0f), mAngularSpeed(2.5f), mVelocity(0.0f), mFreeMode(false)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(45.0f), mAngularSpeed(2.5f), mVelocity(0.0f), mFreeMode(false)
 {
+    mPreviousHeight = 0;
+    mOldSpaceBarState = -1;
+    mOldFreeModeKeyState = -1;
 }
 
 FirstPersonCamera::~FirstPersonCamera()
@@ -33,10 +36,7 @@ FirstPersonCamera::~FirstPersonCamera()
 
 void FirstPersonCamera::Update(float dt)
 {
-    float starfeDelta = 0;
-    float forwardDelta = 0;
-
-	// Prevent from having the camera move only when the cursor is within the windows
+    // Prevent from having the camera move only when the cursor is within the windows
 	EventManager::DisableMouseCursor();
 
 	// The Camera moves based on the User inputs
@@ -93,39 +93,62 @@ void FirstPersonCamera::Update(float dt)
         mPosition -= sideVector * dt * mSpeed;
     }
 
-    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F ) == GLFW_PRESS)
+    int currentFreeModeKeyState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_F );
+    if (currentFreeModeKeyState == GLFW_PRESS)
     {
-        mFreeMode = !mFreeMode;
+        if (currentFreeModeKeyState != mOldFreeModeKeyState)
+        {
+            mFreeMode = !mFreeMode;
+            if (mFreeMode)
+            {
+                printf("Flying Mode enabled!\n");
+            }
+            else
+            {
+                printf("Flying Mode disabled!\n");
+            }
+        }
     }
+    mOldFreeModeKeyState = currentFreeModeKeyState;
 
     if (!mFreeMode)
     {
-        if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE ) == GLFW_PRESS)
+        int currentSpaceBarState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE);
+        if (currentSpaceBarState == GLFW_PRESS && !mJumping)
         {
-            mVelocity = JUMP_FORCE;
+            if (currentSpaceBarState != mOldSpaceBarState)
+            {
+                mJumping = true;
+                mVelocity = JUMP_FORCE;
+            }
         }
         else
         {
             mVelocity += GRAVITY * dt;
         }
+        mOldSpaceBarState = currentSpaceBarState;
 
-        //float newHeight = computeHeight(dt);
-        //mPosition.y = newHeight;
+
+        float newHeight = computeHeight(dt);
+        mPosition.y = newHeight;
+        mPreviousHeight = newHeight;
+
     }
 }
 
 float FirstPersonCamera::computeHeight(float dt)
 {
-    //Terrain* terrain = const_cast<Terrain *>(World::GetInstance()->GetTerrain());
-    /*float currentHeight = terrain->GetVertexHeight(mPosition.x, mPosition.z);
+    auto *terrain = World::GetInstance()->GetTerrain();
+    float currentHeight = terrain->GetHeightAt(mPosition.x, mPosition.z);
     float delta = glm::clamp(dt * CAMERA_RESPONSIVENESS, 0.0f, 1.0f);
-    float finalHeight = glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight) + (mVelocity * dt), delta);
+    float finalHeight = glm::mix(mPreviousHeight, (BASE_HEIGHT + currentHeight) + (mVelocity * dt), delta);
     if (finalHeight < BASE_HEIGHT + currentHeight)
     {
         mVelocity = 0;
-        return glm::mix(mPosition.y, (BASE_HEIGHT + currentHeight), delta);
-    }*/
-    return 0.f;//finalHeight;
+        mJumping = false;
+        return glm::mix(mPreviousHeight, BASE_HEIGHT + currentHeight, delta);
+    }
+    return finalHeight;
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const

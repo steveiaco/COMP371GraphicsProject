@@ -2,7 +2,11 @@
 
 #include "WaterFrameBuffers.h"
 
+#if defined(linux)
+#include "../../Renderer.h"
+#else
 enum ShaderType;
+#endif
 
 namespace pg
 {

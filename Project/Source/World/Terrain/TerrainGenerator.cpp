@@ -1,7 +1,11 @@
 #include "TerrainGenerator.h"
 #include "TerrainChunk.h"
 #include "Terrain.h"
+#if defined(GLM_PLATFORM_APPLE) || defined(GLM_PLATFORM_LINUX)
+#include "../../PerlinNoise.h"
+#else
 #include "..\..\PerlinNoise.h"
+#endif
 
 namespace pg
 {
