@@ -20,6 +20,8 @@ ChunkObject::ChunkObject()
 
 	minRotation = glm::vec3(0, 0, 0);
 	maxRotation = glm::vec3(360, 360, 360);
+
+	mName = "";
 }
 
 ChunkObject::~ChunkObject()
@@ -61,7 +63,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 			assert(token.size() > 2);
 			assert(token[1] == "=");
 
-			mName = token[2];
+			mName = token[2].substr(1, token[2].length() - 2);
 		}
 		//required, specified path in which to load object file
 		//no space allowed due to the way tokens are separated
@@ -70,7 +72,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 		{
 			assert(token.size() > 2);
 			assert(token[1] == "=");
-
+			assert(!mName.empty());
 			ci_string path_ci = token[2].substr(1, token[2].length() - 2);
 
 			//since ci_string::c_str() returns a const char * that is stack allocated, leaving the scope of this method will invalidate the contents that the pointer points to.
@@ -79,23 +81,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 			path = new char[size + 1];   //we need extra char for NUL
 			memcpy(path, path_ci.c_str(), size + 1);
 
-			LoadOBJ(path);
-		}
-		//specify texture file
-		else if (token[0] == "mtl_path")
-		{
-			assert(token.size() > 2);
-			assert(token[1] == "=");
-
-			ci_string path_ci = token[2].substr(1, token[2].length() - 2);
-
-			//since ci_string::c_str() returns a const char * that is stack allocated, leaving the scope of this method will invalidate the contents that the pointer points to.
-			//because of this, we copy the contents of the const char * returned to the heap
-			const std::string::size_type size = path_ci.size();
-			mtlPath = new char[size + 1];   //we need extra char for NUL
-			memcpy(mtlPath, path_ci.c_str(), size + 1);
-	
-			LoadMTL(mtlPath);
+			LoadOBJ((ci_string(path) + mName + ci_string(".obj")).c_str());
 		}
 		else if (token[0] == "scaling_min") 
 		{
@@ -193,7 +179,7 @@ void ChunkObject::LoadOBJ(const char * path)
 
 	std::string line;
 
-	std::cout << "Loading model: " << path << ", this will take some time... ";
+	std::cout << "Loading model: " << path << ", this will take some time... \n";
 
 	//I am going to assume the Obj files are well formed (information is defined in the order of vertices, vertex normals, vertex texture coordinates)
 	while (std::getline(input, line))
@@ -203,6 +189,13 @@ void ChunkObject::LoadOBJ(const char * path)
 		if (line[0] == '#' || line.find_first_not_of(' ') == std::string::npos)
 		{
 			continue;
+		}
+
+		else if (line[0] == 'm' && line[1] == 't' && line[2] == 'l' && line[3] == 'l' && line[4] == 'i' && line[5] == 'b')
+		{
+			std::vector<std::string> mtl = split(line, ' ');
+
+			LoadMTL((ci_string(this->path) + mtl[1].c_str()).c_str());
 		}
 
 		else if (line[0] == 'u' && line[1] == 's' && line[2] == 'e' && line[3] == 'm' && line[4] == 't' && line[5] == 'l')
@@ -374,7 +367,7 @@ void ChunkObject::LoadMTL(const char * path)
 
 	std::string line;
 
-	std::cout << "Loading mtl file: " << path << ", this will take some time... ";
+	std::cout << "Loading mtl file: " << path << ", this will take some time... \n";
 
 	MtlProperties* currentMtl = new MtlProperties;
 

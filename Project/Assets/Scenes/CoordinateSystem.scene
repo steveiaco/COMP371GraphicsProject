@@ -30,9 +30,8 @@ scaling = 0.12f 0.12f 0.12f
 
 
 [ChunkObject]
-name = "OakTree"
-mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyOak.mtl"
-path = "../Assets/Models/LowPolyStuff/LowLowPolyOak.obj"
+name = "LowLowPolyOak"
+path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
@@ -43,9 +42,8 @@ altitude_range = 0.0f 30.0f
 density = 0.01
 
 [ChunkObject]
-name = "PalmTree"
-mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyPalm.mtl"
-path = "../Assets/Models/LowPolyStuff/LowLowPolyPalm.obj"
+name = "LowLowPolyPalm"
+path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
@@ -56,9 +54,8 @@ altitude_range = 0.0f 5.0f
 density = 0.5
 
 [ChunkObject]
-name = "FirTree"
-mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyFir.mtl"
-path = "../Assets/Models/LowPolyStuff/LowLowPolyFir.obj"
+name = "LowLowPolyFir"
+path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 2.0f 2.0f 2.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
@@ -69,9 +66,8 @@ altitude_range = 0.0f 30.0f
 density = 0.1
 
 [ChunkObject]
-name = "Poplar"
-mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyPoplar.mtl"
-path = "../Assets/Models/LowPolyStuff/LowLowPolyPoplar.obj"
+name = "LowLowPolyPoplar"
+path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
@@ -83,8 +79,7 @@ density = 0.01
 
 [ChunkObject]
 name = "Rock"
-mtl_path = "../Assets/Models/Rock/Rock.mtl"
-path = "../Assets/Models/Rock/Rock.obj"
+path = "../Assets/Models/Rock/"
 scaling_min = 0.0005f 0.0005f 0.0005f 
 scaling_max = 0.005f 0.005f 0.005f 
 rotation_angle_min = -10.0f 0.0f -10.0f
@@ -95,9 +90,8 @@ altitude_range = 0.0f 5.0f
 density = 0.1
 
 [ChunkObject]
-name = "Grass"
-mtl_path = "../Assets/Models/Grass/grass.mtl"
-path = "../Assets/Models/Grass/grass.obj"
+name = "grass"
+path = "../Assets/Models/Grass/"
 scaling_min = 0.1f 0.1f 0.1f 
 scaling_max = 0.9f 0.9f 0.9f 
 rotation_angle_min = -10.0f 0.0f -10.0f
