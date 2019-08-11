@@ -69,6 +69,7 @@ namespace pg
 			const Camera& crrtCamera = *World::GetInstance()->GetCurrentCamera();
 			const glm::vec3 pos = crrtCamera.GetPosition();
 			const float viewDist = Camera::DIST_FAR_PLANE;
+			const glm::vec3 lookAt = crrtCamera.GetLookAt();
 			// Get range of chunks within draw distance
 			const int chunkLoadRadius = static_cast <int> (viewDist / TerrainChunk::CHUNK_SIZE) + 1;
 			const int centerChunkX = static_cast <int> (glm::floor(pos.x / TerrainChunk::CHUNK_SIZE));
@@ -76,11 +77,22 @@ namespace pg
 			const float LODFactor = static_cast <float> (TerrainChunk::MIN_LOD - 1) / static_cast <float> (chunkLoadRadius);
 
 			// Loop over chunks within draw distance
-			for (int offsetX = -chunkLoadRadius; offsetX <= chunkLoadRadius; offsetX++)
+			for (int offsetX = -chunkLoadRadius; offsetX < chunkLoadRadius; offsetX++)
 			{
 				unsigned short LODX = (offsetX < 0) ? -static_cast <short> (LODFactor * offsetX) : static_cast <short> (LODFactor * offsetX);
-				for (int offsetY = -chunkLoadRadius; offsetY <= chunkLoadRadius; offsetY++)
+				for (int offsetY = -chunkLoadRadius; offsetY < chunkLoadRadius; offsetY++)
 				{
+					//Check if chunk is within view (we will cull chunks behind camera)
+					glm::vec3 topLeft = glm::vec3((centerChunkX + offsetX) * TerrainChunk::CHUNK_SIZE, 0.f, (centerChunkY + offsetY) * TerrainChunk::CHUNK_SIZE) - pos;
+					glm::vec3 topRight = topLeft + glm::vec3(TerrainChunk::CHUNK_SIZE, 0.f, 0.f);
+					glm::vec3 bottomLeft = topLeft + glm::vec3(0.f, 0.f, TerrainChunk::CHUNK_SIZE);
+					glm::vec3 bottomRight = topLeft + glm::vec3(TerrainChunk::CHUNK_SIZE, 0.f, TerrainChunk::CHUNK_SIZE);
+					// If any of chunk corners are in front of near plane, do not cull
+					if (glm::dot(lookAt, topLeft) > 0.f && glm::dot(lookAt, topRight) > 0.f && glm::dot(lookAt, bottomLeft) > 0.f && glm::dot(lookAt, bottomRight) > 0.f)
+					{
+						continue;
+					}
+
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(centerChunkX + offsetX, centerChunkY + offsetY);
 
@@ -90,8 +102,6 @@ namespace pg
 					LOD = (LOD == 0) ? 0 : LOD - 1;
 
 					// Draw Chunk
-					// TODO - Only draw chunks in front of camera 
-					// This could be done by checking distance between 4 corners of chunk and near plane. If distance is positive for any of the four, draw chunk.
 					crrtChunk.Draw(LOD);
 				}
 			}
@@ -103,16 +113,28 @@ namespace pg
 			const Camera& crrtCamera = *World::GetInstance()->GetCurrentCamera();
 			const glm::vec3 pos = crrtCamera.GetPosition();
 			const float viewDist = Camera::DIST_FAR_PLANE;
+			const glm::vec3 lookAt = crrtCamera.GetLookAt();
 			// Get range of chunks within draw distance
 			const int chunkLoadRadius = static_cast <int> (viewDist / TerrainChunk::CHUNK_SIZE) + 1;
 			const int centerChunkX = static_cast <int> (glm::floor(pos.x / TerrainChunk::CHUNK_SIZE));
 			const int centerChunkY = static_cast <int> (glm::floor(pos.z / TerrainChunk::CHUNK_SIZE));
 			waterRenderer.Start();
 			// Loop over chunks within draw distance
-			for (int offsetX = -chunkLoadRadius; offsetX <= chunkLoadRadius; offsetX++)
+			for (int offsetX = -chunkLoadRadius; offsetX < chunkLoadRadius; offsetX++)
 			{
-				for (int offsetY = -chunkLoadRadius; offsetY <= chunkLoadRadius; offsetY++)
+				for (int offsetY = -chunkLoadRadius; offsetY < chunkLoadRadius; offsetY++)
 				{
+					//Check if chunk is within view (we will cull chunks behind camera)
+					glm::vec3 topLeft = glm::vec3((centerChunkX + offsetX) * TerrainChunk::CHUNK_SIZE, 0.f, (centerChunkY + offsetY) * TerrainChunk::CHUNK_SIZE) - pos;
+					glm::vec3 topRight = topLeft + glm::vec3(TerrainChunk::CHUNK_SIZE, 0.f, 0.f);
+					glm::vec3 bottomLeft = topLeft + glm::vec3(0.f, 0.f, TerrainChunk::CHUNK_SIZE);
+					glm::vec3 bottomRight = topLeft + glm::vec3(TerrainChunk::CHUNK_SIZE, 0.f, TerrainChunk::CHUNK_SIZE);
+					// If any of chunk corners are in front of near plane, do not cull
+					if (glm::dot(lookAt, topLeft) > 0.f && glm::dot(lookAt, topRight) > 0.f && glm::dot(lookAt, bottomLeft) > 0.f && glm::dot(lookAt, bottomRight) > 0.f)
+					{
+						continue;
+					}
+
 					// Get chunk at coordinates, generate new one if it does not yet exist
 					TerrainChunk& crrtChunk = GetChunkAt(centerChunkX + offsetX, centerChunkY + offsetY);
 					waterRenderer.Draw(crrtChunk.mWater);

@@ -20,6 +20,7 @@ public:
 	virtual void Update(float dt) = 0;
 
 	glm::vec3 GetPosition() const { return mPosition; }
+	glm::vec3 GetLookAt() const;
 
 	virtual glm::mat4 GetViewMatrix() const = 0;
 	virtual glm::mat4 GetProjectionMatrix() const;
