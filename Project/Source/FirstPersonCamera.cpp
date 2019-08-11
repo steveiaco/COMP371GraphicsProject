@@ -109,8 +109,8 @@ void FirstPersonCamera::Update(float dt)
             mVelocity += GRAVITY * dt;
         }
 
-        float newHeight = computeHeight(dt);
-        mPosition.y = newHeight;
+        //float newHeight = computeHeight(dt);
+        //mPosition.y = newHeight;
     }
 }
 

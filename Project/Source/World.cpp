@@ -194,11 +194,10 @@ void World::Draw()
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 	glm::mat4 worldMatrix(1.0f);
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
-	mpTerrain->Draw();
 
-	mFBOs.BindReflectionFrameBuffer();
-	mpTerrain->Draw();
-	mFBOs.UnbindCurrentFrameBuffer();
+	//mFBOs.BindReflectionFrameBuffer();
+	//mpTerrain->Draw();
+	//mFBOs.UnbindCurrentFrameBuffer();
 	mpTerrain->Draw();
 	mpTerrain->DrawWater(mWaterRenderer);
 

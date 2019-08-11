@@ -61,8 +61,8 @@ namespace pg
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mFBOs.GetRefractionTexture());
 			glUniform1i(refractionTextureLocation, 1);
-			//glEnable(GL_BLEND);
-			//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		void WaterRenderer::Draw(const WaterQuad& waterQuad)
@@ -77,7 +77,7 @@ namespace pg
 
 		void WaterRenderer::Stop()
 		{
-			//glDisable(GL_BLEND);
+			glDisable(GL_BLEND);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glActiveTexture(GL_TEXTURE1);
