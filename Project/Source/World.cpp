@@ -235,6 +235,7 @@ void World::Draw()
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
+	glUseProgram(Renderer::GetShaderProgramID());
 
 	Renderer::EndFrame();
 }

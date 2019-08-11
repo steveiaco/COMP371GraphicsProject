@@ -28,39 +28,56 @@ name = "Origin"
 position = 0.0f 0.0f 0.0f
 scaling = 0.12f 0.12f 0.12f
 
-[ChunkObject]
-name = "PalmTree"
-path = "../Assets/Models/LowPolyStuff/Palm_Tree.obj"
-scaling_min = 5.0f 5.0f 5.0f 
-scaling_max = 6.0f 6.0f 6.0f 
-rotation_angle_min = -10.0f 0.0f -10.0f
-rotation_angle_max = 10.0f 360.0f 10.0f
-temperature_range = 0.66f 1.0f
-humidity_range = 0.0f 1.0f
-altitude_range = 0.0f 1.0f
-density = 0.01
-
-[ChunkObject]
-name = "PolarTree"
-path = "../Assets/Models/LowPolyStuff/Poplar_Tree.obj"
-scaling_min = 5.0f 5.0f 5.0f 
-scaling_max = 6.0f 6.0f 6.0f 
-rotation_angle_min = -10.0f 0.0f -10.0f
-rotation_angle_max = 10.0f 360.0f 10.0f
-temperature_range = 0.0f 0.33f
-humidity_range = 0.0f 1.0f
-altitude_range = 0.0f 1.0f
-density = 0.01
-
 
 [ChunkObject]
 name = "OakTree"
-path = "../Assets/Models/LowPolyStuff/Oak_Tree.obj"
-scaling_min = 5.0f 5.0f 5.0f 
+mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyOak.mtl"
+path = "../Assets/Models/LowPolyStuff/LowLowPolyOak.obj"
+scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
 rotation_angle_max = 10.0f 360.0f 10.0f
-temperature_range = 0.33f 0.66f
+temperature_range = 0.40f 0.75f
 humidity_range = 0.0f 1.0f
-altitude_range = 0.0f 1.0f
-density = 0.01
+altitude_range = 0.0f 15.0f
+density = 0.0001
+
+[ChunkObject]
+name = "PalmTree"
+mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyPalm.mtl"
+path = "../Assets/Models/LowPolyStuff/LowLowPolyPalm.obj"
+scaling_min = 4.0f 4.0f 4.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.75f 1.0f
+humidity_range = 0.0f 1.0f
+altitude_range = 0.0f 15.0f
+density = 0.0001
+
+[ChunkObject]
+name = "FirTree"
+mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyFir.mtl"
+path = "../Assets/Models/LowPolyStuff/LowLowPolyFir.obj"
+scaling_min = 2.0f 2.0f 2.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.0f 0.40f
+humidity_range = 0.0f 0.5f
+altitude_range = 0.0f 15.0f
+density = 0.0005
+
+[ChunkObject]
+name = "OakTree"
+mtl_path = "../Assets/Models/LowPolyStuff/LowLowPolyPoplar.mtl"
+path = "../Assets/Models/LowPolyStuff/LowLowPolyPoplar.obj"
+scaling_min = 4.0f 4.0f 4.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.40f 0.75f
+humidity_range = 0.0f 1.0f
+altitude_range = 0.0f 15.0f
+density = 0.0001
+

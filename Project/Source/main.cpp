@@ -35,7 +35,8 @@ int main(int argc, char*argv[])
 	//}
 	//else
 	//{
-
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 	// Main Loop
 	do

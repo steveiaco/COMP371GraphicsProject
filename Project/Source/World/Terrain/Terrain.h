@@ -55,6 +55,8 @@ namespace pg
 			void Draw();
 
 		private:
+			const static bool GenerateInfiniteTerrain = true;
+
 			// Get height at vertex
 			float GetHeightAt(const int xCoord, const int yCoord) const;
 			// Get normal at vertex
@@ -72,6 +74,8 @@ namespace pg
 			TerrainAesthetic mAesthetic = LOW_POLY;
 			// Map of previously generated chunks
 			std::map<std::pair<int, int>, TerrainChunk*> mChunkMap = std::map<std::pair<int, int>, TerrainChunk*>();
+
+			bool initialGenDone;
 		};
 	}
 }
