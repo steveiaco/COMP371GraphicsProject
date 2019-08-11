@@ -18,6 +18,7 @@ public:
 	glm::vec4 GetPosition() { return mPosition;}
 	glm::vec3 GetColor() { return mColor; }
 	glm::vec3 GetAttenuation() { return mAttenuation; }
+	void setColor(float color) { mColor = glm::vec3(color); }
 
 private:
 	glm::vec4 mPosition = glm::vec4(0.0, -1.0, 0.0, 0.0); //Vector for directional lighting, point for point lighting

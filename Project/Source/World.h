@@ -81,7 +81,9 @@ private:
 	pg::terrain::TerrainGenerator* mpTerrainGenerator;
 	pg::terrain::Terrain* mpTerrain;
 	Skybox* mSkybox;
-	float mDayCycle;
+	float mTotalTime;
+	bool mDayPhase;
+	float mDayRatio;
 	pg::water::WaterFrameBuffers mFBOs;
 	pg::water::WaterRenderer mWaterRenderer;
 
