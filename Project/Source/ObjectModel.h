@@ -4,10 +4,6 @@
 #include <istream>
 #include "TextureLoader.h"
 
-
-
-struct Vertex;
-
 class ObjectModel : public Model 
 {
 public:
@@ -17,9 +13,6 @@ public:
 	virtual void Update(float dt);
 	virtual void Draw();
 
-protected:
-	virtual bool ParseLine(const std::vector<ci_string>& token);
-	Vertex* LoadVertices(const char * path);
 private:
 
 	struct Vertex 
@@ -69,4 +62,7 @@ private:
 	std::vector<Vertex> GenerateOrderedVertexList();
 	std::vector<Face> ConvertQuadToTris(Face quad);
 
+protected:
+    virtual bool ParseLine(const std::vector<ci_string>& token);
+    ObjectModel::Vertex* LoadVertices(const char * path);
 };

@@ -4,6 +4,7 @@
 #include "Terrain.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
+#include <cstring>
 
 ObjectModel::ObjectModel() : Model(), textured(false)
 {
@@ -105,7 +106,7 @@ bool ObjectModel::ParseLine(const std::vector<ci_string>& token)
 
 }
 
-Vertex* ObjectModel::LoadVertices(const char * path)
+ObjectModel::Vertex* ObjectModel::LoadVertices(const char * path)
 {
 	/*Read obj file*/
 

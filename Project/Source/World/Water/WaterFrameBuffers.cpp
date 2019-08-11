@@ -1,5 +1,9 @@
 #include "WaterFrameBuffers.h"
+#if defined(PLATFORM_OSX) || defined(linux)
+#include "../../Renderer.h"
+#else
 #include "..\..\Renderer.h"
+#endif
 
 namespace pg
 {

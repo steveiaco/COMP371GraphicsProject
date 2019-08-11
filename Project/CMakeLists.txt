@@ -12,7 +12,7 @@ add_definitions(${GLM_DEFINITIONS})
 
 set(SOURCE_FILES)
 
-file(GLOB SOURCE_FILES Source/*.cpp Source/*.h Source/World/Terrain/*.cpp Source/World/Terrain/*.h)
+file(GLOB SOURCE_FILES Source/*.cpp Source/*.h Source/*/*/*.cpp Source/*/*/*.h)
 list(REMOVE_ITEM SOURCE_FILES "Source/Terrain.cpp" "Source/Terrain.h")
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

@@ -8,10 +8,12 @@
 #include "../../World.h"
 #include "../../Camera.h"
 #include "../../Renderer.h"
+#include "../../ChunkPopulator.h"
 #else
 #include "..\..\World.h"
 #include "..\..\Camera.h"
 #include "..\..\Renderer.h"
+#include "..\..\ChunkPopulator.h"
 #endif
 namespace pg
 {

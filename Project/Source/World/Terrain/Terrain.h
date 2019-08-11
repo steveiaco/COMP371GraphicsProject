@@ -1,10 +1,7 @@
 #pragma once
 
 #include "TerrainChunk.h"
-#include "../../ChunkPopulator.h"
 #include "../Water/WaterRenderer.h"
-
-
 #include <map>
 
 namespace pg
@@ -19,6 +16,8 @@ namespace pg
 			SMOOTH,
 			WIREFRAME
 		};
+
+		class ChunkPopulator;
 
 		class Terrain
 		{

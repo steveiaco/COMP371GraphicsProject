@@ -2,6 +2,7 @@
 #include <istream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
+#include <cstring>
 #include "Renderer.h"
 
 ChunkObject::ChunkObject()
