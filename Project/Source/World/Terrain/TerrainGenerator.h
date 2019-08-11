@@ -52,10 +52,10 @@ namespace pg
 			unsigned short mNumOctaves = 5;
 			float mFrequency = 1.f/128.f;
 			float mLacunarity = 3.f;
-			float mAmplitude = 90.f;
+			float mAmplitude = 120.f;
 			float mPersistence = 0.3f;
 			unsigned int mFlatnessDegree = 2;
-			float mFlatnessFrequency = 1.f / 1024.f;
+			float mFlatnessFrequency = 1.f / 512.f;
 
 			// Terrain Color data
 			// DESERT

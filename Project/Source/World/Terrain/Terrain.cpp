@@ -304,7 +304,7 @@ namespace pg
 				mTerrainGenerator.FillChunk(*chunk);
 				mChunkMap.insert({ { xCoord, yCoord }, chunk });
 
-				//chunkPopulator->PopulateChunk(chunk);
+				chunkPopulator->PopulateChunk(chunk);
 
 				return *chunk;
 			}
