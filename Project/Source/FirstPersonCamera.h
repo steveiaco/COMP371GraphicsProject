@@ -34,6 +34,7 @@ private:
 	int   mOldSpaceBarState;
 	float mPreviousHeight;
     int   mOldFreeModeKeyState;
+    bool mWasInCollision;
     BoundingVolume* mBoundingVolume;
 
 	glm::vec3 mLookAt;

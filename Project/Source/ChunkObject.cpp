@@ -161,7 +161,7 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 		}
         else if (token[0] == "collider")
         {
-            assert(token.size() > 3);
+            assert(token.size() > 2);
             assert(token[1] == "=");
             mBoundingVolume = BoundingVolume::InitializeVolume(token);
         }

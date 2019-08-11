@@ -17,10 +17,12 @@
 #include <GLFW/glfw3.h>
 #include <algorithm>
 
-const static float BASE_HEIGHT = 10.0;
+const static float BASE_HEIGHT = 15.0;
 const static float CAMERA_RESPONSIVENESS = 10;
 const static float GRAVITY = -1000;
 const static float JUMP_FORCE = 400;
+const static float COLLISION_RESPONSIVENESS = 5;
+const static float SPEED_MULTIPLIER = 2.0f;
 
 using namespace glm;
 
@@ -29,7 +31,8 @@ FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(position), mL
     mPreviousHeight = 0;
     mOldSpaceBarState = -1;
     mOldFreeModeKeyState = -1;
-    mBoundingVolume = new BoundingSphere(position, 20.0);
+    mBoundingVolume = new BoundingSphere(position, 10.0);
+    mWasInCollision = false;
 }
 
 FirstPersonCamera::~FirstPersonCamera() {}
@@ -87,15 +90,30 @@ void FirstPersonCamera::Update(float dt)
     if (!mFreeMode)
     {
         glm::vec3 newPosition = mPosition + computeMovement(dt);
-
-        if (!World::CheckCollisions(newPosition.x, newPosition.z, mBoundingVolume))
+        bool currentCollisionState = World::CheckCollisions(newPosition.x, newPosition.z, mBoundingVolume);
+        printf("Collision found at (%f, %f): %s\n", newPosition.x, newPosition.z, currentCollisionState ? "YES" : "NO");
+        if (mWasInCollision)
+        {
+            if (currentCollisionState)
+            {
+                // Move in the po
+                mPosition = glm::mix(mPosition, mPosition - dt * (2.0f * mLookAt * mSpeed), COLLISION_RESPONSIVENESS * dt);
+            }
+            else
+            {
+                mPosition = newPosition;
+            }
+        }
+        else if (!currentCollisionState)
         {
             mPosition = newPosition;
+            mWasInCollision = false;
         }
         else
         {
-            printf("Collision found at (%f, %f)", newPosition.x, newPosition.z);
+            mWasInCollision = true;
         }
+
         int currentSpaceBarState = glfwGetKey(EventManager::GetWindow(), GLFW_KEY_SPACE);
         if (currentSpaceBarState == GLFW_PRESS && !mJumping)
         {
@@ -136,25 +154,32 @@ glm::vec3 FirstPersonCamera::computeMovement(float dt)
     vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
     glm::normalize(sideVector);
 
+    float currentSpeed = mSpeed;
+
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+         currentSpeed *= SPEED_MULTIPLIER;
+    }
+
     // A S D W for motion along the camera basis vectors
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
     {
-        movement += mLookAt * dt * mSpeed;
+        movement += mLookAt * dt * currentSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
     {
-        movement -= mLookAt * dt * mSpeed;
+        movement -= mLookAt * dt * currentSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
     {
-        movement += sideVector * dt * mSpeed;
+        movement += sideVector * dt * currentSpeed;
     }
 
     if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
     {
-        movement -= sideVector * dt * mSpeed;
+        movement -= sideVector * dt * currentSpeed;
     }
 
     return movement;

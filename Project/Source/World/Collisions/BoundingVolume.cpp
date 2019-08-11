@@ -7,7 +7,8 @@
 
 std::map<char, Type> supportedTypes = {
         {'S', SPHERE},
-        {'B', BOX}
+        {'B', BOX},
+        {'E', EMPTY}
 };
 
 BoundingVolume::BoundingVolume() : mPosition(glm::vec3(0.0f, 0.0f, 0.0f)), mRotationAxis(glm::vec3(0.0f, 1.0f, 0.0f)), mRotationAngleInDegrees(0.0f)
@@ -105,7 +106,12 @@ bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
 }
 
 bool BoundingVolume::IsValid(BoundingVolume *volume) {
-    if (volume->GetType().size() > 0)
+    if (volume == nullptr)
+    {
+        return false;
+    }
+
+    if (!volume->GetType().empty())
     {
         return (volume->GetType().c_str()[0] != 'E');
     }

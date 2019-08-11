@@ -9,7 +9,7 @@ class BoundingSphere;
 class BoundingBox;
 class EmptyVolume;
 
-enum Type {SPHERE, BOX};
+enum Type {SPHERE, BOX, EMPTY};
 
 class BoundingVolume {
 public:

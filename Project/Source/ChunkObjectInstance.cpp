@@ -5,6 +5,9 @@
 #include "World.h"
 #include "Camera.h"
 #include "World/Collisions/BoundingVolume.h"
+#include "World/Collisions/EmptyVolume.h"
+#include "World/Collisions/BoundingSphere.h"
+#include "World/Collisions/BoundingBox.h"
 #include <typeinfo>
 
 
