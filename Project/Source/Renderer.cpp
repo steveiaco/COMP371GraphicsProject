@@ -55,17 +55,13 @@ void Renderer::Initialize()
     glGetError();
     
 	// Black background
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);     
+
 	// Enable depth test
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     
-    
     CheckForErrors();
-    
-
-    
     
 	// Loading Shaders
 #if defined(PLATFORM_OSX)
@@ -90,6 +86,10 @@ void Renderer::Initialize()
 	sShaderProgramID.push_back(
 		LoadShaders(shaderPathPrefix + "Texture.vertexshader",
 			shaderPathPrefix + "Texture.fragmentshader")
+	);
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "Skybox.vertexshader",
+			shaderPathPrefix + "Skybox.fragmentshader")
 	);
 
 	sShaderProgramID.push_back(

@@ -16,6 +16,7 @@ in vec3 eyeVector;					// Vector from the vertex to the Camera in View Space
 in vec4 lightVectors[MAX_LIGHTS];    // Vector from the vertex to the Light in View Space
 									// Length of lightVector is the distance between light and vertex
 									// if w = 1: Point light, if w = 0: directional light
+in float visibility;
 
 // Ouput data
 out vec3 color;
@@ -50,4 +51,5 @@ void main()
 	}
 
 	color = clamp(v_color * sumColor, 0.0, 1.0);
+	color = vec3(mix(vec4(0.5f, 0.5f, 0.5f, 0.1f), vec4(color, 1.0f), visibility));
 }
