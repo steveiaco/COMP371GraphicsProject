@@ -162,7 +162,6 @@ void Skybox::loadSkybox() {
 void Skybox::Draw(int dayNightPhase, float dayNightRatio) {
 	glDepthMask(GL_FALSE);
 	glBindVertexArray(mVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
 	GLuint dayNightPhaseLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightPhase");
 	glUniform1i(dayNightPhaseLocation, dayNightPhase);
 	GLuint dayNightRatioLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "dayNightRatio");
