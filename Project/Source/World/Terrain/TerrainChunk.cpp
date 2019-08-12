@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Represents a discrete chunk of the terrain
+//
 #include "TerrainChunk.h"
 #include "TerrainGenerator.h"
 #include "Terrain.h"

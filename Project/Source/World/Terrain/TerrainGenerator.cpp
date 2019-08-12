@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Generates the chunks used to populate terrain
+//
 #include "TerrainGenerator.h"
 #include "TerrainChunk.h"
 #include "Terrain.h"
@@ -117,6 +122,8 @@ namespace pg
 			return 0.5f + 0.5f * mNoise.Perlin(mTemperatureFrequency * (TEMPERATURE_OFFSET_X + mXCoord), mTemperatureFrequency * (TEMPERATURE_OFFSET_Y + mYCoord)); 
 		}
 
+		//WARNING: This code took a lot of effort to put together, but it is not complete. It is netiher optimized, nor cleaned up. Also, it does not work very well on this branch. If you want to test it, you are better off using the version included in the erosion branch, howver, note that even that verison is not complete.
+		//	Inspired by https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
 		void TerrainGenerator::Erode(Terrain& terrain, const float minXCoord, const float minYCoord, const float maxXCoord, const float maxYCoord) const
 		{
 			const float inertia = .05f; // At zero, water will instantly change direction to flow downhill. At 1, water will never change direction. 

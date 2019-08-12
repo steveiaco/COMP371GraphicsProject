@@ -54,7 +54,7 @@ World::World(char * scene)
 
 	mTotalTime = 0.0f;
 	mSkybox = new Skybox();
-	mpPerlin = new PerlinNoise(1);
+	mpPerlin = new PerlinNoise(3);
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
 

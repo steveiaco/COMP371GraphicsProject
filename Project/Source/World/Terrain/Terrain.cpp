@@ -59,7 +59,6 @@ namespace pg
 			int numChunks = (2 * range) * (2 * range);
 			int i = 0;
 			// Pre-generate a perimiter of chunks around origin
-
 			for (int x = -range; x < range; x++)
 			{
 				for (int y = -range; y < range; y++)
@@ -295,48 +294,40 @@ namespace pg
 			//Generate new chunk if it does not exist
 			if (it == mChunkMap.end())
 			{
-                if (!initialGenDone || GenerateInfiniteTerrain) 
-                {
-					std::cout << "Generating chunk ...";
-				    //Create chunk
-				    TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
-				    // Add neighboring chunks
-				    // NORTH
-				    it = mChunkMap.find({ xCoord, yCoord - 1 });
-				    if (it != mChunkMap.end())
-				    {
-				    	chunk->SetNorthChunk(it->second);
-				    }
-				    // WEST
-				    it = mChunkMap.find({ xCoord - 1, yCoord });
-				    if (it != mChunkMap.end())
-				    {
-				    	chunk->SetWestChunk(it->second);
-				    }
-				    // SOUTH
-				    it = mChunkMap.find({ xCoord, yCoord + 1 });
-				    if (it != mChunkMap.end())
-				    {
-				    	chunk->SetSouthChunk(it->second);
-				    }
-				    // EAST
-				    it = mChunkMap.find({ xCoord + 1, yCoord });
-				    if (it != mChunkMap.end())
-				    {
-				    	chunk->SetEastChunk(it->second);
-				    }
-				    mTerrainGenerator.FillChunk(*chunk);
-				    mChunkMap.insert({ { xCoord, yCoord }, chunk });
-
-				    chunkPopulator->PopulateChunk(chunk);
-					std::cout << "Done.\n";
-				    return *chunk;
-                }
-                else {
-                    //todo fix this hack
-					auto i = mChunkMap.find({ 0,0 });
-					return *i->second;
+				std::cout << "Generating chunk ...";
+				//Create chunk
+				TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
+				// Add neighboring chunks
+				// NORTH
+				it = mChunkMap.find({ xCoord, yCoord - 1 });
+				if (it != mChunkMap.end())
+				{
+				    chunk->SetNorthChunk(it->second);
 				}
+				// WEST
+				it = mChunkMap.find({ xCoord - 1, yCoord });
+				if (it != mChunkMap.end())
+				{
+				    chunk->SetWestChunk(it->second);
+				}
+				// SOUTH
+				it = mChunkMap.find({ xCoord, yCoord + 1 });
+				if (it != mChunkMap.end())
+				{
+				    chunk->SetSouthChunk(it->second);
+				}
+				// EAST
+				it = mChunkMap.find({ xCoord + 1, yCoord });
+				if (it != mChunkMap.end())
+				{
+				    chunk->SetEastChunk(it->second);
+				}
+				mTerrainGenerator.FillChunk(*chunk);
+				mChunkMap.insert({ { xCoord, yCoord }, chunk });
+
+				chunkPopulator->PopulateChunk(chunk);
+				std::cout << "Done.\n";
+				return *chunk;
 			}
 			else
 			{
