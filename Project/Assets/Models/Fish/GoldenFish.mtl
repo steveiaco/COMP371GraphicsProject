@@ -1,0 +1,13 @@
+# Blender3D MTL File: GoldenFish.blend
+# Material Count: 1
+newmtl None_naranjaojo.png
+Ns 50
+Ka 0.100000 0.100000 0.100000
+Kd 0.913000 0.564000 0.168000
+Ks 0.768000 0.415000 0.011000
+Ke 0.0 0.0 0.0
+Ni 1.000000
+d 1.000000
+illum 2
+
+
