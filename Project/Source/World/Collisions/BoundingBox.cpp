@@ -45,7 +45,6 @@ void BoundingBox::SetStrides(float x, float y, float z)
 }
 
 bool BoundingBox::IsInVolume(BoundingVolume *volume) {
-    printf("[B] Check collision at (%f, %f, %f)\n", GetPosition().x, GetPosition().y, GetPosition().z);
     if(dynamic_cast<BoundingBox*>(volume))
     {
         return BoundingVolume::BoxCollision(this, dynamic_cast<BoundingBox*>(volume));

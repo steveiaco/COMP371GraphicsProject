@@ -352,7 +352,6 @@ namespace pg
 
             TerrainChunk& terrainChunk = GetChunkAt(chunkX, chunkY);
 
-            printf("Number of objects at (%d, %d): %zu\n", chunkX, chunkY, terrainChunk.objectsInChunk.size());
             for (auto it = terrainChunk.objectsInChunk.begin(); it != terrainChunk.objectsInChunk.end(); it++)
             {
                 if ((*it)->CheckCollision(volume))

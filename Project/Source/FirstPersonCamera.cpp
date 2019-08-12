@@ -21,7 +21,7 @@ const static float BASE_HEIGHT = 15.0;
 const static float CAMERA_RESPONSIVENESS = 10;
 const static float GRAVITY = -1000;
 const static float JUMP_FORCE = 400;
-const static float COLLISION_RESPONSIVENESS = 5;
+const static float COLLISION_RESPONSIVENESS = 1.5f;
 const static float SPEED_MULTIPLIER = 2.0f;
 
 using namespace glm;
@@ -91,12 +91,11 @@ void FirstPersonCamera::Update(float dt)
     {
         glm::vec3 newPosition = mPosition + computeMovement(dt);
         bool currentCollisionState = World::CheckCollisions(newPosition.x, newPosition.z, mBoundingVolume);
-        printf("Collision found at (%f, %f): %s\n", newPosition.x, newPosition.z, currentCollisionState ? "YES" : "NO");
         if (mWasInCollision)
         {
             if (currentCollisionState)
             {
-                // Move in the po
+                printf("Collision found at (%f, %f)\n", newPosition.x, newPosition.z);
                 mPosition = glm::mix(mPosition, mPosition - dt * (2.0f * mLookAt * mSpeed), COLLISION_RESPONSIVENESS * dt);
             }
             else
@@ -111,6 +110,7 @@ void FirstPersonCamera::Update(float dt)
         }
         else
         {
+            printf("Collision found at (%f, %f)\n", newPosition.x, newPosition.z);
             mWasInCollision = true;
         }
 
@@ -137,8 +137,6 @@ void FirstPersonCamera::Update(float dt)
     }
     else
     {
-        // Uncomment for debugging
-        //World::CheckCollisions(mPosition.x, mPosition.z, mBoundingVolume);
         mPosition += computeMovement(dt);
     }
 

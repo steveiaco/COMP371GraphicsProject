@@ -36,7 +36,6 @@ void BoundingSphere::SetRadius(float radius)
 }
 
 bool BoundingSphere::IsInVolume(BoundingVolume *volume) {
-    printf("[S] Check collision at (%f, %f, %f)\n", GetPosition().x, GetPosition().y, GetPosition().z);
     if(dynamic_cast<BoundingSphere*>(volume))
     {
         return BoundingVolume::SphereCollision(this, dynamic_cast<BoundingSphere*>(volume));
