@@ -37,6 +37,9 @@
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
 
+#include "World/Collisions/BoundingVolume.h"
+#include "BSplineCamera.h"
+
 using namespace std;
 using namespace glm;
 
@@ -49,7 +52,7 @@ World::World(char * scene)
 {
     instance = this;
 
-	mDayCycle = 0;
+	mTotalTime = 0.0f;
 	mSkybox = new Skybox();
 	mpPerlin = new PerlinNoise();
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
@@ -63,7 +66,15 @@ World::World(char * scene)
 	mpTerrain->Start();
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCurrentCamera = 0;
+
+	glm::vec2 splineCamOrigin = vec2(2.0f, 20.0f);
+	glm::vec2 splineCamGenerationSize = vec2(500.0f, 500.0f);
+	glm::vec2 splineCamHeightLimits = vec2(40, 100);
+	unsigned int splineWaypointCount = 10;
+	float splineSpeed = 50;
+    mCamera.push_back(new BSplineCamera(new BSpline(splineCamOrigin, splineCamGenerationSize, splineCamHeightLimits, splineWaypointCount), splineSpeed));
+
+    mCurrentCamera = 0;
 }
 
 World::~World()
@@ -119,14 +130,40 @@ World* World::GetInstance()
     return instance;
 }
 
+bool World::CheckCollisions(float x, float y, BoundingVolume* volume) {
+    return World::GetInstance()->GetTerrain()->CheckCollisionsAt(x, y, volume);
+}
+
 void World::Update(float dt)
 {
-	mDayCycle += dt;
+	mTotalTime += dt;
+	if (mTotalTime < 0) { //overflow protection
+		mTotalTime = 0 + dt;
+	}
+	mDayPhase = fmod(mTotalTime, 100.0f) > 50.0f;
+	mDayRatio = fmod(mTotalTime, 50.0f) / 50.0f;
+
 	// User Inputs
-	// 0 1 2 to change the Camera
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
+	// 1 2 to change the Camera
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
+    {
+        mCurrentCamera = 0;
+    }
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_2 ) == GLFW_PRESS)
+    {
+        mCurrentCamera = 1;
+    }
+
+	//TODO: Adjust the light based on the day/night cycle
+
+	for (vector<LightSource*>::iterator it = mLightList.begin(); it < mLightList.end(); ++it)
 	{
-		mCurrentCamera = 0;
+		if (mDayPhase) {
+			(*it)->setColor(mDayRatio);
+		}
+		else {
+			(*it)->setColor(1.0f - mDayRatio);
+		}
 	}
 
     // Update animation and keys
@@ -169,9 +206,7 @@ void World::Draw()
 	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
 
-	int dayPhase = fmod(mDayCycle, 100.0f) > 50.0f ? 1 : 0;
-	float ratio = fmod(mDayCycle, 50.0f) / 50.0f;
-	mSkybox->Draw(dayPhase, ratio);
+	mSkybox->Draw(mDayPhase, mDayRatio);
 
 	Renderer::SetShader(SHADER_SOLID_COLOR);
 	glUseProgram(Renderer::GetShaderProgramID());
@@ -181,10 +216,10 @@ void World::Draw()
 	PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
 
 	// Send the view projection constants to the shader
-	mat4 VM = mCamera[mCurrentCamera]->GetViewMatrix();
-	mat4 PM = mCamera[mCurrentCamera]->GetProjectionMatrix();
-	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &VM[0][0]);
-	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &PM[0][0]);
+	V = mCamera[mCurrentCamera]->GetViewMatrix();
+	P = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
+	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
 
 	SetLights();
 

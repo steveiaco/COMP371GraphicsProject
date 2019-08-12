@@ -17,6 +17,10 @@ const float Camera::ASPECT_RATIO = 4.0f / 3.f;
 const float Camera::DIST_NEAR_PLANE = 0.1f;
 const float Camera::DIST_FAR_PLANE = 700.0f;
 
+Camera::Camera()
+{
+}
+
 Camera::Camera(glm::vec3 pos)
 	: mPosition(pos)
 {

@@ -9,11 +9,13 @@
 #include "../../Camera.h"
 #include "../../Renderer.h"
 #include "../../ChunkPopulator.h"
+#include "../Collisions/BoundingVolume.h"
 #else
 #include "..\..\World.h"
 #include "..\..\Camera.h"
 #include "..\..\Renderer.h"
 #include "..\..\ChunkPopulator.h"
+#include "..\Collisions\BoundingVolume.h"
 #endif
 
 namespace pg
@@ -112,7 +114,7 @@ namespace pg
 				}
 			}
 
-			std::cout << "Chunks rendered " << drawnChunks << "\n";
+			//std::cout << "Chunks rendered " << drawnChunks << "\n";
 		}
 
 		void Terrain::DrawWater(water::WaterRenderer& waterRenderer)
@@ -229,7 +231,7 @@ namespace pg
                 float height = dy * (heightSW - heightNW) + heightNW;
                 return dx * (heightSE - height) + height;
             }
-                //We are in north-western triangle
+            //We are in north-western triangle
             else
             {
                 float heightNW = GetHeightAt(floorX, floorY);
@@ -290,6 +292,7 @@ namespace pg
 			{
                 if (!initialGenDone || GenerateInfiniteTerrain) 
                 {
+					std::cout << "Generating chunk ...";
 				    //Create chunk
 				    TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
 				    // Add neighboring chunks
@@ -321,7 +324,7 @@ namespace pg
 				    mChunkMap.insert({ { xCoord, yCoord }, chunk });
 
 				    chunkPopulator->PopulateChunk(chunk);
-
+					std::cout << "Done.\n";
 				    return *chunk;
                 }
                 else {
@@ -346,5 +349,22 @@ namespace pg
 			chunkPopulator->AddObject(o);
 		}
 
+		bool Terrain::CheckCollisionsAt(const float xCoord, const float yCoord, BoundingVolume* volume)
+		{
+            const int chunkX = glm::floor(xCoord / TerrainChunk::CHUNK_SIZE);
+            const int chunkY = glm::floor(yCoord / TerrainChunk::CHUNK_SIZE);
+
+            TerrainChunk& terrainChunk = GetChunkAt(chunkX, chunkY);
+
+            printf("Number of objects at (%d, %d): %zu\n", chunkX, chunkY, terrainChunk.objectsInChunk.size());
+            for (auto it = terrainChunk.objectsInChunk.begin(); it != terrainChunk.objectsInChunk.end(); it++)
+            {
+                if ((*it)->CheckCollision(volume))
+                {
+                    return true;
+                }
+            }
+            return false;
+		}
 	}
 }

@@ -110,16 +110,14 @@ namespace pg
 			float temperatureRandom = rand() / (float)RAND_MAX;
 			float altitudeRandom = rand() / (float)RAND_MAX;
 
+			//quadratic function used to make objects more likely to spawn in the center of a range, producing a gradual transition between biomes.
 			float quadFunctionHumidity = 1 - std::pow( ( 2 * (mTerrain.GetHumidityAt(x, y) - (humidity.y + humidity.x) / 2 ) ) / (humidity.y - humidity.x) , 2);
 			float quadFunctionTemperature = 1 - std::pow( ( 2 * (mTerrain.GetTemperatureAt(x, y) - (temperature.y + temperature.x) / 2 ) ) / (temperature.y - temperature.x) , 2);
 
 			bool humidityIsAcceptable = humidityRandom < glm::clamp(quadFunctionHumidity, 0.0f, 1.0f);
 			bool temperatureIsAcceptable = temperatureRandom < glm::clamp(quadFunctionTemperature, 0.0f, 1.0f);
 			bool altitudeIsAcceptable = mTerrain.GetHeightAt(x, y) > altitude.x && mTerrain.GetHeightAt(x, y) < altitude.y;
-			
-			//bool humidityIsAcceptable = mTerrain.GetHumidityAt(x, y) > humidity.x && mTerrain.GetHumidityAt(x, y) < humidity.y;
-			//bool temperatureIsAcceptable = mTerrain.GetTemperatureAt(x, y) > temperature.x && mTerrain.GetTemperatureAt(x, y) < temperature.y;
-			
+						
 			return humidityIsAcceptable && temperatureIsAcceptable && altitudeIsAcceptable;
 		}
 	}

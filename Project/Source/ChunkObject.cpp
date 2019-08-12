@@ -4,6 +4,9 @@
 #include <glm/common.hpp>
 #include <cstring>
 #include "Renderer.h"
+#include "World/Collisions/BoundingVolume.h"
+#include "World/Collisions/BoundingSphere.h"
+#include "World/Collisions/BoundingBox.h"
 
 ChunkObject::ChunkObject()
 {
@@ -49,6 +52,11 @@ void ChunkObject::Load(ci_istringstream& iss)
 			exit(-1);
 		}
 	}
+
+	if (mBoundingVolume == nullptr)
+    {
+	    mBoundingVolume = BoundingVolume::InitializeVolume();
+    }
 }
 
 bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
@@ -151,6 +159,12 @@ bool ChunkObject::ParseLine(const std::vector<ci_string>& token)
 
 			density = static_cast<float>(atof(token[2].c_str()));
 		}
+        else if (token[0] == "collider")
+        {
+            assert(token.size() > 2);
+            assert(token[1] == "=");
+            mBoundingVolume = BoundingVolume::InitializeVolume(token);
+        }
 		else
 		{
 			return false;
@@ -544,4 +558,13 @@ std::vector<std::string> ChunkObject::split(const std::string &s, char delim) {
 	}
 
 	return result;
+}
+
+bool ChunkObject::CheckCollision(BoundingVolume *volume)
+{
+    if (mBoundingVolume != nullptr && volume != nullptr)
+    {
+        return mBoundingVolume->IsInVolume(volume);
+    }
+    return false; // Default to no collision
 }
