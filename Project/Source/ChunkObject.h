@@ -6,6 +6,7 @@
 #include <vector>
 #include "TextureLoader.h"
 
+class BoundingVolume;
 
 //Defines a model, but holds no world information about said model.
 class ChunkObject 
@@ -27,6 +28,8 @@ public:
 	inline glm::vec3 GetMaxRotationAngle() { return maxRotation; }
 
 	inline float GetDensity() { return density; }
+
+	bool CheckCollision(BoundingVolume* volume);
 
 private:
 
@@ -116,6 +119,8 @@ private:
 	float maxAltitude;
 
 	float density;
+
+	BoundingVolume* mBoundingVolume;
 
 	friend class ChunkObjectInstance;
 };

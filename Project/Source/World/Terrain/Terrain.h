@@ -44,6 +44,8 @@ namespace pg
 			float GetHumidityAt(const int mXCoord, const int mYCoord) const;
 			// Get temperature at coordinates (used to determine biome)
 			float GetTemperatureAt(const int mXCoord, const int mYCoord) const;
+			// Perform collision detection with objects on terrain
+			bool CheckCollisionsAt(const float xCoord, const float yCoord, BoundingVolume* volume);
 
 			// Get rendering aesthetic to use
 			TerrainAesthetic GetAesthetic() const { return mAesthetic; }

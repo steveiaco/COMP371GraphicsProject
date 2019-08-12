@@ -10,6 +10,8 @@
 
 #include "Camera.h"
 
+class BoundingVolume;
+
 class FirstPersonCamera : public Camera
 {
 public:
@@ -32,8 +34,12 @@ private:
 	int   mOldSpaceBarState;
 	float mPreviousHeight;
     int   mOldFreeModeKeyState;
+    bool mWasInCollision;
+    BoundingVolume* mBoundingVolume;
 
 	glm::vec3 mLookAt;
 
     float computeHeight(float dt);
+    void handleInput(float dt);
+    glm::vec3 computeMovement(float dt);
 };

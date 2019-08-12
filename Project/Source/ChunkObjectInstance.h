@@ -1,8 +1,8 @@
 #pragma once
 
 #include "ChunkObject.h"
+#include "World/Collisions/BoundingVolume.h"
 #include <glm/glm.hpp>
-
 
 class ChunkObjectInstance
 {
@@ -14,6 +14,8 @@ public:
 	void SetRotation(glm::vec3 angle);
 
 	ChunkObject* GetModel() const { return model; }
+	bool CheckCollision(BoundingVolume* volume);
+	void InitBoundingVolume();
 
 	virtual glm::mat4 GetWorldMatrix() const;
 	virtual void Draw();
@@ -33,4 +35,6 @@ private:
 
 	static unsigned int currentVAO;
 	static unsigned int currentVBO;
+
+	BoundingVolume* mBoundingVolume;
 };
