@@ -65,12 +65,12 @@ World::World(char * scene)
 
 	mpTerrain->Start();
 	// Setup Camera
-	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
+	mCamera.push_back(new FirstPersonCamera(vec3(0.0f, 5.0f, 0.0f)));
 
-	glm::vec2 splineCamOrigin = vec2(2.0f, 20.0f);
-	glm::vec2 splineCamGenerationSize = vec2(500.0f, 500.0f);
-	glm::vec2 splineCamHeightLimits = vec2(40, 100);
-	unsigned int splineWaypointCount = 10;
+	glm::vec2 splineCamOrigin = vec2(0.0f, 0.0f);
+	glm::vec2 splineCamGenerationSize = vec2(200.0f, 200.0f);
+	glm::vec2 splineCamHeightLimits = vec2(50, 100);
+	unsigned int splineWaypointCount = 50;
 	float splineSpeed = 50;
     mCamera.push_back(new BSplineCamera(new BSpline(splineCamOrigin, splineCamGenerationSize, splineCamHeightLimits, splineWaypointCount), splineSpeed));
 
