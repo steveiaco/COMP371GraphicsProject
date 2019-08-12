@@ -28,15 +28,15 @@ namespace pg
 						ChunkObject* co = *it;
 
 						//Then, if perlin allows for it, we will randomly decide whether the object will spawn
-						//todo, add density attribute that controls this factor
-						if (rand() % 100 <= co->GetDensity() * 10)
+						float randSpawn = rand() / (float)RAND_MAX;
+						if (randSpawn <= co->GetDensity() / 100)
 						{
 							//First, we verify whether or not the object can be placed in position's biome
 							if (VerifyObjectPlacement(*it, x, y))
 							{
 								//Then we verify whether the perlin noise allows us to place it in this location
-								float perl = mNoise.Perlin(x * FREQUENCY_PERLIN, y * FREQUENCY_PERLIN);
-								if (perl > 0)
+								//float perl = mNoise.Perlin(x * FREQUENCY_PERLIN, y * FREQUENCY_PERLIN);
+								if (true)
 								{
 									float terrainHeight = mTerrain.GetHeightAt(x, y);
 
@@ -105,10 +105,21 @@ namespace pg
 			glm::vec2 temperature = o->GetTemperatureRange();
 			glm::vec2 altitude = o->GetAltitudeRange();
 
-			bool humidityIsAcceptable = mTerrain.GetHumidityAt(x, y) > humidity.x && mTerrain.GetHumidityAt(x, y) < humidity.y;
-			bool temperatureIsAcceptable = mTerrain.GetTemperatureAt(x, y) > temperature.x && mTerrain.GetTemperatureAt(x, y) < temperature.y;
-			bool altitudeIsAcceptable = mTerrain.GetHeightAt(x, y) > altitude.x && mTerrain.GetHeightAt(x, y) < altitude.y;
 
+			float humidityRandom = rand() / (float)RAND_MAX;
+			float temperatureRandom = rand() / (float)RAND_MAX;
+			float altitudeRandom = rand() / (float)RAND_MAX;
+
+			float quadFunctionHumidity = 1 - std::pow( ( 2 * (mTerrain.GetHumidityAt(x, y) - (humidity.y + humidity.x) / 2 ) ) / (humidity.y - humidity.x) , 2);
+			float quadFunctionTemperature = 1 - std::pow( ( 2 * (mTerrain.GetTemperatureAt(x, y) - (temperature.y + temperature.x) / 2 ) ) / (temperature.y - temperature.x) , 2);
+
+			bool humidityIsAcceptable = humidityRandom < glm::clamp(quadFunctionHumidity, 0.0f, 1.0f);
+			bool temperatureIsAcceptable = temperatureRandom < glm::clamp(quadFunctionTemperature, 0.0f, 1.0f);
+			bool altitudeIsAcceptable = mTerrain.GetHeightAt(x, y) > altitude.x && mTerrain.GetHeightAt(x, y) < altitude.y;
+			
+			//bool humidityIsAcceptable = mTerrain.GetHumidityAt(x, y) > humidity.x && mTerrain.GetHumidityAt(x, y) < humidity.y;
+			//bool temperatureIsAcceptable = mTerrain.GetTemperatureAt(x, y) > temperature.x && mTerrain.GetTemperatureAt(x, y) < temperature.y;
+			
 			return humidityIsAcceptable && temperatureIsAcceptable && altitudeIsAcceptable;
 		}
 	}

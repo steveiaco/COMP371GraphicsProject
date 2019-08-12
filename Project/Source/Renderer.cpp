@@ -82,19 +82,22 @@ void Renderer::Initialize()
                 LoadShaders(shaderPathPrefix + "SolidColor.vertexshader",
                             shaderPathPrefix + "BlueColor.fragmentshader")
                                );
-
 	sShaderProgramID.push_back(
-		LoadShaders(shaderPathPrefix + "Texture.vertexshader",
-			shaderPathPrefix + "Texture.fragmentshader")
+				LoadShaders(shaderPathPrefix + "Texture.vertexshader",
+							shaderPathPrefix + "Texture.fragmentshader")
 	);
 	sShaderProgramID.push_back(
-		LoadShaders(shaderPathPrefix + "Skybox.vertexshader",
-			shaderPathPrefix + "Skybox.fragmentshader")
+				LoadShaders(shaderPathPrefix + "ChunkObject.vertexshader",
+							shaderPathPrefix + "ChunkObject.fragmentshader")
+	);
+	sShaderProgramID.push_back(
+				LoadShaders(shaderPathPrefix + "Skybox.vertexshader",
+							shaderPathPrefix + "Skybox.fragmentshader")
 	);
 
 	sShaderProgramID.push_back(
-		LoadShaders(shaderPathPrefix + "Water.vertexshader",
-			shaderPathPrefix + "Water.fragmentshader")
+				LoadShaders(shaderPathPrefix + "Water.vertexshader",
+							shaderPathPrefix + "Water.fragmentshader")
 	);
 
 	sCurrentShader = 0;

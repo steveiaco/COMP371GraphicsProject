@@ -1,0 +1,62 @@
+#version 330 core
+
+// array of lights
+#define MAX_LIGHTS 8
+uniform int NumLights;
+uniform vec3 LightColors[MAX_LIGHTS];
+uniform vec3 LightAttenuations[MAX_LIGHTS];
+
+// Light and Material Uniform Variables
+#define MAX_MATERIALS 10
+uniform float specularExponent[MAX_MATERIALS]; //specular exponent
+uniform vec3 ambientCoefficient[MAX_MATERIALS]; // ambient
+uniform vec3 diffuseCoefficient[MAX_MATERIALS]; // diffuse
+uniform vec3 specularColor[MAX_MATERIALS]; // specular color
+uniform float alpha[MAX_MATERIALS]; //alpha
+
+// Inputs
+in vec3 v_color;					// vertex color: also diffuse color
+in vec3 normal;						// Transformed normal in View Space
+in vec3 eyeVector;					// Vector from the vertex to the Camera in View Space
+in vec4 lightVectors[MAX_LIGHTS];    // Vector from the vertex to the Light in View Space
+									// Length of lightVector is the distance between light and vertex
+									// if w = 1: Point light, if w = 0: directional light
+
+//integer must be flat when passed according to opengl specification
+flat in int material;
+
+in float visibility;
+
+// Ouput data
+out vec4 color;
+
+void main()
+{
+	// Implment Phong Shading based on the parameters above
+	// Remember that directional light don't have attenuation
+
+	// Get vectors
+	vec3 normalizedNormalVector = normalize(normal);
+	vec3 normalizedEyeVector = normalize(eyeVector);
+	
+	// This should be the final color on the Vertex, including the lighting
+	vec3 sumColor = vec3(0.1f,0.1f,0.1f);//ambientCoefficient[material]; //Change this to change ambient color
+
+	for (int i = 0; i < NumLights; i++)
+	{
+		// Get vectors
+		vec3 normalizedLightVector = normalize(lightVectors[i].xyz);
+		vec3 normalizedReflectedVector = normalize(reflect(-normalizedLightVector, normalizedNormalVector));
+	
+		//Calculate coefficients
+		vec3 diffuseCoeff = diffuseCoefficient[material] * max(dot(normalizedNormalVector, normalizedLightVector), 0.0);
+		vec3 specularCoeff = specularColor[material] * pow(max(dot(normalizedReflectedVector, normalizedEyeVector), 0.0), specularExponent[material]);
+	
+		sumColor += LightColors[i] * (diffuseCoeff + specularCoeff);
+	}
+	
+
+	color = vec4(clamp(sumColor, 0.0, 1), alpha[material]);
+	color = mix(vec4(0.5f, 0.5f, 0.5f, 0.1f), color, visibility);
+
+}

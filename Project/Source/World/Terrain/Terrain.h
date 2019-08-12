@@ -1,10 +1,7 @@
 #pragma once
 
 #include "TerrainChunk.h"
-#include "../../ChunkPopulator.h"
 #include "../Water/WaterRenderer.h"
-
-
 #include <map>
 
 namespace pg
@@ -13,12 +10,16 @@ namespace pg
 	{
 		class TerrainGenerator;
 
+		class ChunkPopulator;
+
 		enum TerrainAesthetic
 		{
 			LOW_POLY,
 			SMOOTH,
 			WIREFRAME
 		};
+
+		class ChunkPopulator;
 
 		class Terrain
 		{
@@ -63,6 +64,9 @@ namespace pg
 			void DrawWater(water::WaterRenderer& waterRenderer);
 
 		private:
+
+			const static bool GenerateInfiniteTerrain = true;
+
 			// Get normal at vertex
 			glm::vec3 GetNormalAt(const int xCoord, const int yCoord) const;
 
@@ -78,6 +82,8 @@ namespace pg
 			TerrainAesthetic mAesthetic = SMOOTH;
 			// Map of previously generated chunks
 			std::map<std::pair<int, int>, TerrainChunk*> mChunkMap = std::map<std::pair<int, int>, TerrainChunk*>();
+
+			bool initialGenDone;
 		};
 	}
 }

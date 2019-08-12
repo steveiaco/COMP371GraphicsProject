@@ -28,8 +28,15 @@ int main(int argc, char*argv[])
 
 
 	World world(scene);    
-
-	glCullFace(GL_BACK);
+    
+	//if (argc > 1)
+	//{
+	//	world.LoadScene(argv[1]);
+	//}
+	//else
+	//{
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
 
 
 	// Main Loop

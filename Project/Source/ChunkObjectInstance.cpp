@@ -2,6 +2,8 @@
 #include <glm/common.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "Renderer.h"
+#include "World.h"
+#include "Camera.h"
 
 
 unsigned int ChunkObjectInstance::currentVAO;
@@ -63,12 +65,58 @@ void ChunkObjectInstance::Draw()
 	//	ChunkObjectInstance::currentVBO = model->mVBO;
 	//}
 
+	//todo may be more efficient to do this in the draw call in TerrainChunk
+
+	unsigned int prevShader = Renderer::GetCurrentShader();
+	Renderer::SetShader(SHADER_OBJECT_COLOR);
+	glUseProgram(Renderer::GetShaderProgramID());
+
 	//send the world transform to the uniform variable in the shader
+	World* worldInstance = World::GetInstance();
+
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
+
+	GLuint ViewTransformLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
+	glUniformMatrix4fv(ViewTransformLocation, 1, GL_FALSE, &(worldInstance->GetCurrentCamera()->GetViewMatrix())[0][0]);
+
+	GLuint ProjectionTransformLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
+	glUniformMatrix4fv(ProjectionTransformLocation, 1, GL_FALSE, &(worldInstance->GetCurrentCamera()->GetProjectionMatrix())[0][0]);
+	
+	worldInstance->SetLights();
+
+
+	for (int i = 0; i < model->materials.size(); i++) 
+	{
+		char sUniformName[32];
+
+		snprintf(sUniformName, 32, "diffuseCoefficient[%i]", i);
+		GLuint diffuseLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "ambientCoefficient[%i]", i);
+		GLuint ambientLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "specularColor[%i]", i);
+		GLuint specularColorLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "specularExponent[%i]", i);
+		GLuint specularExponentLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+		snprintf(sUniformName, 32, "alpha[%i]", i);
+		GLuint alphaLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
+
+		glUniform3fv(diffuseLocation, 1, &model->materials[i]->diffuseCoefficient[0]);
+		glUniform3fv(ambientLocation, 1, &model->materials[i]->ambientCoefficient[0]);
+		glUniform3fv(specularColorLocation, 1, &model->materials[i]->specularColor[0]);
+		glUniform1f(specularExponentLocation, model->materials[i]->specularExponent);
+		glUniform1f(alphaLocation, model->materials[i]->alpha);
+
+
+	}
 
 	//draw the triangles
 	glDrawArrays(GL_TRIANGLES, 0, model->faces.size() * 3);
 
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &glm::mat4(1.0f)[0][0]);
+
+	// Restore previous shader
+	Renderer::SetShader((ShaderType)prevShader);
+	glUseProgram(Renderer::GetShaderProgramID());
+
+
 }

@@ -28,6 +28,10 @@ private:
 	float mAngularSpeed;    // Degrees per pixel
 	float mVelocity;        // Used for jumping
 	bool  mFreeMode;
+	bool  mJumping;
+	int   mOldSpaceBarState;
+	float mPreviousHeight;
+    int   mOldFreeModeKeyState;
 
 	glm::vec3 mLookAt;
 
