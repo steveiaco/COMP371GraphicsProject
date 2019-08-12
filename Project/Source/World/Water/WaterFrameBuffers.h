@@ -1,3 +1,9 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from the code of ThinMatrix: https://www.youtube.com/watch?v=HusvGeEDU_U
+// Stores references to the FBOs used for generating the reflections and refractions seen in water
+// Initializes, binds, and unbinds said FBOs
+//
 #pragma once
 
 #include <GL/glew.h>

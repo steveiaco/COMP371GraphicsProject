@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from the Java code of ThinMatrix: https://www.youtube.com/watch?v=HusvGeEDU_U
+// Renders WaterQuads
+//
 #pragma once
 
 #include "WaterFrameBuffers.h"

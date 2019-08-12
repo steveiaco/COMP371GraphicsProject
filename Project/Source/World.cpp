@@ -54,7 +54,7 @@ World::World(char * scene)
 
 	mTotalTime = 0.0f;
 	mSkybox = new Skybox();
-	mpPerlin = new PerlinNoise();
+	mpPerlin = new PerlinNoise(1);
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
 
@@ -230,7 +230,10 @@ void World::Draw()
 	glm::mat4 worldMatrix(1.0f);
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
 
+	//This code was for rendering to the refraction and frame buffers but does not work
 	//mFBOs.BindReflectionFrameBuffer();
+	//mpTerrain->Draw();
+	//mFBOs.BindRefractionFrameBuffer();
 	//mpTerrain->Draw();
 	//mFBOs.UnbindCurrentFrameBuffer();
 	mpTerrain->Draw();

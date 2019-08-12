@@ -81,7 +81,7 @@ namespace pg
 			const TerrainGenerator& mTerrainGenerator;
 
 			//Terrain aesthetic used for rendering
-			TerrainAesthetic mAesthetic = SMOOTH;
+			TerrainAesthetic mAesthetic = LOW_POLY;
 			// Map of previously generated chunks
 			std::map<std::pair<int, int>, TerrainChunk*> mChunkMap = std::map<std::pair<int, int>, TerrainChunk*>();
 

@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Represents infinite terrain as whole
+//
 #include "Terrain.h"
 #include "TerrainChunk.h"
 #include "TerrainGenerator.h"
