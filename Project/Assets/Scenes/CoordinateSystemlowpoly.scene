@@ -31,7 +31,7 @@ scaling = 0.12f 0.12f 0.12f
 
 
 [ChunkObject]
-name = "TriOak"
+name = "LowLowPolyOak"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
@@ -44,7 +44,7 @@ density = 0.07
 
 
 [ChunkObject]
-name = "TriPalm"
+name = "LowLowPolyPalm"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
@@ -56,7 +56,7 @@ altitude_range = 0.0f 5.0f
 density = 0.5
 
 [ChunkObject]
-name = "TriFir"
+name = "LowLowPolyFir"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 2.0f 2.0f 2.0f 
 scaling_max = 6.0f 6.0f 6.0f 
@@ -68,7 +68,7 @@ altitude_range = 0.0f 45.0f
 density = 0.6
 
 [ChunkObject]
-name = "TriPoplar"
+name = "LowLowPolyPoplar"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
