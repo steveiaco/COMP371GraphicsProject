@@ -18,11 +18,12 @@ public:
     virtual BoundingVolume* Clone() const = 0;
 
     virtual void SetPosition(glm::vec3 position);
-    virtual void SetRotation(glm::vec3 axis, float angleDegrees);
+    virtual void SetRotation(glm::vec3 angles);
+    virtual void SetScaling(glm::vec3 scale);
 
     virtual glm::vec3 GetPosition() const		{ return mPosition; }
-    virtual glm::vec3 GetRotationAxis() const	{ return mRotationAxis; }
-    virtual float     GetRotationAngle() const	{ return mRotationAngleInDegrees; }
+    virtual glm::vec3 GetRotation() const	{ return mRotationAngles; }
+    virtual glm::vec3 GetScaling() const        { return mScaling; }
     virtual bool IsInVolume(BoundingVolume *volume) = 0;
     virtual std::string GetType() { return ""; };
     static BoundingVolume* InitializeVolume(const std::vector<ci_string>& token);
@@ -35,6 +36,6 @@ public:
 
 protected:
     glm::vec3 mPosition;
-    glm::vec3 mRotationAxis;
-    float     mRotationAngleInDegrees;
+    glm::vec3 mRotationAngles;
+    glm::vec3 mScaling{};
 };

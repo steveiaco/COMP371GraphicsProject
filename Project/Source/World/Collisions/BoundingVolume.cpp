@@ -11,7 +11,7 @@ std::map<char, Type> supportedTypes = {
         {'E', EMPTY}
 };
 
-BoundingVolume::BoundingVolume() : mPosition(glm::vec3(0.0f, 0.0f, 0.0f)), mRotationAxis(glm::vec3(0.0f, 1.0f, 0.0f)), mRotationAngleInDegrees(0.0f)
+BoundingVolume::BoundingVolume() : mPosition(glm::vec3(0.0f, 0.0f, 0.0f)), mRotationAngles(glm::vec3(0.0f, 0.0f, 0.0f)), mScaling(1.0f, 1.0f, 1.0f)
 {
 
 }
@@ -60,10 +60,14 @@ void BoundingVolume::SetPosition(glm::vec3 position)
     mPosition = position;
 }
 
-void BoundingVolume::SetRotation(glm::vec3 axis, float angleDegrees)
+void BoundingVolume::SetRotation(glm::vec3 angles)
 {
-    mRotationAxis = axis;
-    mRotationAngleInDegrees = angleDegrees;
+    mRotationAngles = angles;
+}
+
+void BoundingVolume::SetScaling(glm::vec3 scale)
+{
+    mScaling = scale;
 }
 
 bool BoundingVolume::SphereBoxCollision(BoundingSphere *sphere, BoundingBox *box)
@@ -80,7 +84,7 @@ bool BoundingVolume::SphereBoxCollision(BoundingSphere *sphere, BoundingBox *box
                            (y - spherePos.y) * (y - spherePos.y) +
                            (z - spherePos.z) * (z - spherePos.z));
 
-    return sqrt(distanceSquared) < sphere->GetRadius();
+    return sqrt(distanceSquared) < sphere->GetScaledRadius();
 }
 
 bool BoundingVolume::SphereCollision(BoundingSphere *a, BoundingSphere *b)
@@ -89,7 +93,7 @@ bool BoundingVolume::SphereCollision(BoundingSphere *a, BoundingSphere *b)
                                          + (a->GetPosition().y - b->GetPosition().y) * (a->GetPosition().y - b->GetPosition().y)
                                          + (a->GetPosition().z - b->GetPosition().z) * (a->GetPosition().z - b->GetPosition().z);
 
-    return sqrt(distanceBetweenSpheresSquared) < (a->GetRadius() + b->GetRadius());
+    return sqrt(distanceBetweenSpheresSquared) < (a->GetScaledRadius() + b->GetScaledRadius());
 }
 
 bool BoundingVolume::BoxCollision(BoundingBox *a, BoundingBox *b)
