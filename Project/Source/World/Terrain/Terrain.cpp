@@ -112,7 +112,7 @@ namespace pg
 				}
 			}
 
-			std::cout << "Chunks rendered " << drawnChunks << "\n";
+			//std::cout << "Chunks rendered " << drawnChunks << "\n";
 		}
 
 		void Terrain::DrawWater(water::WaterRenderer& waterRenderer)
@@ -291,6 +291,7 @@ namespace pg
 
                 if (!initialGenDone || GenerateInfiniteTerrain) 
                 {
+					std::cout << "Generating chunk ...";
 				    //Create chunk
 				    TerrainChunk* chunk = new TerrainChunk(*this, TerrainChunk::CHUNK_SIZE * xCoord, TerrainChunk::CHUNK_SIZE * yCoord);
 				    // Add neighboring chunks
@@ -322,7 +323,7 @@ namespace pg
 				    mChunkMap.insert({ { xCoord, yCoord }, chunk });
 
 				    chunkPopulator->PopulateChunk(chunk);
-
+					std::cout << "Done.\n";
 				    return *chunk;
                 }
                 else {

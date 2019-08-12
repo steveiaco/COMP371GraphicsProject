@@ -101,10 +101,12 @@ void FirstPersonCamera::Update(float dt)
             mFreeMode = !mFreeMode;
             if (mFreeMode)
             {
+				mSpeed = 115;
                 printf("Flying Mode enabled!\n");
             }
             else
             {
+				mSpeed = 45;
                 printf("Flying Mode disabled!\n");
             }
         }
