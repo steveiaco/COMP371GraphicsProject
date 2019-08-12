@@ -38,6 +38,7 @@
 #include "ParticleSystem.h"
 
 #include "World/Collisions/BoundingVolume.h"
+#include "BSplineCamera.h"
 
 using namespace std;
 using namespace glm;
@@ -65,7 +66,15 @@ World::World(char * scene)
 	mpTerrain->Start();
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
-	mCurrentCamera = 0;
+
+	glm::vec2 splineCamOrigin = vec2(2.0f, 20.0f);
+	glm::vec2 splineCamGenerationSize = vec2(500.0f, 500.0f);
+	glm::vec2 splineCamHeightLimits = vec2(40, 100);
+	unsigned int splineWaypointCount = 10;
+	float splineSpeed = 50;
+    mCamera.push_back(new BSplineCamera(new BSpline(splineCamOrigin, splineCamGenerationSize, splineCamHeightLimits, splineWaypointCount), splineSpeed));
+
+    mCurrentCamera = 0;
 }
 
 World::~World()
@@ -135,7 +144,16 @@ void World::Update(float dt)
 	mDayRatio = fmod(mTotalTime, 50.0f) / 50.0f;
 
 	// User Inputs
-	// 0 1 2 to change the Camera
+	// 1 2 to change the Camera
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_1 ) == GLFW_PRESS)
+    {
+        mCurrentCamera = 0;
+    }
+    if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_2 ) == GLFW_PRESS)
+    {
+        mCurrentCamera = 1;
+    }
+
 	//TODO: Adjust the light based on the day/night cycle
 
 	for (vector<LightSource*>::iterator it = mLightList.begin(); it < mLightList.end(); ++it)
