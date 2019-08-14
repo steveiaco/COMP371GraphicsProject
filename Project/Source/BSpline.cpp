@@ -12,13 +12,13 @@ BSpline::BSpline() : Model()
 
 BSpline::BSpline(glm::vec2 origin, glm::vec2 size, glm::vec2 heightLimit, unsigned int count) : BSpline()
 {
-    float y = EventManager::GetRandomFloat(heightLimit.x, heightLimit.y);
-    AddControlPoint(vec3(origin.x, y,origin.y));
-    for (unsigned int i = 0; i < count - 1; ++i)
+    float x, y, z;
+    AddControlPoint(vec3(origin.x, heightLimit.x, origin.y));
+    for (unsigned int i = 0; i < count; ++i)
     {
-        float x = EventManager::GetRandomFloat(-size.x, size.x);
-
-        float z = EventManager::GetRandomFloat(-size.y, size.y);
+        x = EventManager::GetRandomFloat(-size.x, size.x);
+        y = EventManager::GetRandomFloat(heightLimit.x, heightLimit.y);
+        z = EventManager::GetRandomFloat(-size.y, size.y);
         AddControlPoint(vec3(x + origin.x, y, z + origin.y));
     }
 }
