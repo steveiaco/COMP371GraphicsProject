@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Generates the chunks used to populate terrain
+//
 #pragma once
 
 #include <vector>
@@ -20,7 +25,8 @@ namespace pg
 			TerrainGenerator(const TerrainGenerator& orig);
 
 			~TerrainGenerator();
-
+			//WARNING: This code took a lot of effort to put together, but it is not complete. It is netiher optimized, nor cleaned up. Also, it does not work very well on this branch. If you want to test it, you are better off using the version included in the erosion branch, howver, note that even that verison is not complete.
+			//	Inspired by https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
 			void Erode(Terrain& terrain, const float minXCoord, const float minYCoord, const float maxXCoord, const float maxYCoord) const;
 
 			// Get humidity at coordinates (used to determine biome)
@@ -48,16 +54,16 @@ namespace pg
 			float mHumidityFrequency = 1.f / 1024.f;
 			float mTemperatureFrequency = 1.f / 2048.f;
 
-			// Height data
-			unsigned short mNumOctaves = 5;
+			// Height parameters
+			unsigned short mNumOctaves = 6;
 			float mFrequency = 1.f/128.f;
 			float mLacunarity = 3.f;
-			float mAmplitude = 90.f;
+			float mAmplitude = 140.f;
 			float mPersistence = 0.3f;
-			unsigned int mFlatnessDegree = 2;
-			float mFlatnessFrequency = 1.f / 1024.f;
+			unsigned int mFlatnessDegree = 3;
+			float mFlatnessFrequency = 1.f / 512.f;
 
-			// Terrain Color data
+			// Terrain Color parameters
 			// DESERT
 			glm::vec3 colorHotDryFlat = glm::vec3(0.9f, 0.6f, 0.3f);
 			glm::vec3 colorHotDrySteep = glm::vec3(0.5f, 0.3f, 0.15f);

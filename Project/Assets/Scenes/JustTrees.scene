@@ -5,31 +5,6 @@ position = 0.0 -1.0 0.0 0.0
 color = 1.0 1.0 1.0
 attenuation = 0.0 0.0 0.15
 
-[Cube]
-name = "X-axis"
-position = 0.5f 0.0f 0.0f
-rotation = 0.0f 0.0f 1.0f 0.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Y-axis"
-position = 0.0f 0.5f 0.0f
-rotation = 0.0f 0.0f 1.0f 90.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Z-axis"
-position = 0.0f 0.0f 0.5f
-rotation = 0.0f 1.0f 0.0f -90.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Origin"
-position = 0.0f 0.0f 0.0f
-scaling = 0.12f 0.12f 0.12f
-
-
-
 [ChunkObject]
 name = "TriOak"
 path = "../Assets/Models/LowPolyStuff/"
@@ -41,7 +16,7 @@ temperature_range = 0.45f 0.63f
 humidity_range = 0.2f 0.8f
 altitude_range = 0.0f 30.0f
 density = 0.07
-collider = B 3.0 20.0 3.0
+collider = B 1.0 5.0 1.0
 
 
 [ChunkObject]
@@ -55,7 +30,7 @@ temperature_range = 0.6f 1.0f
 humidity_range = 0.0f 0.7f
 altitude_range = 0.0f 5.0f
 density = 0.38
-collider = B 3.0 20.0 3.0
+collider = B 1.0 5.0 1.0
 
 
 [ChunkObject]
@@ -69,7 +44,7 @@ temperature_range = 0.0f 0.5f
 humidity_range = 0.00f 0.6f
 altitude_range = 0.0f 45.0f
 density = 0.6
-collider = B 3.0 20.0 3.0
+collider = B 1.0 5.0 1.0
 
 
 [ChunkObject]
@@ -83,7 +58,7 @@ temperature_range = 0.45f 0.65f
 humidity_range = 0.5f 0.9f
 altitude_range = 0.0f 30.0f
 density = 0.05
-collider = B 3.0 20.0 3.0
+collider = B 1.0 5.0 1.0
 
 
 [ChunkObject]

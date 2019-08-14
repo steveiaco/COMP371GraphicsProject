@@ -10,20 +10,11 @@
 #pragma once
 
 #include "ParsingHelper.h"
-#include "Billboard.h"
 #include <vector>
-
-#include "World/Water/WaterFrameBuffers.h"
-#include "World/Water/WaterRenderer.h"
-#include "SphereModel.h"
 
 class Camera;
 class Model;
 class ChunkObject;
-class Animation;
-class AnimationKey;
-class ParticleSystem;
-class ParticleDescriptor;
 class LightSource;
 class Skybox;
 
@@ -33,6 +24,13 @@ namespace pg
 	{
 		class Terrain;
 		class TerrainGenerator;
+	}
+
+	namespace water
+	{
+		class WaterFrameBuffer;
+		class WaterRenderer;
+		class WaterFrameBuffers;
 	}
 }
 class PerlinNoise;
@@ -51,29 +49,13 @@ public:
 	void Draw();
 
 	void LoadScene(const char * scene_path);
-    Animation* FindAnimation(ci_string animName);
-    AnimationKey* FindAnimationKey(ci_string keyName);
-    ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
     const Camera* GetCurrentCamera() const;
-    pg::terrain::Terrain *const GetTerrain() const { return mpTerrain; };
+    pg::terrain::Terrain* GetTerrain() { return mpTerrain; };
 
 	void SetLights();
 	void AddLightSource(LightSource* b);
 	void RemoveLightSource(LightSource* b);
-	void AddBillboard(Billboard* b);
-	void RemoveBillboard(Billboard* b);
-    void AddParticleSystem(ParticleSystem* particleSystem);
-    void RemoveParticleSystem(ParticleSystem* particleSystem);
-    void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
-
-	void AddSphere(glm::vec3 pos, float size)
-	{
-		SphereModel* pSphere = new SphereModel();
-		pSphere->SetPosition(pos);
-		pSphere->SetScaling(size * glm::vec3(1.f, 1.f, 1.f));
-		mModel.push_back(pSphere);
-	}
 
     
 private:
@@ -82,22 +64,14 @@ private:
 	PerlinNoise* mpPerlin;
 	pg::terrain::TerrainGenerator* mpTerrainGenerator;
 	pg::terrain::Terrain* mpTerrain;
+	pg::water::WaterFrameBuffers* mpFBOs;
+	pg::water::WaterRenderer* mpWaterRenderer;
 	Skybox* mSkybox;
 	float mTotalTime;
 	bool mDayPhase;
 	float mDayRatio;
-	pg::water::WaterFrameBuffers mFBOs;
-	pg::water::WaterRenderer mWaterRenderer;
 
-	std::vector<Model*> mModel;
-    std::vector<Animation*> mAnimation;
-    std::vector<AnimationKey*> mAnimationKey;
-	std::vector<Camera*> mCamera;
-    std::vector<ParticleSystem*> mParticleSystemList;
-	std::vector<ParticleDescriptor*> mParticleDescriptorList;
+	std::vector<Camera*> mCameraList;
 	std::vector<LightSource*> mLightList;
-	std::vector<ChunkObject*> mChunkObject;
 	unsigned int mCurrentCamera;
-
-    //BillboardList* mpBillboardList;
 };

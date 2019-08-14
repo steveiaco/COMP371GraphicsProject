@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from Ken Perlin's own code: https://www.mrl.nyu.edu/~perlin/doc/oscar.html#noise
+// Generates Perlin Noise along two dimensions.
+//
 #include "PerlinNoise.h"
 
 #define _USE_MATH_DEFINES
@@ -5,6 +10,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <climits>
+#include <time.h>
 
 // Function to linearly interpolate between a0 and a1
 // Weight w should be in the range [0.0, 1.0]
@@ -14,7 +20,14 @@ float lerp(float a0, float a1, float w)
 }
 
 PerlinNoise::PerlinNoise()
+	: PerlinNoise(time(NULL))
 {
+}
+
+PerlinNoise::PerlinNoise(const int seed)
+{
+	srand(seed);
+	// Noise generator is initialised by creating an array of gradients and an array of randomly ordered integers between 0 and SIZE
 	for (int index = 0; index < SIZE; ++index) 
 	{
 		int other = rand() % (index + 1);

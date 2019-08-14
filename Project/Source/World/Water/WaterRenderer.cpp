@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from the Java code of ThinMatrix: https://www.youtube.com/watch?v=HusvGeEDU_U
+// Renders WaterQuads
+//
 #include "WaterRenderer.h"
 #include "WaterQuad.h"
 
@@ -61,8 +66,10 @@ namespace pg
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mFBOs.GetRefractionTexture());
 			glUniform1i(refractionTextureLocation, 1);
+			//THIS CODE WOULD NOT BE NEEDED IF THE WATER RENDERED AS EXPECTED, BUT IS INCLUDED TO GIVE THE WATER TRANSPARENCY INSTEAD 
 			glEnable(GL_BLEND);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			//
 		}
 
 		void WaterRenderer::Draw(const WaterQuad& waterQuad)
@@ -77,7 +84,9 @@ namespace pg
 
 		void WaterRenderer::Stop()
 		{
+			//THIS CODE WOULD NOT BE NEEDED IF THE WATER RENDERED AS EXPECTED, BUT IS INCLUDED TO GIVE THE WATER TRANSPARENCY INSTEAD 
 			glDisable(GL_BLEND);
+			//
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, 0);
 			glActiveTexture(GL_TEXTURE1);

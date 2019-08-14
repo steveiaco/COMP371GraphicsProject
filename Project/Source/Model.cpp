@@ -8,11 +8,7 @@
 //
 
 #include "Model.h"
-#include "Animation.h"
 #include "World.h"
-#include "ParticleEmitter.h"
-#include "ParticleDescriptor.h"
-#include "ParticleSystem.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
 
@@ -111,28 +107,6 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 			mScaling.y = static_cast<float>(atof(token[3].c_str()));
 			mScaling.z = static_cast<float>(atof(token[4].c_str()));
 		}
-		else if (token[0] == "animation")
-		{
-			assert(token.size() > 2);
-			assert(token[1] == "=");
-
-			ci_string animName = token[2];
-            
-            mAnimation = World::GetInstance()->FindAnimation(animName);
-		}
-		else if (token[0] == "particleemitter")
-		{
-			assert(token.size() > 2);
-			assert(token[1] == "=");
-
-			ParticleDescriptor* desc = World::GetInstance()->FindParticleDescriptor(token[2]);
-			assert(desc != nullptr);
-
-			ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
-
-			ParticleSystem* ps = new ParticleSystem(emitter, desc);
-			World::GetInstance()->AddParticleSystem(ps);
-		}
 		else if (token[0] == "materialcoefficients")
 		{
 			assert(token.size() > 5);
@@ -154,22 +128,13 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
 
 glm::mat4 Model::GetWorldMatrix() const
 {
-    //           If the model has an animation, get the world transform from the animation.
+    // If the model has an animation, get the world transform from the animation.
 	mat4 worldMatrix(1.0f);
 
-    // Solution TRS
-    if (mAnimation)
-    {
-        // Get world transform from animation key frames / current time
-        worldMatrix = mAnimation->GetAnimationWorldMatrix();
-    }
-    else
-    {
-        mat4 t = glm::translate(mat4(1.0f), mPosition);
-        mat4 r = glm::rotate(mat4(1.0f), glm::radians(mRotationAngleInDegrees), mRotationAxis);
-        mat4 s = glm::scale(mat4(1.0f), mScaling);
-        worldMatrix = t * r * s;
-    }
+    mat4 t = glm::translate(mat4(1.0f), mPosition);
+    mat4 r = glm::rotate(mat4(1.0f), glm::radians(mRotationAngleInDegrees), mRotationAxis);
+    mat4 s = glm::scale(mat4(1.0f), mScaling);
+    worldMatrix = t * r * s;
     
 	return worldMatrix;
 }

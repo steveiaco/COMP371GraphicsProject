@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Represents a discrete chunk of the terrain
+//
 #include "TerrainChunk.h"
 #include "TerrainGenerator.h"
 #include "Terrain.h"
@@ -333,7 +338,7 @@ namespace pg
 				break;
 			case WIREFRAME:
 				for (unsigned short lod = 0; lod < MIN_LOD; lod++)
-				GenVertexBufferLowPoly(lod);
+				GenVertexBufferSmooth(lod);
 				break;
 			}
 		}

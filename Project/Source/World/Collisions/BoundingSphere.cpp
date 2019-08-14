@@ -9,9 +9,9 @@ BoundingSphere::BoundingSphere() : BoundingVolume(), mRadius(0.0f)
 BoundingSphere::BoundingSphere(const BoundingSphere *sphere) : BoundingSphere()
 {
     mPosition = sphere->mPosition;
-    mRotationAxis = sphere->mRotationAxis;
-    mRotationAngleInDegrees = sphere->mRotationAngleInDegrees;
+    mRotationAngles = sphere->mRotationAngles;
     mRadius = sphere->mRadius;
+    mScaling = sphere->mScaling;
 }
 
 BoundingSphere* BoundingSphere::Clone() const
@@ -19,7 +19,7 @@ BoundingSphere* BoundingSphere::Clone() const
     return new BoundingSphere(this);
 }
 
-BoundingSphere::BoundingSphere(glm::vec3 position, float radius) : BoundingVolume()
+BoundingSphere::BoundingSphere(glm::vec3 position, float radius) : BoundingSphere()
 {
     mPosition = position;
     mRadius = radius;
@@ -35,8 +35,13 @@ void BoundingSphere::SetRadius(float radius)
     mRadius = radius;
 }
 
+float BoundingSphere::GetScaledRadius() const
+{
+    // The scaling is assumed to be uniform
+    return mRadius * mScaling.x;
+}
+
 bool BoundingSphere::IsInVolume(BoundingVolume *volume) {
-    printf("[S] Check collision at (%f, %f, %f)\n", GetPosition().x, GetPosition().y, GetPosition().z);
     if(dynamic_cast<BoundingSphere*>(volume))
     {
         return BoundingVolume::SphereCollision(this, dynamic_cast<BoundingSphere*>(volume));

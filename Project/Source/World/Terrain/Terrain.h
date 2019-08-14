@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Represents infinite terrain as whole
+//
 #pragma once
 
 #include "TerrainChunk.h"
@@ -54,7 +59,6 @@ namespace pg
 
 			// Attach ChunkPopulator (MUST BE RUN BEFORE USING THIS CLASS)
 			void AttachChunkPopulator(ChunkPopulator* c);
-			
 			//Add chunk object to chunk populator
 			void AddChunkObject(ChunkObject * o);
 
@@ -81,7 +85,7 @@ namespace pg
 			const TerrainGenerator& mTerrainGenerator;
 
 			//Terrain aesthetic used for rendering
-			TerrainAesthetic mAesthetic = SMOOTH;
+			TerrainAesthetic mAesthetic = LOW_POLY;
 			// Map of previously generated chunks
 			std::map<std::pair<int, int>, TerrainChunk*> mChunkMap = std::map<std::pair<int, int>, TerrainChunk*>();
 

@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Generates the chunks used to populate terrain
+//
 #include "TerrainGenerator.h"
 #include "TerrainChunk.h"
 #include "Terrain.h"
@@ -34,10 +39,14 @@ namespace pg
 
 		void TerrainGenerator::FillChunk(TerrainChunk& chunk) const
 		{
+			// Feel free to play with this method to get the kind of terrain that you want!
+
+			// Initialize attributes
 			float crrtAmplitude = mAmplitude;
 			float crrtFrequency = mFrequency;
 			float flatness[TerrainChunk::CHUNK_SIZE + 2][TerrainChunk::CHUNK_SIZE + 2];
 
+			//Calculate flatness for all vertices once
 			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 			{
 				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
@@ -46,16 +55,20 @@ namespace pg
 				}
 			}
 
+			//Set initial terrain height to height of first layer of noise
 			for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
 			{
 				for (int j = 0; j < TerrainChunk::CHUNK_SIZE + 2; j++)
 				{
 					chunk.mHeightMap[i][j] = flatness[i][j] * crrtAmplitude * mNoise.Perlin(crrtFrequency * static_cast <float> (chunk.mXCoord + i), crrtFrequency *  static_cast <float> (chunk.mYCoord + j));
+					// We will add once layer of additional noise to make terrain a little more rough (makes the low_poly aesthetic shine)
+					chunk.mHeightMap[i][j] += flatness[i][j] * 3.f * mNoise.Perlin(static_cast <float> (chunk.mXCoord + i) / 2.f, static_cast <float> (chunk.mYCoord + j) / 2.f);
 				}
 			}
 			crrtAmplitude *= mPersistence;
 			crrtFrequency *= mLacunarity;
 
+			//Add additional layers of noise
 			for (int octave = 1; octave < mNumOctaves; octave++)
 			{
 				for (int i = 0; i < TerrainChunk::CHUNK_SIZE + 2; i++)
@@ -117,6 +130,8 @@ namespace pg
 			return 0.5f + 0.5f * mNoise.Perlin(mTemperatureFrequency * (TEMPERATURE_OFFSET_X + mXCoord), mTemperatureFrequency * (TEMPERATURE_OFFSET_Y + mYCoord)); 
 		}
 
+		//WARNING: This code took a lot of effort to put together, but it is not complete. It is netiher optimized, nor cleaned up. Also, it does not work very well on this branch. If you want to test it, you are better off using the version included in the erosion branch, howver, note that even that verison is not complete.
+		//	Inspired by https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf
 		void TerrainGenerator::Erode(Terrain& terrain, const float minXCoord, const float minYCoord, const float maxXCoord, const float maxYCoord) const
 		{
 			const float inertia = .05f; // At zero, water will instantly change direction to flow downhill. At 1, water will never change direction. 

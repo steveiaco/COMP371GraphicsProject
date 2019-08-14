@@ -18,6 +18,7 @@ public:
 	glm::vec4 GetPosition() { return mPosition;}
 	glm::vec3 GetColor() { return mColor; }
 	glm::vec3 GetAttenuation() { return mAttenuation; }
+	void setPosition(glm::vec4 pos) { mPosition = pos; }
 	void setColor(float color) { mColor = glm::vec3(color); }
 
 private:

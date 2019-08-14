@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma
+// Represents a discrete chunk of the terrain
+//
 #pragma once
 
 #include <cassert>

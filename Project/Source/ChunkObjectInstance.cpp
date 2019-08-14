@@ -47,6 +47,10 @@ void ChunkObjectInstance::SetPosition(glm::vec3 position)
 void ChunkObjectInstance::SetScaling(glm::vec3 scaling)
 {
 	mScaling = scaling;
+    if (mBoundingVolume != nullptr)
+    {
+        mBoundingVolume->SetScaling(mScaling);
+    }
 }
 
 void ChunkObjectInstance::SetRotation(glm::vec3 angles)
@@ -77,10 +81,12 @@ bool ChunkObjectInstance::CheckCollision(BoundingVolume *volume)
 
 void ChunkObjectInstance::Draw()
 {
-    // Make sure the BoundingVolume follows the instance
+    // Make sure the BoundingVolume is updated with the instance
     if (mBoundingVolume != nullptr)
     {
         mBoundingVolume->SetPosition(mPosition);
+        mBoundingVolume->SetScaling(mScaling);
+        mBoundingVolume->SetRotation(mRotation);
     }
 
 	//Draw the vertex buffer

@@ -7,8 +7,8 @@ EmptyVolume::EmptyVolume() : BoundingVolume()
 EmptyVolume::EmptyVolume(const EmptyVolume *empty) : EmptyVolume()
 {
     mPosition = empty->mPosition;
-    mRotationAxis = empty->mRotationAxis;
-    mRotationAngleInDegrees = empty->mRotationAngleInDegrees;
+    mRotationAngles = empty->mRotationAngles;
+    mScaling = empty->mScaling;
 }
 
 EmptyVolume* EmptyVolume::Clone() const

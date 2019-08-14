@@ -3,7 +3,8 @@
 #include <glm/glm.hpp>
 #include "BoundingVolume.h"
 
-// The BoundingBox is Axis-Aligned
+// The BoundingBox is Axis-Aligned and the
+// position is assumed to be at the bottom center
 class BoundingBox : public BoundingVolume {
 public:
     BoundingBox();

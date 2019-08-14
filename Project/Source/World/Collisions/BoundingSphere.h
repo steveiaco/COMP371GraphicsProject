@@ -18,6 +18,7 @@ public:
 
     bool IsInVolume(BoundingVolume *volume);
     float GetRadius() const { return mRadius; }
+    float GetScaledRadius() const;
 private:
     float mRadius;
 };

@@ -1,3 +1,8 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from the code of ThinMatrix: https://www.youtube.com/watch?v=HusvGeEDU_U
+// Stores the model data for a water surface
+//
 #include "WaterQuad.h"
 
 #include <GL/glew.h>
@@ -44,7 +49,7 @@ namespace pg
 
 		void WaterQuad::GenVertexBuffer()
 		{
-			// Calculate vertex positions
+			// Calculate vertex positions (we will use a triangle fan for efficiency)
 			float vertices[] =
 			{
 				mXPos, mYPos, mZPos,

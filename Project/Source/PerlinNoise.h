@@ -1,8 +1,14 @@
+// COMP 371 Assignment Framework
+//
+// Created by Emanuel Sharma with inspiration from Ken Perlin's own code: https://www.mrl.nyu.edu/~perlin/doc/oscar.html#noise
+// Generates Perlin Noise along two dimensions.
+//
 #pragma once
 
 class PerlinNoise {
 public:
 	PerlinNoise();
+	PerlinNoise(const int seed);
 	~PerlinNoise();
 
 	float Perlin(float x, float y) const;
