@@ -242,11 +242,15 @@ Terrain::~Terrain()
 	delete [] mChunkMap;
 }
 
+// This is the original erosion code, largely inspired by https://www.firespark.de/resources/downloads/implementation%20of%20a%20methode%20for%20hydraulic%20erosion.pdf and https://github.com/SebLague/Hydraulic-Erosion.
+// Note that it is FAR from perfect (hence why it was ecluded from the final build). However, I worked pretty hard on getting it to where it is and it yields interesting results anyways, so you are welcome to play with it if you wish.
+// Also note that this method is the only part of this code that is of interest. This is an old branch that is mostly made up of prototyping code that should not be graded.
 void Terrain::Erode()
 {
-	const float inertia = .05f; // At zero, water will instantly change direction to flow downhill. At 1, water will never change direction. 
-	const float sedimentCapacityFactor = 2.f; // Multiplier for how much sediment a droplet can carry
-	const float minSedimentCapacity = .01f; // Used to prevent carry capacity getting too close to zero on flatter terrain
+	// Parameters
+	const float inertia = .05f;
+	const float sedimentCapacityFactor = 3.f;
+	const float minSedimentCapacity = .01f;
 	const float erosionRadius = 3.f;
 	const float erodeSpeed = .3f;
 	const float depositSpeed = .3f;
@@ -255,7 +259,7 @@ void Terrain::Erode()
 	const int maxDropletLifetime = 30;
 
 	//Iterate over droplet simulations
-	for (int i = 0; i < 10000; i++)
+	for (int i = 0; i < 200000; i++)
 	{
 		//Set initial droplet parameters
 		glm::vec2 pos(	static_cast <float> (mWidth * (Chunk::CHUNK_SIZE - 1) - 60.f) * static_cast <float> (rand()) / static_cast <float> (RAND_MAX) + 30.f,
@@ -268,7 +272,7 @@ void Terrain::Erode()
 		float sediment = 1.f;
 
 		//Droplet lifetime is measured in steps
-		while (water > 0.1f)
+		for (int j = 0; j < maxDropletLifetime; j++)
 		{
 			//Get coordinates
 			int floorX = static_cast <int> (glm::floor(pos.x));
