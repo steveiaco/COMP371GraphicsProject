@@ -34,12 +34,11 @@ private:
 	int   mOldSpaceBarState;
 	float mPreviousHeight;
     int   mOldFreeModeKeyState;
-    bool mWasInCollision;
+    bool  mWasInCollision;
     BoundingVolume* mBoundingVolume;
 
 	glm::vec3 mLookAt;
 
     float computeHeight(float dt);
-    void handleInput(float dt);
     glm::vec3 computeMovement(float dt);
 };

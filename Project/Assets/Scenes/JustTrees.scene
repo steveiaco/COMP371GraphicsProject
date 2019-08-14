@@ -5,46 +5,22 @@ position = 0.0 -1.0 0.0 0.0
 color = 1.0 1.0 1.0
 attenuation = 0.0 0.0 0.15
 
-[Cube]
-name = "X-axis"
-position = 0.5f 0.0f 0.0f
-rotation = 0.0f 0.0f 1.0f 0.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Y-axis"
-position = 0.0f 0.5f 0.0f
-rotation = 0.0f 0.0f 1.0f 90.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Z-axis"
-position = 0.0f 0.0f 0.5f
-rotation = 0.0f 1.0f 0.0f -90.0f
-scaling = 1.0f 0.1f 0.1f 
-
-[Cube]
-name = "Origin"
-position = 0.0f 0.0f 0.0f
-scaling = 0.12f 0.12f 0.12f
-
-
-
 [ChunkObject]
-name = "LowLowPolyOak"
+name = "TriOak"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
 rotation_angle_max = 10.0f 360.0f 10.0f
-temperature_range = 0.50f 0.75f
+temperature_range = 0.45f 0.63f
 humidity_range = 0.2f 0.8f
 altitude_range = 0.0f 30.0f
 density = 0.07
+collider = B 1.0 5.0 1.0
 
 
 [ChunkObject]
-name = "LowLowPolyPalm"
+name = "TriPalm"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
@@ -53,10 +29,12 @@ rotation_angle_max = 10.0f 360.0f 10.0f
 temperature_range = 0.6f 1.0f
 humidity_range = 0.0f 0.7f
 altitude_range = 0.0f 5.0f
-density = 0.5
+density = 0.38
+collider = B 1.0 5.0 1.0
+
 
 [ChunkObject]
-name = "LowLowPolyFir"
+name = "TriFir"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 2.0f 2.0f 2.0f 
 scaling_max = 6.0f 6.0f 6.0f 
@@ -66,18 +44,22 @@ temperature_range = 0.0f 0.5f
 humidity_range = 0.00f 0.6f
 altitude_range = 0.0f 45.0f
 density = 0.6
+collider = B 1.0 5.0 1.0
+
 
 [ChunkObject]
-name = "LowLowPolyPoplar"
+name = "TriPoplar"
 path = "../Assets/Models/LowPolyStuff/"
 scaling_min = 4.0f 4.0f 4.0f 
 scaling_max = 6.0f 6.0f 6.0f 
 rotation_angle_min = -10.0f 0.0f -10.0f
 rotation_angle_max = 10.0f 360.0f 10.0f
-temperature_range = 0.50f 0.8f
+temperature_range = 0.45f 0.65f
 humidity_range = 0.5f 0.9f
 altitude_range = 0.0f 30.0f
 density = 0.05
+collider = B 1.0 5.0 1.0
+
 
 [ChunkObject]
 name = "Rock"
@@ -88,8 +70,9 @@ rotation_angle_min = -10.0f 0.0f -10.0f
 rotation_angle_max = 10.0f 360.0f 10.0f
 temperature_range = 0.0f 1.0f
 humidity_range = 0.0f 1.0f
-altitude_range = 0.0f 5.0f
-density = 0.1
+altitude_range = 0.0f 10.0f
+density = 0.2
+collider = E
 
 [ChunkObject]
 name = "grass"
@@ -100,8 +83,10 @@ rotation_angle_min = -10.0f 0.0f -10.0f
 rotation_angle_max = 10.0f 360.0f 10.0f
 temperature_range = 0.4f 1.0f
 humidity_range = 0.0f 1.0f
-altitude_range = 0.0f 3.0f
-density = 0.68
+altitude_range = 0.0f 4.0f
+density = 0.7
+collider = E
+
 
 [ChunkObject]
 name = "fish"
@@ -114,3 +99,31 @@ temperature_range = 0.5f 1.0f
 humidity_range = 0.3f 1.0f
 altitude_range = -40.0f -5.0f
 density = 0.30
+collider = E
+
+
+[ChunkObject]
+name = "LowPolyFlowers"
+path = "../Assets/Models/Flowers/"
+scaling_min = 0.05f 0.05f 0.05f 
+scaling_max = 0.08f 0.08f 0.08f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.5f 1.0f
+humidity_range = 0.3f 1.0f
+altitude_range = 35.0f 60.0f
+density = 1.0
+collider = E
+
+[ChunkObject]
+name = "TriSnowMan"
+path = "../Assets/Models/Snowman/"
+scaling_min = 1.25f 1.25f 1.25f 
+scaling_max = 1.5f 1.5f 1.5f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.0f 0.4f
+humidity_range = 0.0f 0.6f
+altitude_range = 0.0f 15.0f
+density = 0.001
+collider = E

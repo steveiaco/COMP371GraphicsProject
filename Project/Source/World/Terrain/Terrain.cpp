@@ -117,8 +117,6 @@ namespace pg
 					drawnChunks++;
 				}
 			}
-
-			//std::cout << "Chunks rendered " << drawnChunks << "\n";
 		}
 
 		void Terrain::DrawWater(water::WaterRenderer& waterRenderer)

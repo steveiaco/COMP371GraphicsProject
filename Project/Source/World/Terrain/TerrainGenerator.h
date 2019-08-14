@@ -54,16 +54,16 @@ namespace pg
 			float mHumidityFrequency = 1.f / 1024.f;
 			float mTemperatureFrequency = 1.f / 2048.f;
 
-			// Height data
-			unsigned short mNumOctaves = 5;
+			// Height parameters
+			unsigned short mNumOctaves = 6;
 			float mFrequency = 1.f/128.f;
 			float mLacunarity = 3.f;
-			float mAmplitude = 120.f;
+			float mAmplitude = 140.f;
 			float mPersistence = 0.3f;
-			unsigned int mFlatnessDegree = 2;
+			unsigned int mFlatnessDegree = 3;
 			float mFlatnessFrequency = 1.f / 512.f;
 
-			// Terrain Color data
+			// Terrain Color parameters
 			// DESERT
 			glm::vec3 colorHotDryFlat = glm::vec3(0.9f, 0.6f, 0.3f);
 			glm::vec3 colorHotDrySteep = glm::vec3(0.5f, 0.3f, 0.15f);

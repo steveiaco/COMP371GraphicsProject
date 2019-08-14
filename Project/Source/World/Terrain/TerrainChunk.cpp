@@ -338,7 +338,7 @@ namespace pg
 				break;
 			case WIREFRAME:
 				for (unsigned short lod = 0; lod < MIN_LOD; lod++)
-				GenVertexBufferLowPoly(lod);
+				GenVertexBufferSmooth(lod);
 				break;
 			}
 		}

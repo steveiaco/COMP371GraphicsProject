@@ -1,0 +1,55 @@
+# This should draw a coordinate system with 3 colored axes
+
+[light]
+position = 0.0 -1.0 0.0 0.0
+color = 1.0 1.0 1.0
+attenuation = 0.0 0.0 0.15
+
+[ChunkObject]
+name = "LowLowPolyOak"
+path = "../Assets/Models/LowPolyStuff/"
+scaling_min = 4.0f 4.0f 4.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.50f 0.75f
+humidity_range = 0.2f 0.8f
+altitude_range = 0.0f 30.0f
+density = 0.07
+
+
+[ChunkObject]
+name = "LowLowPolyPalm"
+path = "../Assets/Models/LowPolyStuff/"
+scaling_min = 4.0f 4.0f 4.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.6f 1.0f
+humidity_range = 0.0f 0.7f
+altitude_range = 0.0f 5.0f
+density = 0.5
+
+[ChunkObject]
+name = "LowLowPolyFir"
+path = "../Assets/Models/LowPolyStuff/"
+scaling_min = 2.0f 2.0f 2.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.0f 0.5f
+humidity_range = 0.00f 0.6f
+altitude_range = 0.0f 45.0f
+density = 0.6
+
+[ChunkObject]
+name = "LowLowPolyPoplar"
+path = "../Assets/Models/LowPolyStuff/"
+scaling_min = 4.0f 4.0f 4.0f 
+scaling_max = 6.0f 6.0f 6.0f 
+rotation_angle_min = -10.0f 0.0f -10.0f
+rotation_angle_max = 10.0f 360.0f 10.0f
+temperature_range = 0.50f 0.8f
+humidity_range = 0.5f 0.9f
+altitude_range = 0.0f 30.0f
+density = 0.05

@@ -10,34 +10,23 @@
 #include "Renderer.h"
 #include "World.h"
 #include "EventManager.h"
-#include "Billboard.h"
 #include "TextureLoader.h"
 
 int main(int argc, char*argv[])
 {
 	EventManager::Initialize();
 	Renderer::Initialize();
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 
 	char * scene;
-
 #if defined(PLATFORM_OSX)
-	scene = "Scenes/CoordinateSystem.scene";
+	scene = "../Assets/Scenes/JustTrees.scene";
 #else
-	scene = "../Assets/Scenes/CoordinateSystem.scene";
+	scene = "../Assets/Scenes/JustTrees.scene";
 #endif
 
-
-	World world(scene);    
-    
-	//if (argc > 1)
-	//{
-	//	world.LoadScene(argv[1]);
-	//}
-	//else
-	//{
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-
+	World world(scene);
 
 	// Main Loop
 	do

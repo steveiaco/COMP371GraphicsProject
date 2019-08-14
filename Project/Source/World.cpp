@@ -3,6 +3,7 @@
 //
 // Created by Nicolas Bergeron on 8/7/14.
 // Updated by Gary Chang on 14/1/15
+// Updated by Emanuel Sharma on 14/08/2019
 //
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
@@ -11,118 +12,85 @@
 
 #include "World.h"
 #include "Renderer.h"
-#include "ParsingHelper.h"
-#include "Skybox.h"
 
 #include "StaticCamera.h"
 #include "FirstPersonCamera.h"
-
-#include "CubeModel.h"
-#include "SphereModel.h"
-#include "ObjectModel.h"
-#include "ChunkObject.h"
-#include "Animation.h"
-#include "Billboard.h"
-#include <GLFW/glfw3.h>
+#include "ParsingHelper.h"
 #include "EventManager.h"
 #include "TextureLoader.h"
 #include "LightSource.h"
+#include <GLFW/glfw3.h>
 
 #include "World/Terrain/Terrain.h"
 #include "World/Terrain/TerrainGenerator.h"
 #include "PerlinNoise.h"
 #include "ChunkPopulator.h"
-
-#include "ParticleDescriptor.h"
-#include "ParticleEmitter.h"
-#include "ParticleSystem.h"
-
+#include "ObjectModel.h"
+#include "ChunkObject.h"
+#include "Skybox.h"
 #include "World/Collisions/BoundingVolume.h"
 #include "BSplineCamera.h"
 
 using namespace std;
 using namespace glm;
 
-World* World::instance;
+World* World::instance = nullptr;
 
 
 World::World(char * scene)
-: mFBOs()
-, mWaterRenderer(SHADER_WATER, mFBOs)
 {
-    instance = this;
+	if (instance != nullptr)
+	{
+		delete instance;
+	}
+	instance = this;
 
+	// SKYBOX
 	mTotalTime = 0.0f;
 	mSkybox = new Skybox();
-	mpPerlin = new PerlinNoise(3);
+	// TERRAIN
+	// SET WORLD SEED HERE
+	mpPerlin = new PerlinNoise(20);
 	mpTerrainGenerator = new pg::terrain::TerrainGenerator(*mpPerlin);
 	mpTerrain = new pg::terrain::Terrain(*mpTerrainGenerator);
-
+	// WATER
+	mpFBOs = new pg::water::WaterFrameBuffers();
+	mpWaterRenderer = new pg::water::WaterRenderer(SHADER_WATER, *mpFBOs);
+	// CHUNK OBJECTS
 	pg::terrain::ChunkPopulator* chunkPopulator = new pg::terrain::ChunkPopulator(*mpTerrain, *mpPerlin);
 	mpTerrain->AttachChunkPopulator(chunkPopulator);
 
 	LoadScene(scene);
-
 	mpTerrain->Start();
-	// Setup Camera
-	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 
+	// CAMERAS
+	// First-person
+	mCameraList.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
+	mCurrentCamera = 0;
+	// Spline
 	glm::vec2 splineCamOrigin = vec2(2.0f, 20.0f);
 	glm::vec2 splineCamGenerationSize = vec2(500.0f, 500.0f);
 	glm::vec2 splineCamHeightLimits = vec2(40, 100);
 	unsigned int splineWaypointCount = 10;
 	float splineSpeed = 50;
-    mCamera.push_back(new BSplineCamera(new BSpline(splineCamOrigin, splineCamGenerationSize, splineCamHeightLimits, splineWaypointCount), splineSpeed));
-
-    mCurrentCamera = 0;
+	mCameraList.push_back(new BSplineCamera(new BSpline(splineCamOrigin, splineCamGenerationSize, splineCamHeightLimits, splineWaypointCount), splineSpeed));
 }
 
 World::~World()
 {
-	// Models
-	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+	// DELETE CAMERAS
+	for (vector<Camera*>::iterator it = mCameraList.begin(); it < mCameraList.end(); ++it)
 	{
 		delete *it;
 	}
+	mCameraList.clear();
 
-	mModel.clear();
-
-	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-	{
-		delete *it;
-	}
-
-	mAnimation.clear();
-
-	for (vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-	{
-		delete *it;
-	}
-
-	mAnimationKey.clear();
-
-	// Camera
-	for (vector<Camera*>::iterator it = mCamera.begin(); it < mCamera.end(); ++it)
-	{
-		delete *it;
-	}
-	mCamera.clear();
-    
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it < mParticleSystemList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleSystemList.clear();
-    
-    for (vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleDescriptorList.clear();
-
+	delete mSkybox;
+	delete mpPerlin;
+	delete mpTerrainGenerator;
 	delete mpTerrain;
-    
-	//delete mpBillboardList;
+	delete mpFBOs;
+	delete mpWaterRenderer;
 }
 
 World* World::GetInstance()
@@ -130,18 +98,26 @@ World* World::GetInstance()
     return instance;
 }
 
-bool World::CheckCollisions(float x, float y, BoundingVolume* volume) {
+bool World::CheckCollisions(float x, float y, BoundingVolume* volume) 
+{
     return World::GetInstance()->GetTerrain()->CheckCollisionsAt(x, y, volume);
 }
 
 void World::Update(float dt)
 {
+	// SKYBOX
 	mTotalTime += dt;
 	if (mTotalTime < 0) { //overflow protection
 		mTotalTime = 0 + dt;
 	}
 	mDayPhase = fmod(mTotalTime, 100.0f) > 50.0f;
 	mDayRatio = fmod(mTotalTime, 50.0f) / 50.0f;
+	if (mDayPhase) {
+		(mLightList[0])->setColor(mDayRatio);
+	}
+	else {
+		(mLightList[0])->setColor(1.0f - mDayRatio);
+	}
 
 	// User Inputs
 	// 1 2 to change the Camera
@@ -153,99 +129,60 @@ void World::Update(float dt)
     {
         mCurrentCamera = 1;
     }
-
-	//TODO: Adjust the light based on the day/night cycle
-
-	for (vector<LightSource*>::iterator it = mLightList.begin(); it < mLightList.end(); ++it)
-	{
-		if (mDayPhase) {
-			(*it)->setColor(mDayRatio);
-		}
-		else {
-			(*it)->setColor(1.0f - mDayRatio);
-		}
-	}
-
-    // Update animation and keys
-    for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    for (vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
 	// Update current Camera
-	mCamera[mCurrentCamera]->Update(dt);
-
-	// Update models
-	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
-	{
-		(*it)->Update(dt);
-	}
-
+	mCameraList[mCurrentCamera]->Update(dt);
 }
 
 void World::Draw()
 {
 	Renderer::BeginFrame();
 
+	// SKYBOX
+	// Set shader
 	Renderer::SetShader(SHADER_SKYBOX);
 	glUseProgram(Renderer::GetShaderProgramID());
-	
+	// View-Projection uniforms
 	GLuint VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
-
-	// Send the view projection constants to the shader
-	mat4 V = mat4(mat3(mCamera[mCurrentCamera]->GetViewMatrix())); //removing translate component for skybox
-	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
-
 	GLuint PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
-
-	// Send the view projection constants to the shader
-	mat4 P = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	mat4 V = mat4(mat3(mCameraList[mCurrentCamera]->GetViewMatrix())); //removing translate component for skybox
+	mat4 P = mCameraList[mCurrentCamera]->GetProjectionMatrix();
+	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
-
+	// Draw skybox
 	mSkybox->Draw(mDayPhase, mDayRatio);
 
+	// TERRAIN
+	// Set shader
 	Renderer::SetShader(SHADER_SOLID_COLOR);
 	glUseProgram(Renderer::GetShaderProgramID());
-
-	// This looks for the MVP Uniform variable in the Vertex Program
+	// View-Projection uniforms
 	VMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewTransform");
 	PMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ProjectionTransform");
-
-	// Send the view projection constants to the shader
-	V = mCamera[mCurrentCamera]->GetViewMatrix();
-	P = mCamera[mCurrentCamera]->GetProjectionMatrix();
+	V = mCameraList[mCurrentCamera]->GetViewMatrix();
+	P = mCameraList[mCurrentCamera]->GetProjectionMatrix();
 	glUniformMatrix4fv(VMatrixLocation, 1, GL_FALSE, &V[0][0]);
 	glUniformMatrix4fv(PMatrixLocation, 1, GL_FALSE, &P[0][0]);
-
+	// Set light uniforms
 	SetLights();
-
-	//Set material coefficients
+	// Set material coefficients
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
-	glUniform4f(MaterialID, 0.5f, 0.45f, 0.05f, 50.f);
 	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-	glm::mat4 worldMatrix(1.0f);
+	glm::mat4 worldMatrix(1.0f); // Coordinates of terrain are already in world space
+	glUniform4f(MaterialID, 0.5f, 0.45f, 0.05f, 50.f);
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &worldMatrix[0][0]);
-
-	//This code was for rendering to the refraction and frame buffers but does not work
-	//mFBOs.BindReflectionFrameBuffer();
+	// Draw to FBOs
+	// This code was for rendering to the refraction and frame buffers but does not work
+	//mpFBOs->BindReflectionFrameBuffer();
 	//mpTerrain->Draw();
-	//mFBOs.BindRefractionFrameBuffer();
+	//mpFBOs->BindRefractionFrameBuffer();
 	//mpTerrain->Draw();
-	//mFBOs.UnbindCurrentFrameBuffer();
+	//mpFBOs->UnbindCurrentFrameBuffer();
+	// Draw terrain
 	mpTerrain->Draw();
-	mpTerrain->DrawWater(mWaterRenderer);
+	// Draw water
+	mpTerrain->DrawWater(*mpWaterRenderer);
 
-	// Draw models
-	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
-	{
-		(*it)->Draw();
-	}
     Renderer::CheckForErrors();
-
 	Renderer::EndFrame();
 }
 
@@ -271,38 +208,7 @@ void World::LoadScene(const char * scene_path)
 		ci_string result;
 		if( std::getline( iss, result, ']') )
 		{
-			if( result == "cube" )
-			{
-				// Box attributes
-				CubeModel* cube = new CubeModel();
-				cube->Load(iss);
-				mModel.push_back(cube);
-			}
-            else if( result == "sphere" )
-            {
-                SphereModel* sphere = new SphereModel();
-                sphere->Load(iss);
-                mModel.push_back(sphere);
-            }
-			else if ( result == "animationkey" )
-			{
-				AnimationKey* key = new AnimationKey();
-				key->Load(iss);
-				mAnimationKey.push_back(key);
-			}
-			else if (result == "animation")
-			{
-				Animation* anim = new Animation();
-				anim->Load(iss);
-				mAnimation.push_back(anim);
-			}
-			else if (result == "particledescriptor")
-			{
-				ParticleDescriptor* psd = new ParticleDescriptor();
-				psd->Load(iss);
-				AddParticleDescriptor(psd);
-			}
-			else if (result == "light")
+			if (result == "light")
 			{
 				// We want no more than 8 lights at a time
 				if (mLightList.size() == 8)
@@ -313,12 +219,6 @@ void World::LoadScene(const char * scene_path)
 				LightSource* lightSource = new LightSource();
 				lightSource->Load(iss);
 				AddLightSource(lightSource);
-			}
-			else if (result == "model") 
-			{
-				ObjectModel* obj = new ObjectModel();
-				obj->Load(iss);
-				mModel.push_back(obj);
 			}
 			else if (result == "chunkobject") 
 			{
@@ -339,13 +239,6 @@ void World::LoadScene(const char * scene_path)
 	    }
 	}
 	input.close();
-
-	// Set Animation vertex buffers
-	for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-	{
-		// Draw model
-		(*it)->CreateVertexBuffer();
-	}
 }
 
 void World::SetLights()
@@ -357,7 +250,7 @@ void World::SetLights()
 	{
 		char sUniformName[32];
 		// sprintf_s is part of an optional annex to the C++11 specification
-// snprintf is safer and is part of the core standard and provides the same functionality
+		// snprintf is safer and is part of the core standard and provides the same functionality
 		snprintf(sUniformName, 32, "LightPositions[%i]", i);
 		GLuint WorldLightPositionLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), sUniformName);
 		snprintf(sUniformName, 32, "LightColors[%i]", i);
@@ -371,33 +264,9 @@ void World::SetLights()
 	}
 }
 
-Animation* World::FindAnimation(ci_string animName)
-{
-	for (std::vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-	{
-		if ((*it)->GetName() == animName)
-		{
-			return *it;
-		}
-	}
-	return nullptr;
-}
-
-AnimationKey* World::FindAnimationKey(ci_string keyName)
-{
-    for(std::vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-    {
-        if((*it)->GetName() == keyName)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
-}
-
 const Camera* World::GetCurrentCamera() const
 {
-     return mCamera[mCurrentCamera];
+    return mCameraList[mCurrentCamera];
 }
 
 void World::AddLightSource(LightSource* ls)
@@ -409,42 +278,4 @@ void World::RemoveLightSource(LightSource* ls)
 {
 	vector<LightSource*>::iterator it = std::find(mLightList.begin(), mLightList.end(), ls);
 	mLightList.erase(it);
-}
-
-void World::AddBillboard(Billboard* b)
-{
-	//mpBillboardList->AddBillboard(b);
-}
-
-void World::RemoveBillboard(Billboard* b)
-{
-	//mpBillboardList->RemoveBillboard(b);
-}
-
-void World::AddParticleSystem(ParticleSystem* particleSystem)
-{
-    mParticleSystemList.push_back(particleSystem);
-}
-
-void World::RemoveParticleSystem(ParticleSystem* particleSystem)
-{
-    vector<ParticleSystem*>::iterator it = std::find(mParticleSystemList.begin(), mParticleSystemList.end(), particleSystem);
-    mParticleSystemList.erase(it);
-}
-
-void World::AddParticleDescriptor(ParticleDescriptor* particleDescriptor)
-{
-    mParticleDescriptorList.push_back(particleDescriptor);
-}
-
-ParticleDescriptor* World::FindParticleDescriptor(ci_string name)
-{
-    for(std::vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        if((*it)->GetName() == name)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
 }
