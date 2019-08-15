@@ -40,7 +40,8 @@ void main()
 	vec3 normalizedEyeVector = normalize(eyeVector);
 	
 	// This should be the final color on the Vertex, including the lighting
-	vec3 sumColor = vec3(0.1f,0.1f,0.1f);//ambientCoefficient[material]; //Change this to change ambient color
+	vec3 sumColor = vec3(0.1f,0.1f,0.1f);//ambientCoefficient[material]; 
+	//Keep ambient light color fixed as mtl files often define their ambient light as (1,1,1), making the model full bright.
 
 	for (int i = 0; i < NumLights; i++)
 	{
