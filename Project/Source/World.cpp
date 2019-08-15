@@ -111,7 +111,7 @@ void World::Update(float dt)
 		mTotalTime = 0 + dt;
 	}
 	mDayPhase = fmod(mTotalTime, 100.0f) > 50.0f;
-	mDayRatio = fmod(mTotalTime, 50.0f) / 50.0f;
+    mDayRatio = glm::clamp(log(1.0f + exp(fmod(mTotalTime, 50.0f) - 46.0f)), 0.0f, 1.0f);
 	if (mDayPhase) {
 		(mLightList[0])->setColor(mDayRatio);
 	}
