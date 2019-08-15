@@ -111,12 +111,12 @@ void World::Update(float dt)
 		mTotalTime = 0 + dt;
 	}
 	mDayPhase = fmod(mTotalTime, 100.0f) > 50.0f;
-    mDayRatio = glm::clamp(log(1.0f + exp(fmod(mTotalTime, 50.0f) - 46.0f)), 0.0f, 1.0f);
+    mDayRatio = clamp(log(1.0f + exp(fmod(mTotalTime, 50.0f) - 46.0f)), 0.0f, 1.0f);
 	if (mDayPhase) {
-		(mLightList[0])->setColor(mDayRatio);
+		(mLightList[0])->setColor(clamp(mDayRatio, 0.1f, 1.0f));
 	}
 	else {
-		(mLightList[0])->setColor(1.0f - mDayRatio);
+		(mLightList[0])->setColor(clamp(1.0f - mDayRatio, 0.1f, 1.0f));
 	}
 
 	// User Inputs
